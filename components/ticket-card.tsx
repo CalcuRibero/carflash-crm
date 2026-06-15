@@ -11,7 +11,7 @@ export interface TicketCardItem {
   id: string;
   title: string;
   description: string;
-  priority: "Low" | "Medium" | "High";
+  priority: "Baja" | "Media" | "Alta";
   assignee: string;
   estimate: string;
 }
@@ -22,9 +22,9 @@ interface TicketCardProps {
 }
 
 const priorityStyles: Record<TicketCardItem["priority"], string> = {
-  Low: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  Medium: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-  High: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+  Baja: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  Media: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  Alta: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
 };
 
 export function TicketCard({ ticket, columnId }: TicketCardProps) {

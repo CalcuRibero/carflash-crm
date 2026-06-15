@@ -128,7 +128,7 @@ export function TicketBoard({ columns: initialColumns }: TicketBoardProps) {
         </div>
         <Button variant="outline" size="sm">
           <Plus className="mr-2 h-4 w-4" />
-          New ticket
+          Nuevo ticket
         </Button>
       </div>
 
