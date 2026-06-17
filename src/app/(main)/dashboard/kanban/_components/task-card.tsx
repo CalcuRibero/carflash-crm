@@ -57,8 +57,8 @@ export function TaskCard({
   columnId?: ColumnId;
   isOverlay?: boolean;
 }) {
-  const isDone = columnId === "shipped";
-  const showBuildingDetails = columnId === "building" && typeof task.progress === "number";
+  const isDone = columnId === "closed";
+  const showBuildingDetails = columnId === "in_progress" && typeof task.progress === "number";
   const owner = task.owner;
   const PriorityIcon = priorityBadgeConfig[task.priority].icon;
 

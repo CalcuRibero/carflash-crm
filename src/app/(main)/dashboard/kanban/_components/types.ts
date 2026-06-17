@@ -1,20 +1,11 @@
-export type ColumnId = "ideas" | "planned" | "building" | "qa" | "shipped";
+export type TaskTeam = "open" | "in_progress" | "resolved" | "closed";
+
+export type ColumnId = TaskTeam;
 
 export type Column = {
   id: ColumnId;
   title: string;
 };
-
-export type TaskTeam =
-  | "Backend"
-  | "Data"
-  | "Design"
-  | "Docs"
-  | "Finance Ops"
-  | "Platform"
-  | "Product"
-  | "QA"
-  | "Security";
 
 export type TaskPriority = "High" | "Medium" | "Low";
 

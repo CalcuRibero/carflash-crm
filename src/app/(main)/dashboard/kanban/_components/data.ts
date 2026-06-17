@@ -1,25 +1,19 @@
 import type { BoardState, Column, TaskOwnerProfile, TaskTeam } from "./types";
 
 export const columns = [
-  { id: "ideas", title: "Ideas" },
-  { id: "planned", title: "Planned" },
-  { id: "building", title: "Building" },
-  { id: "qa", title: "QA" },
-  { id: "shipped", title: "Shipped" },
+  { id: "open", title: "Open" },
+  { id: "in_progress", title: "In Progress" },
+  { id: "resolved", title: "Resolved" },
+  { id: "closed", title: "Closed" },
 ] as const satisfies readonly Column[];
 
 export const columnIds = columns.map((column) => column.id);
 
 export const tagTones: Record<TaskTeam, string> = {
-  Backend: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
-  Data: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-  Design: "bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-300",
-  Docs: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300",
-  "Finance Ops": "bg-teal-500/10 text-teal-700 dark:text-teal-300",
-  Platform: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-300",
-  Product: "bg-orange-500/10 text-orange-700 dark:text-orange-300",
-  QA: "bg-red-500/10 text-red-700 dark:text-red-300",
-  Security: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+  open: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
+  in_progress: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  resolved: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  closed: "bg-zinc-500/10 text-zinc-700 dark:text-zinc-300",
 };
 
 export const taskOwners = {
@@ -54,7 +48,7 @@ export const taskOwners = {
 } satisfies Record<string, TaskOwnerProfile>;
 
 export const initialBoard: BoardState = {
-  ideas: [
+  open: [
     {
       id: "tender-workflow-map",
       title: "Tender workflow map",
@@ -63,7 +57,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 14",
       progress: 10,
       owner: taskOwners.arham,
-      team: "Product",
+      team: "open",
       insights: [
         { label: "Comments", count: 7 },
         { label: "Documents", count: 3 },
@@ -77,7 +71,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 16",
       progress: 20,
       owner: taskOwners.rahul,
-      team: "Finance Ops",
+      team: "open",
       insights: [
         { label: "Attachments", count: 2 },
         { label: "Comments", count: 5 },
@@ -91,7 +85,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 18",
       progress: 15,
       owner: taskOwners.maya,
-      team: "Platform",
+      team: "open",
       insights: [
         { label: "Attachments", count: 1 },
         { label: "Comments", count: 4 },
@@ -105,7 +99,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 19",
       progress: 5,
       owner: taskOwners.meera,
-      team: "Product",
+      team: "open",
       insights: [
         { label: "Comments", count: 3 },
         { label: "Documents", count: 1 },
@@ -119,11 +113,9 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 21",
       progress: 0,
       owner: taskOwners.arham,
-      team: "Platform",
+      team: "open",
       insights: [{ label: "Comments", count: 2 }],
     },
-  ],
-  planned: [
     {
       id: "electron-app-shell",
       title: "Electron app shell",
@@ -132,7 +124,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 20",
       progress: 25,
       owner: taskOwners.arham,
-      team: "Platform",
+      team: "open",
       insights: [
         { label: "Attachments", count: 4 },
         { label: "Comments", count: 9 },
@@ -147,7 +139,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 22",
       progress: 20,
       owner: taskOwners.nisha,
-      team: "Backend",
+      team: "open",
       insights: [
         { label: "Attachments", count: 2 },
         { label: "Comments", count: 6 },
@@ -162,7 +154,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 24",
       progress: 15,
       owner: taskOwners.meera,
-      team: "Product",
+      team: "open",
       insights: [
         { label: "Comments", count: 5 },
         { label: "Documents", count: 2 },
@@ -176,14 +168,14 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 25",
       progress: 10,
       owner: taskOwners.maya,
-      team: "Docs",
+      team: "open",
       insights: [
         { label: "Attachments", count: 2 },
         { label: "Comments", count: 4 },
       ],
     },
   ],
-  building: [
+  in_progress: [
     {
       id: "sqlite-drizzle-schema",
       title: "SQLite and Drizzle schema",
@@ -192,7 +184,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 26",
       progress: 65,
       owner: taskOwners.arham,
-      team: "Data",
+      team: "in_progress",
       insights: [
         { label: "Attachments", count: 5 },
         { label: "Comments", count: 11 },
@@ -207,7 +199,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 28",
       progress: 45,
       owner: taskOwners.junaid,
-      team: "Data",
+      team: "in_progress",
       insights: [
         { label: "Attachments", count: 3 },
         { label: "Comments", count: 8 },
@@ -222,14 +214,14 @@ export const initialBoard: BoardState = {
       dueDate: "Jul 1",
       progress: 30,
       owner: taskOwners.sara,
-      team: "Design",
+      team: "in_progress",
       insights: [
         { label: "Comments", count: 6 },
         { label: "Documents", count: 2 },
       ],
     },
   ],
-  qa: [
+  resolved: [
     {
       id: "salary-row-validation",
       title: "Salary row validation",
@@ -238,7 +230,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jul 4",
       progress: 75,
       owner: taskOwners.nisha,
-      team: "QA",
+      team: "resolved",
       insights: [
         { label: "Attachments", count: 4 },
         { label: "Comments", count: 10 },
@@ -252,7 +244,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jul 6",
       progress: 60,
       owner: taskOwners.junaid,
-      team: "Finance Ops",
+      team: "resolved",
       insights: [
         { label: "Attachments", count: 3 },
         { label: "Comments", count: 7 },
@@ -260,7 +252,7 @@ export const initialBoard: BoardState = {
       ],
     },
   ],
-  shipped: [
+  closed: [
     {
       id: "architecture-rule",
       title: "Architecture rule locked",
@@ -269,7 +261,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 8",
       progress: 100,
       owner: taskOwners.arham,
-      team: "Backend",
+      team: "closed",
       insights: [
         { label: "Comments", count: 6 },
         { label: "Documents", count: 3 },
@@ -283,7 +275,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 10",
       progress: 100,
       owner: taskOwners.rahul,
-      team: "Finance Ops",
+      team: "closed",
       insights: [
         { label: "Attachments", count: 2 },
         { label: "Comments", count: 4 },
@@ -297,7 +289,7 @@ export const initialBoard: BoardState = {
       dueDate: "Jun 12",
       progress: 100,
       owner: taskOwners.meera,
-      team: "Finance Ops",
+      team: "closed",
       insights: [
         { label: "Comments", count: 5 },
         { label: "Documents", count: 2 },

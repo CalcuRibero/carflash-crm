@@ -79,17 +79,6 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/ecommerce",
         icon: ShoppingBag,
       },
-      {
-        title: "Academy",
-        url: "/dashboard/academy",
-        icon: GraduationCap,
-        isNew: true,
-      },
-      {
-        title: "Logistics",
-        url: "/dashboard/logistics",
-        icon: Forklift,
-      },
     ],
   },
   {
