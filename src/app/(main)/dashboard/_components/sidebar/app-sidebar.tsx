@@ -24,7 +24,7 @@ import { NavUser } from "./nav-user";
 import { SidebarSupportCard } from "./sidebar-support-card";
 
 import Image from "next/image";
-import logo from "../../../../logo.png";
+import logo from "@/app/logo.png";
 
 const _data = {
   navSecondary: [
