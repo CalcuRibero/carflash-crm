@@ -24,7 +24,7 @@ import { NavUser } from "./nav-user";
 import { SidebarSupportCard } from "./sidebar-support-card";
 
 import Image from "next/image";
-import logo from "@/app/logo.png";
+// import logo from "@/app/logo.png";
 
 const _data = {
   navSecondary: [
@@ -82,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link prefetch={false} href="/dashboard/default">
-                <Image src={logo} alt="Carflash" width={32} height={32} />
+                {/* <Image src={logo} alt="Carflash" width={32} height={32} /> */}
                 <span className="font-semibold text-base">{APP_CONFIG.name}</span>
               </Link>
             </SidebarMenuButton>
