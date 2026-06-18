@@ -13,6 +13,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/backend-api/:path*",
+        destination: `${process.env.BACKEND_API_URL ?? "http://localhost:5000"}/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
