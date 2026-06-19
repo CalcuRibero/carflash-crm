@@ -15,10 +15,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { withPopup } from "@/components/popup/popup";
 import { users } from "@/data/users";
 import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
+import { useCreateTicket } from "@/UseCases/TicketsUseCases";
 
 const ticketStatuses: TicketStatus[] = ["open", "in_progress", "resolved", "closed"];
 const ticketPriorities: TicketPriority[] = ["low", "medium", "high", "critical"];
 const ticketCategories: TicketCategory[] = ["bug", "feature", "support", "incident"];
+
 
 export type TaskPopUpFormValues = {
   title: string;
@@ -61,11 +63,14 @@ function formatOptionLabel(value: string) {
 
 function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
   function updateForm<Key extends keyof TaskPopUpFormValues>(key: Key, value: TaskPopUpFormValues[Key]) {
+
     onFormChange({
       ...formValues,
       [key]: value,
     });
   }
+
+
 
   return (
     <form
@@ -191,10 +196,12 @@ const TaskFormPopUp = withPopup(TaskForm, {
 
 export function TaskPopUp({ isOpen, onClose, onSubmit }: TaskPopUpProps) {
   const [formValues, setFormValues] = React.useState<TaskPopUpFormValues>(INITIAL_VALUES_FORM);
+  const createTicket = useCreateTicket()
 
   function handleSubmit() {
     if (!formValues.title.trim() || !formValues.description.trim()) return;
 
+    createTicket.mutate(formValues)
     onSubmit(formValues);
     setFormValues(INITIAL_VALUES_FORM);
     onClose();

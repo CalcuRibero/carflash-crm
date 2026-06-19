@@ -61,8 +61,8 @@ export type CreateTicketRequest = {
   status?: TicketStatus;
   priority?: TicketPriority;
   category?: TicketCategory;
-  createdBy?: User;
-  assignedTo?: User | null;
+  createdBy?: string;
+  assignedTo?: string | null;
   dueDate?: string | Date | null;
 };
 
