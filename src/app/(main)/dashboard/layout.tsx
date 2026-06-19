@@ -67,7 +67,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
             <div className="flex items-center gap-2">
               <LayoutControls />
               <ThemeSwitcher />
-              <Button asChild size="icon">
+              {/* <Button asChild size="icon">
                 <Link
                   prefetch={false}
                   href="https://github.com/arhamkhnz/next-shadcn-admin-dashboard"
@@ -77,7 +77,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
                 >
                   <SimpleIcon icon={siGithub} className="fill-primary-foreground" />
                 </Link>
-              </Button>
+              </Button> */}
               <AccountSwitcher users={users} />
             </div>
           </div>
