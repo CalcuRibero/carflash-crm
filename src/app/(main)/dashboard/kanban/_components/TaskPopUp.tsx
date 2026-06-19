@@ -201,7 +201,7 @@ export function TaskPopUp({ isOpen, onClose, onSubmit }: TaskPopUpProps) {
   function handleSubmit() {
     if (!formValues.title.trim() || !formValues.description.trim()) return;
 
-    createTicket.mutate(formValues)
+    // createTicket.mutate(formValues)
     onSubmit(formValues);
     setFormValues(INITIAL_VALUES_FORM);
     onClose();
