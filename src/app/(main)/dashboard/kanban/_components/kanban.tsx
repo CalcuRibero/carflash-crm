@@ -45,10 +45,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { users } from "@/data/users";
 
 import { columnIds, columns } from "./data";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
+import { TaskPopUp, type TaskPopUpFormValues } from "./TaskPopUp";
 import type { BoardState, ColumnId, Task } from "./types";
 import { findColumnId, findTask } from "./utils";
 
@@ -61,6 +63,7 @@ export function Kanban({ initialBoard }: KanbanProps) {
   const [columnOrder, setColumnOrder] = React.useState<ColumnId[]>(columnIds);
   const [activeTask, setActiveTask] = React.useState<Task | null>(null);
   const [activeColumnId, setActiveColumnId] = React.useState<ColumnId | null>(null);
+  const [isTaskPopUpOpen, setIsTaskPopUpOpen] = React.useState(false);
   const boardBeforeDrag = React.useRef<BoardState | null>(null);
   const orderedColumns = columnOrder.flatMap((columnId) => columns.find((column) => column.id === columnId) ?? []);
 
@@ -170,8 +173,47 @@ export function Kanban({ initialBoard }: KanbanProps) {
     });
   }
 
+  function handleCreateTask(values: TaskPopUpFormValues) {
+    const assignedUser = users.find((user) => user.id === values.assignedTo);
+    const priorityMap = {
+      critical: "High",
+      high: "High",
+      low: "Low",
+      medium: "Medium",
+    } as const;
+    const dueDate = values.dueDate
+      ? new Intl.DateTimeFormat("en", { day: "numeric", month: "short" }).format(new Date(values.dueDate))
+      : "No date";
+    const task: Task = {
+      id: `task-${Date.now()}`,
+      title: values.title,
+      description: values.description,
+      priority: priorityMap[values.priority],
+      dueDate,
+      progress: 0,
+      owner: {
+        name: assignedUser?.name ?? "Unassigned",
+        tone:
+          "[&_[data-slot=avatar-fallback]]:bg-zinc-100 [&_[data-slot=avatar-fallback]]:text-zinc-700 after:border-zinc-200 dark:[&_[data-slot=avatar-fallback]]:bg-zinc-500/15 dark:[&_[data-slot=avatar-fallback]]:text-zinc-300 dark:after:border-zinc-500/20",
+      },
+      team: values.status,
+      insights: [],
+    };
+
+    setBoard((currentBoard) => ({
+      ...currentBoard,
+      [values.status]: [task, ...currentBoard[values.status]],
+    }));
+  }
+
   return (
     <div className="flex h-[calc(100dvh-var(--dashboard-header-height))] min-h-0 min-w-0 flex-col overflow-hidden">
+      <TaskPopUp
+        isOpen={isTaskPopUpOpen}
+        onClose={() => setIsTaskPopUpOpen(false)}
+        onSubmit={handleCreateTask}
+      />
+
       <div className="flex shrink-0 flex-col gap-3 border-b px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
         <Tabs defaultValue="board" className="min-w-0">
           <TabsList className="w-full *:data-[slot=tabs-trigger]:flex-1 sm:w-fit sm:*:data-[slot=tabs-trigger]:flex-none">
@@ -206,7 +248,7 @@ export function Kanban({ initialBoard }: KanbanProps) {
             Sort
           </Button>
           <ButtonGroup className="w-full sm:w-fit">
-            <Button className="flex-1 sm:flex-none">
+            <Button className="flex-1 sm:flex-none" onClick={() => setIsTaskPopUpOpen(true)}>
               <Plus data-icon="inline-start" />
               Add task
             </Button>
