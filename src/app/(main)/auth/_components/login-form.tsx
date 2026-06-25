@@ -11,7 +11,7 @@ import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/compo
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
+  username: z.string({ message: "Please enter a valid user name." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
   remember: z.boolean().optional(),
 });
@@ -20,7 +20,7 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
       remember: false,
     },
@@ -41,16 +41,15 @@ export function LoginForm() {
       <FieldGroup className="gap-4">
         <Controller
           control={form.control}
-          name="email"
+          name="username"
           render={({ field, fieldState }) => (
             <Field className="gap-1.5" data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-email">Email Address</FieldLabel>
+              <FieldLabel htmlFor="login-email">Username</FieldLabel>
               <Input
                 {...field}
-                id="login-email"
-                type="email"
-                placeholder="you@example.com"
-                autoComplete="email"
+                id="login-username"
+                placeholder="pedro123"
+                autoComplete="username"
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
