@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 import { ChatConversationList } from "./chat-conversation-list";
 import { ChatProfileDetails } from "./chat-profile-details";
 import { ChatThread } from "./chat-thread";
-import type { Conversation } from "./data";
-import { useChat } from "./use-chat";
+import type { Conversation } from "../types";
+import { useChat } from "../hooks/use-chat";
 
 interface ChatProps {
   conversations: Conversation[];

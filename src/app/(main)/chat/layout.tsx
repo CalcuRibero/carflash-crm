@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 
-import { ChatHeader } from "./_components/chat-header";
-import { ChatSidebar } from "./_components/chat-sidebar";
+import { ChatHeader } from "../../../features/chat/_components/chat-header";
+import { ChatSidebar } from "../../../features/chat/_components/chat-sidebar";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
   return (

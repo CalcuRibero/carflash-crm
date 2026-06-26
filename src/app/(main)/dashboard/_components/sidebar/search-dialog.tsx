@@ -18,8 +18,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import type { NavMainItem } from "@/navigation/sidebar/sidebar-items";
-import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
+import type { NavMainItem } from "@/shared/navigation/sidebar/sidebar-items";
+import { sidebarItems } from "@/shared/navigation/sidebar/sidebar-items";
 
 type SearchItem = {
   group: string;
