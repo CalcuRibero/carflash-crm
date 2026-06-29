@@ -51,7 +51,8 @@ import { columnIds, columns } from "./data";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
 import { TaskPopUp, type TaskPopUpFormValues } from "./TaskPopUp";
-import type { BoardState, ColumnId, Task } from "./types";
+import type { BoardState, ColumnId } from "./types";
+import type { Ticket } from "@/lib/api/types";
 import { findColumnId, findTask } from "./utils";
 
 interface KanbanProps {
@@ -61,7 +62,7 @@ interface KanbanProps {
 export function Kanban({ initialBoard }: KanbanProps) {
   const [board, setBoard] = React.useState<BoardState>(initialBoard);
   const [columnOrder, setColumnOrder] = React.useState<ColumnId[]>(columnIds);
-  const [activeTask, setActiveTask] = React.useState<Task | null>(null);
+  const [activeTask, setActiveTask] = React.useState<Ticket | null>(null);
   const [activeColumnId, setActiveColumnId] = React.useState<ColumnId | null>(null);
   const [isTaskPopUpOpen, setIsTaskPopUpOpen] = React.useState(false);
   const boardBeforeDrag = React.useRef<BoardState | null>(null);
@@ -175,28 +176,22 @@ export function Kanban({ initialBoard }: KanbanProps) {
 
   function handleCreateTask(values: TaskPopUpFormValues) {
     const assignedUser = users.find((user) => user.id === values.assignedTo);
-    const priorityMap = {
-      critical: "High",
-      high: "High",
-      low: "Low",
-      medium: "Medium",
-    } as const;
     const dueDate = values.dueDate
       ? new Intl.DateTimeFormat("en", { day: "numeric", month: "short" }).format(new Date(values.dueDate))
       : "No date";
-    const task: Task = {
+    const task: Ticket = {
       id: `task-${Date.now()}`,
       title: values.title,
       description: values.description,
-      priority: priorityMap[values.priority],
+      priority: values.priority,
       dueDate,
       progress: 0,
+      status: values.status,
       owner: {
         name: assignedUser?.name ?? "Unassigned",
         tone:
           "[&_[data-slot=avatar-fallback]]:bg-zinc-100 [&_[data-slot=avatar-fallback]]:text-zinc-700 after:border-zinc-200 dark:[&_[data-slot=avatar-fallback]]:bg-zinc-500/15 dark:[&_[data-slot=avatar-fallback]]:text-zinc-300 dark:after:border-zinc-500/20",
       },
-      team: values.status,
       insights: [],
     };
 

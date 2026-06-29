@@ -19,29 +19,35 @@ import { Separator } from "@/components/ui/separator";
 import { cn, getInitials } from "@/lib/utils";
 
 import { tagTones } from "./data";
-import type { ColumnId, Task, TaskInsightLabel, TaskPriority } from "./types";
+import type { ColumnId } from "./types";
+import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types";
 
-const taskInsightIcons: Record<TaskInsightLabel, LucideIcon> = {
+const taskInsightIcons: Record<TicketInsightLabel, LucideIcon> = {
   Attachments: Paperclip,
   Comments: MessageSquare,
   Documents: FileText,
 };
 
 const priorityBadgeConfig: Record<
-  TaskPriority,
+  TicketPriority,
   { icon: LucideIcon; variant: "destructive" | "secondary"; className: string }
 > = {
-  High: {
+  critical: {
     icon: Flame,
     variant: "destructive",
     className: "border-transparent",
   },
-  Low: {
+  high: {
+    icon: Flame,
+    variant: "destructive",
+    className: "border-transparent",
+  },
+  low: {
     icon: Minus,
     variant: "secondary",
     className: "bg-slate-500/10 text-slate-700 dark:bg-slate-500/15 dark:text-slate-300",
   },
-  Medium: {
+  medium: {
     icon: ArrowUpRight,
     variant: "secondary",
     className: "bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
@@ -53,14 +59,14 @@ export function TaskCard({
   columnId,
   isOverlay = false,
 }: {
-  task: Task;
+  task: Ticket;
   columnId?: ColumnId;
   isOverlay?: boolean;
 }) {
   const isDone = columnId === "closed";
   const showBuildingDetails = columnId === "in_progress" && typeof task.progress === "number";
   const owner = task.owner;
-  const PriorityIcon = priorityBadgeConfig[task.priority].icon;
+  const PriorityIcon = priorityBadgeConfig[task.priority as TicketPriority].icon;
 
   return (
     <article
@@ -73,10 +79,10 @@ export function TaskCard({
         <div className="flex items-center justify-between gap-3">
           <h3 className="min-w-0 truncate font-medium text-sm leading-none">{task.title}</h3>
           <Badge
-            variant={priorityBadgeConfig[task.priority].variant}
+            variant={priorityBadgeConfig[task.priority as TicketPriority].variant}
             className={cn(
               "shrink-0 rounded-md border-transparent px-2 font-medium",
-              priorityBadgeConfig[task.priority].className,
+              priorityBadgeConfig[task.priority as TicketPriority].className,
             )}
           >
             <PriorityIcon data-icon="inline-start" />
@@ -86,7 +92,7 @@ export function TaskCard({
         <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>
       </div>
 
-      {!showBuildingDetails ? (
+      {!showBuildingDetails && owner ? (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Avatar className={cn("size-5 after:rounded-sm", owner.tone)}>
@@ -116,10 +122,12 @@ export function TaskCard({
             <div className="flex items-center justify-between gap-3">
               <span className="text-muted-foreground text-sm">Owner</span>
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-muted-foreground text-sm">{owner.name}</span>
-                <Avatar className={cn("size-5 after:rounded-sm", owner.tone)}>
-                  <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.name)}</AvatarFallback>
-                </Avatar>
+                <span className="truncate text-muted-foreground text-sm">{owner?.name}</span>
+                {owner && (
+                  <Avatar className={cn("size-5 after:rounded-sm", owner.tone)}>
+                    <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.name)}</AvatarFallback>
+                  </Avatar>
+                )}
               </div>
             </div>
 
@@ -132,13 +140,13 @@ export function TaskCard({
             </div>
 
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Team</span>
-              {task.team ? (
+              <span className="text-muted-foreground text-sm">Status</span>
+              {task.status ? (
                 <Badge
                   variant="secondary"
-                  className={cn("rounded-md border-transparent px-2 font-medium", tagTones[task.team])}
+                  className={cn("rounded-md border-transparent px-2 font-medium", tagTones[task.status])}
                 >
-                  {task.team}
+                  {task.status}
                 </Badge>
               ) : null}
             </div>
@@ -156,7 +164,7 @@ export function TaskCard({
           </div>
         ) : null}
 
-        {!isDone ? (
+        {!isDone && task.insights ? (
           <div className="flex items-center gap-3 text-muted-foreground text-sm">
             {task.insights.map((insight) => {
               const Icon = taskInsightIcons[insight.label];

@@ -23,19 +23,34 @@ export type User = {
   updatedAt: string;
 };
 
+export type TicketInsightLabel = "Attachments" | "Comments" | "Documents";
+
+export type TicketInsight = {
+  label: TicketInsightLabel;
+  count: number;
+};
+
+export type TicketOwnerProfile = {
+  name: string;
+  tone: string;
+};
+
 export type Ticket = {
   id: string;
   title: string;
   description: string;
   status: TicketStatus;
   priority: TicketPriority;
-  category: TicketCategory;
-  createdBy: User;
-  assignedTo: User | null;
-  createdAt: string;
-  updatedAt: string;
-  dueDate: string | null;
-  resolvedAt: string | null;
+  category?: TicketCategory;
+  createdBy?: User;
+  assignedTo?: User | null;
+  createdAt?: string;
+  updatedAt?: string;
+  dueDate?: string | null;
+  resolvedAt?: string | null;
+  progress?: number;
+  insights?: TicketInsight[];
+  owner?: TicketOwnerProfile;
 };
 
 export type LoginRequest = {

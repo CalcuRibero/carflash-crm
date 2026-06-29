@@ -9,14 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type Task = {
+type ProductivityTask = {
   title: string;
   tag: string;
   time: string;
   checked: boolean;
 };
 
-const tasks: Task[] = [
+const tasks: ProductivityTask[] = [
   { title: "Finalize Q2 roadmap", tag: "Work", time: "10:00 AM", checked: false },
   { title: "Review design system updates", tag: "Design", time: "11:30 AM", checked: true },
   { title: "Reply to important emails", tag: "Admin", time: "2:00 PM", checked: false },

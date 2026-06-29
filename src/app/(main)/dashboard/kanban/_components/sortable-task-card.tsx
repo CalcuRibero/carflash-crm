@@ -5,9 +5,10 @@ import { useSortable } from "@dnd-kit/sortable";
 import { cn } from "@/lib/utils";
 
 import { TaskCard } from "./task-card";
-import type { ColumnId, Task } from "./types";
+import type { ColumnId } from "./types";
+import type { Ticket } from "@/lib/api/types";
 
-export function SortableTaskCard({ task, columnId }: { task: Task; columnId: ColumnId }) {
+export function SortableTaskCard({ task, columnId }: { task: Ticket; columnId: ColumnId }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { type: "task", task },
