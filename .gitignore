@@ -10,6 +10,9 @@
 #cursor
 /.cursor
 
+# codex
+/.codex
+
 # testing
 /coverage
 

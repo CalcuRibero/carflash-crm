@@ -1,6 +1,13 @@
 import { columnIds } from "./data";
 import type { BoardState, ColumnId } from "./types";
 
+export const INITIAL_BOARD: BoardState = {
+  open: [],
+  in_progress: [],
+  resolved: [],
+  closed: [],
+};
+
 export function isColumnId(id: string): id is ColumnId {
   return columnIds.includes(id as ColumnId);
 }
