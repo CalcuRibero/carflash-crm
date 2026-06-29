@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/sidebar";
 import { APP_CONFIG } from "@/config/app-config";
 import { rootUser } from "@/data/users";
-import { sidebarItems } from "@/shared/navigation/sidebar/sidebar-items";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";
@@ -24,6 +23,7 @@ import { NavUser } from "./nav-user";
 import { SidebarSupportCard } from "./sidebar-support-card";
 
 import Image from "next/image";
+import { sidebarItems } from "@/shared/components/navigation/sidebar/sidebar-items";
 // import logo from "@/app/logo.png";
 
 const _data = {
