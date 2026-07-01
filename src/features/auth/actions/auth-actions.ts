@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-const COOKIE_NAME = "auth_token";
+const COOKIE_NAME = "accessToken";
 
 export async function setAuthToken(token: string) {
   const cookieStore = await cookies();
@@ -17,7 +17,13 @@ export async function setAuthToken(token: string) {
 
 export async function clearAuthToken() {
   const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_NAME);
+  cookieStore.set(COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 0,
+    path: "/",
+  });
 }
 
 export async function getAuthToken(): Promise<string | undefined> {

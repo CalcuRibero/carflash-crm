@@ -1,6 +1,7 @@
 "use client";
 
 import { EllipsisVertical, LogOut, Settings, UserRound } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { siFacebook, siInstagram, siWhatsapp } from "simple-icons";
 
 import { SimpleIcon } from "@/components/simple-icon";
@@ -14,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { clearAuthToken } from "@/features/auth/actions/auth-actions";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -40,6 +42,12 @@ const channelBrandIcons = {
 export function ChatSidebar() {
   const { state } = useSidebar();
   const _isCollapsed = state === "collapsed";
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await clearAuthToken();
+    router.push("/auth/login");
+  };
 
   return (
     <Sidebar
@@ -140,7 +148,7 @@ export function ChatSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
                   <LogOut />
                   Log out
                 </DropdownMenuItem>

@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "../hooks/useAuth";
 
 const formSchema = z.object({
-  username: z.string({ message: "Please enter a valid user name." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
   remember: z.boolean().optional(),
 });
@@ -25,7 +25,7 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       remember: false,
     },
@@ -34,7 +34,7 @@ export function LoginForm() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       await login({
-        username: data.username,
+        email: data.email,
         password: data.password,
       });
       toast.success("Login successful");
@@ -51,15 +51,15 @@ export function LoginForm() {
       <FieldGroup className="gap-4">
         <Controller
           control={form.control}
-          name="username"
+          name="email"
           render={({ field, fieldState }) => (
             <Field className="gap-1.5" data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-email">Username</FieldLabel>
+              <FieldLabel htmlFor="login-email">email</FieldLabel>
               <Input
                 {...field}
-                id="login-username"
+                id="login-email"
                 placeholder="pedro123"
-                autoComplete="username"
+                autoComplete="email"
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

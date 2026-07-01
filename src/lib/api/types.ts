@@ -54,7 +54,7 @@ export type Ticket = {
 };
 
 export type LoginRequest = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -64,7 +64,7 @@ export type LoginResponse = {
 
 export type AuthProfile = {
   sub: number;
-  username: string;
+  email: string;
   iat?: number;
   exp?: number;
 };

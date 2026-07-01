@@ -1,19 +1,21 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const COOKIE_NAME = "auth_token";
+const COOKIE_NAME = "accessToken";
 const PUBLIC_PATHS = ["/auth", "/unauthorized"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(COOKIE_NAME)?.value;
+
+  console.log("token:", token);
 
   // Check if the path is public
   const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
 
   // If user is not authenticated and trying to access protected route
   if (!token && !isPublicPath) {
-    return NextResponse.redirect(new URL("/auth", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   // If user is authenticated and trying to access auth page, redirect to dashboard
