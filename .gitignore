@@ -13,6 +13,9 @@
 # codex
 /.codex
 
+# codex
+/.codeium/
+
 # testing
 /coverage
 

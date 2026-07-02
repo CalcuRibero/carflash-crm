@@ -14,6 +14,7 @@ import {
   Mail,
   MessageSquare,
   ReceiptText,
+  Repeat,
   ShoppingBag,
   SquareArrowUpRight,
   Users,
@@ -94,6 +95,11 @@ export const sidebarItems: NavGroup[] = [
         title: "Chat",
         url: "/dashboard/chat",
         icon: MessageSquare,
+      },
+      {
+        title: "Tickets Recurrentes",
+        url: "/dashboard/recurrent-tickets",
+        icon: Repeat,
       },
       {
         title: "Calendar",

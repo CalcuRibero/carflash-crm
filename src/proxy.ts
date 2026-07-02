@@ -8,8 +8,6 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(COOKIE_NAME)?.value;
 
-  console.log("token:", token);
-
   // Check if the path is public
   const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
 
