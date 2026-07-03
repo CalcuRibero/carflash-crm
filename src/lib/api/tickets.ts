@@ -1,11 +1,10 @@
 import { apiRequest } from "./http-client";
 import type { CreateTicketRequest, Ticket, UpdateTicketRequest } from "./types";
 
-export async function getTickets(options: { signal?: AbortSignal } = {}) {
-  const token = await cookieStore.get('accessToken')
+export async function getTickets(options: { signal?: AbortSignal, token?: string }): Promise<Ticket[]> {
   return apiRequest<Ticket[]>("/tickets", {
     signal: options.signal,
-    token: `${token?.value}`
+    token: options.token,
   });
 }
 
@@ -14,11 +13,9 @@ export function getTicket(id: string | number) {
 }
 
 export async function createTicket(payload: CreateTicketRequest) {
-  const token = await cookieStore.get('accessToken')
   return apiRequest<Ticket>("/tickets", {
     body: payload,
     method: "POST",
-    token: `${token?.value}`
   });
 }
 

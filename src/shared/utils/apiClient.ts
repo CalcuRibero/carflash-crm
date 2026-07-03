@@ -13,7 +13,7 @@ function resolveUrl(path: string) {
 
 function getStoredToken() {
   if (typeof window === "undefined") return null;
-  const name = "auth_token=";
+  const name = "accessToken=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const cookieArray = decodedCookie.split(";");
   for (let i = 0; i < cookieArray.length; i++) {

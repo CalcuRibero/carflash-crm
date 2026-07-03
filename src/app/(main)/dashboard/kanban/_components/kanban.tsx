@@ -87,8 +87,9 @@ export function Kanban() {
     tickets.forEach(ticket => {
       templatedBoard[ticket.status]= [...templatedBoard[ticket.status], ticket];
     })
+
     setBoard(templatedBoard)
-  }, [createTicketModal.createdTicket])
+  }, [getTickets.tickets, createTicketModal.createdTicket])
 
   function handleDragStart(event: DragStartEvent) {
     if (event.active.data.current?.type === "column") return;

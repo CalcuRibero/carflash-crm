@@ -13,7 +13,16 @@ function resolveUrl(path: string) {
 
 function getStoredToken() {
   if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(API_TOKEN_STORAGE_KEY);
+  const name = "accessToken=";
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookieArray = decodedCookie.split(";");
+  for (let i = 0; i < cookieArray.length; i++) {
+    let cookie = cookieArray[i].trim();
+    if (cookie.indexOf(name) === 0) {
+      return cookie.substring(name.length, cookie.length);
+    }
+  }
+  return null;
 }
 
 function isFormData(body: unknown): body is FormData {
