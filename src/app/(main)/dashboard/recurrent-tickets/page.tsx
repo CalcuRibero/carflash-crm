@@ -50,6 +50,7 @@ export default function RecurrentTicketsPage() {
       status: data.status,
       priority: data.priority,
       category: data.category,
+      assignedTo: data.assignedTo ?? null,
       dueDate: data.dueDate,
       interval: data.interval,
       first_run_at: data.first_run_at,

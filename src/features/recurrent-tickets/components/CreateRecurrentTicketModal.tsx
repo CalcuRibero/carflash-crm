@@ -20,7 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { RecurrenceInterval, TicketStatus, TicketPriority, TicketCategory, TicketCategoryLabel } from "../types";
+import { useUsers } from "@/features/users/hooks/useUsers";
+import { RecurrenceInterval, TicketPriority, TicketStatus, type TicketCategory, TicketCategoryLabel } from "../types";
 
 interface CreateRecurrentTicketModalProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export interface CreateRecurrentTicketData {
   status?: TicketStatus;
   priority?: TicketPriority;
   category?: TicketCategory;
+  assignedTo?: string | null;
   dueDate?: Date;
   interval: RecurrenceInterval;
   first_run_at: Date;
@@ -44,12 +46,15 @@ export function CreateRecurrentTicketModal({
   onClose,
   onSubmit,
 }: CreateRecurrentTicketModalProps) {
+  const { users } = useUsers();
+
   const [formData, setFormData] = useState<CreateRecurrentTicketData>({
     title: "",
     description: "",
     status: undefined,
     priority: undefined,
     category: undefined,
+    assignedTo: undefined,
     dueDate: undefined,
     interval: RecurrenceInterval.MONTHLY,
     first_run_at: new Date(),
@@ -68,6 +73,7 @@ export function CreateRecurrentTicketModal({
       status: undefined,
       priority: undefined,
       category: undefined,
+      assignedTo: undefined,
       dueDate: undefined,
       interval: RecurrenceInterval.MONTHLY,
       first_run_at: new Date(),
@@ -106,85 +112,108 @@ export function CreateRecurrentTicketModal({
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="status">Estado</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) =>
-                setFormData({ ...formData, status: value as TicketStatus })
-              }
-            >
-              <SelectTrigger id="status">
-                <SelectValue placeholder="Seleccionar estado" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={TicketStatus.OPEN}>Abierto</SelectItem>
-                <SelectItem value={TicketStatus.IN_PROGRESS}>En Progreso</SelectItem>
-                <SelectItem value={TicketStatus.COMPLETED}>Completado</SelectItem>
-                <SelectItem value={TicketStatus.CANCELLED}>Cancelado</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <div className="grid grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="status">Estado</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, status: value as TicketStatus })
+                }
+              >
+                <SelectTrigger id="status">
+                  <SelectValue placeholder="Seleccionar estado" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={TicketStatus.OPEN}>Abierto</SelectItem>
+                  <SelectItem value={TicketStatus.IN_PROGRESS}>En Progreso</SelectItem>
+                  <SelectItem value={TicketStatus.COMPLETED}>Completado</SelectItem>
+                  <SelectItem value={TicketStatus.CANCELLED}>Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="priority">Prioridad</Label>
-            <Select
-              value={formData.priority}
-              onValueChange={(value) =>
-                setFormData({ ...formData, priority: value as TicketPriority })
-              }
-            >
-              <SelectTrigger id="priority">
-                <SelectValue placeholder="Seleccionar prioridad" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={TicketPriority.LOW}>Baja</SelectItem>
-                <SelectItem value={TicketPriority.MEDIUM}>Media</SelectItem>
-                <SelectItem value={TicketPriority.HIGH}>Alta</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="priority">Prioridad</Label>
+              <Select
+                value={formData.priority}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, priority: value as TicketPriority })
+                }
+              >
+                <SelectTrigger id="priority">
+                  <SelectValue placeholder="Seleccionar prioridad" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={TicketPriority.LOW}>Baja</SelectItem>
+                  <SelectItem value={TicketPriority.MEDIUM}>Media</SelectItem>
+                  <SelectItem value={TicketPriority.HIGH}>Alta</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="category">Categoría</Label>
-            <Select
-              value={formData.category}
-              onValueChange={(value) =>
-                setFormData({ ...formData, category: value as TicketCategory })
-              }
-            >
-              <SelectTrigger id="category">
-                <SelectValue placeholder="Seleccionar categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(TicketCategoryLabel).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Categoría</Label>
+              <Select
+                value={formData.category}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, category: value as TicketCategory })
+                }
+              >
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Seleccionar categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(TicketCategoryLabel).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="interval">Intervalo</Label>
-            <Select
-              value={formData.interval}
-              onValueChange={(value) =>
-                setFormData({ ...formData, interval: value as RecurrenceInterval })
-              }
-              required
-            >
-              <SelectTrigger id="interval">
-                <SelectValue placeholder="Seleccionar intervalo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={RecurrenceInterval.DAILY}>Diario</SelectItem>
-                <SelectItem value={RecurrenceInterval.WEEKLY}>Semanal</SelectItem>
-                <SelectItem value={RecurrenceInterval.MONTHLY}>Mensual</SelectItem>
-                <SelectItem value={RecurrenceInterval.YEARLY}>Anual</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <Label htmlFor="assignedTo">Asignado a</Label>
+              <Select
+                value={formData.assignedTo ?? ""}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, assignedTo: value || undefined })
+                }
+              >
+                <SelectTrigger id="assignedTo">
+                  <SelectValue placeholder="Seleccionar agente" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id.toString()}>
+                      {user.fullName || user.username}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interval">Intervalo</Label>
+              <Select
+                value={formData.interval}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, interval: value as RecurrenceInterval })
+                }
+                required
+              >
+                <SelectTrigger id="interval">
+                  <SelectValue placeholder="Seleccionar intervalo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={RecurrenceInterval.DAILY}>Diario</SelectItem>
+                  <SelectItem value={RecurrenceInterval.WEEKLY}>Semanal</SelectItem>
+                  <SelectItem value={RecurrenceInterval.MONTHLY}>Mensual</SelectItem>
+                  <SelectItem value={RecurrenceInterval.YEARLY}>Anual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="space-y-2">
