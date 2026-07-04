@@ -18,6 +18,7 @@ import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/typ
 
 import type { SelectOption, TicketsModalFormValues, TicketsModalProps } from "../types";
 import { useUsers } from "@/features/users/hooks/useUsers";
+import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
 
 const STATUS_OPTIONS: SelectOption<TicketsModalFormValues["status"]>[] = [
   { label: "Open", value: "open" },
@@ -31,13 +32,6 @@ const PRIORITY_OPTIONS: SelectOption<TicketsModalFormValues["priority"]>[] = [
   { label: "Medium", value: "medium" },
   { label: "High", value: "high" },
   { label: "Critical", value: "critical" },
-];
-
-const CATEGORY_OPTIONS: SelectOption<TicketsModalFormValues["category"]>[] = [
-  { label: "Bug", value: "bug" },
-  { label: "Feature", value: "feature" },
-  { label: "Support", value: "support" },
-  { label: "Incident", value: "incident" },
 ];
 
 export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
@@ -186,9 +180,9 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORY_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
+                {Object.entries(TicketCategoryLabel).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>
+                    {label}
                   </SelectItem>
                 ))}
               </SelectContent>
