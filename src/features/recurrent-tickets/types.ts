@@ -45,7 +45,7 @@ export interface RecurrentTicket {
   status?: TicketStatus;
   priority?: TicketPriority;
   category?: TicketCategory;
-  assignedToId?: string | null;
+  assignedTo?: string | null;
   dueDate?: Date;
   interval: RecurrenceInterval;
   first_run_at: Date;

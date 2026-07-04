@@ -49,11 +49,10 @@ function getIntervalLabel(interval: RecurrenceInterval): string {
 
 function formatDate(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return dateObj.toLocaleDateString("es-ES", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  const year = dateObj.getFullYear();
+  const month = dateObj.toLocaleString('en-US', { month: 'short' });
+  const day = dateObj.getDate();
+  return `${day} ${month} ${year}`;
 }
 
 function getStatusLabel(status?: TicketStatus): string {

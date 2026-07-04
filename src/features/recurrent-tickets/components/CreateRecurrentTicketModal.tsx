@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -57,8 +57,15 @@ export function CreateRecurrentTicketModal({
     assignedTo: undefined,
     dueDate: undefined,
     interval: RecurrenceInterval.MONTHLY,
-    first_run_at: new Date(),
+    first_run_at: undefined as unknown as Date,
   });
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      first_run_at: new Date(),
+    }));
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,3 +1,5 @@
+"use client";
+
 import { API_BASE_PATH } from "@/lib/api/config";
 import { ApiError } from "@/lib/api/errors";
 
@@ -12,12 +14,18 @@ function resolveUrl(path: string) {
 }
 
 function getStoredToken() {
-  if (typeof window === "undefined") return null;
+  if (typeof window !== "undefined") {
+    const localToken = window.localStorage.getItem("carflash_api_access_token");
+    if (localToken) {
+      return localToken;
+    }
+  }
+
   const name = "accessToken=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const cookieArray = decodedCookie.split(";");
   for (let i = 0; i < cookieArray.length; i++) {
-    let cookie = cookieArray[i].trim();
+    const cookie = cookieArray[i].trim();
     if (cookie.indexOf(name) === 0) {
       return cookie.substring(name.length, cookie.length);
     }
@@ -81,6 +89,18 @@ export async function apiRequest<TResponse>(path: string, options: RequestOption
   return payload as TResponse;
 }
 
+export function saveApiToken(token: string) {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem("carflash_api_access_token", token);
+  }
+}
+
 export function getApiToken() {
   return getStoredToken();
+}
+
+export function clearApiToken() {
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem("carflash_api_access_token");
+  }
 }

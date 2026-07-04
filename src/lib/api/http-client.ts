@@ -1,3 +1,5 @@
+"use client";
+
 import { API_BASE_PATH, API_TOKEN_STORAGE_KEY } from "./config";
 import { ApiError } from "./errors";
 
@@ -12,12 +14,18 @@ function resolveUrl(path: string) {
 }
 
 function getStoredToken() {
-  if (typeof window === "undefined") return null;
+  if (typeof window !== "undefined") {
+    const localToken = window.localStorage.getItem(API_TOKEN_STORAGE_KEY);
+    if (localToken) {
+      return localToken;
+    }
+  }
+
   const name = "accessToken=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const cookieArray = decodedCookie.split(";");
   for (let i = 0; i < cookieArray.length; i++) {
-    let cookie = cookieArray[i].trim();
+    const cookie = cookieArray[i].trim();
     if (cookie.indexOf(name) === 0) {
       return cookie.substring(name.length, cookie.length);
     }
@@ -82,7 +90,6 @@ export async function apiRequest<TResponse>(path: string, options: RequestOption
 }
 
 export function saveApiToken(token: string) {
-  if (typeof window === "undefined") return;
   window.localStorage.setItem(API_TOKEN_STORAGE_KEY, token);
 }
 
@@ -91,6 +98,5 @@ export function getApiToken() {
 }
 
 export function clearApiToken() {
-  if (typeof window === "undefined") return;
   window.localStorage.removeItem(API_TOKEN_STORAGE_KEY);
 }

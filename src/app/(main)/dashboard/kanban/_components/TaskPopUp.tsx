@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { withPopup } from "@/components/popup/popup";
-import { users } from "@/data/users";
 import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
 import { useCreateTicket } from "@/UseCases/TicketsUseCases";
+import { useUsers } from "@/features/users/hooks/useUsers";
 
 const ticketStatuses: TicketStatus[] = ["open", "in_progress", "resolved", "closed"];
 const ticketPriorities: TicketPriority[] = ["low", "medium", "high", "critical"];
@@ -63,14 +63,15 @@ function formatOptionLabel(value: string) {
 
 function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
   function updateForm<Key extends keyof TaskPopUpFormValues>(key: Key, value: TaskPopUpFormValues[Key]) {
-
     onFormChange({
       ...formValues,
       [key]: value,
     });
   }
 
+  const { users } = useUsers();
 
+  console.log("users", users);
 
   return (
     <form
@@ -165,8 +166,8 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
             </SelectTrigger>
             <SelectContent>
               {users.map((user) => (
-                <SelectItem key={user.id} value={user.id}>
-                  {user.name}
+                <SelectItem key={user.id} value={user.id.toString()}>
+                  {user.fullName || user.username}
                 </SelectItem>
               ))}
             </SelectContent>

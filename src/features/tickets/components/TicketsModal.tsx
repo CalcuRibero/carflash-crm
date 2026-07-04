@@ -12,12 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { users } from "@/data/users";
 import { Modal } from "@/shared/components/Modal";
 
 import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
 
 import type { SelectOption, TicketsModalFormValues, TicketsModalProps } from "../types";
+import { useUsers } from "@/features/users/hooks/useUsers";
 
 const STATUS_OPTIONS: SelectOption<TicketsModalFormValues["status"]>[] = [
   { label: "Open", value: "open" },
@@ -52,6 +52,8 @@ export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
 
 export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClose, onSubmit }: TicketsModalProps) {
   const [formValues, setFormValues] = React.useState<TicketsModalFormValues>(INITIAL_TICKETS_MODAL_FORM);
+
+  const {users} = useUsers();
 
   const canSubmit = formValues.title.trim().length > 0 && formValues.description.trim().length > 0;
 
@@ -201,8 +203,8 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
               </SelectTrigger>
               <SelectContent>
                 {users.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.name}
+                  <SelectItem key={user.id} value={user.id.toString()}>
+                    {user.fullName ||user.username}
                   </SelectItem>
                 ))}
               </SelectContent>

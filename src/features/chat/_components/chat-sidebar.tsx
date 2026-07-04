@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getInitials } from "@/lib/utils";
 
-import { channelItems, currentUser, navItems, viewItems } from "./data";
+// import { channelItems, currentUser, navItems, viewItems } from "./data";
 
 const channelBrandIcons = {
   whatsapp: siWhatsapp,
@@ -57,7 +57,7 @@ export function ChatSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="gap-1">
-            {navItems.map((item) => (
+            {/* {navItems.map((item) => (
               <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton className="[&_svg]:size-3.5" size="sm" isActive={item.isActive} tooltip={item.title}>
                   <item.icon />
@@ -65,14 +65,14 @@ export function ChatSidebar() {
                 </SidebarMenuButton>
                 {item.label && <SidebarMenuBadge className="font-medium">{item.label}</SidebarMenuBadge>}
               </SidebarMenuItem>
-            ))}
+            ))} */}
           </SidebarMenu>
         </SidebarGroup>
 
         <SidebarGroup>
           <SidebarGroupLabel className="font-normal">Channels</SidebarGroupLabel>
           <SidebarMenu className="gap-1">
-            {channelItems.map((item) => (
+            {/* {channelItems.map((item) => (
               <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton className="[&_svg]:size-3.5" size="sm" isActive={item.isActive} tooltip={item.title}>
                   {item.id in channelBrandIcons ? (
@@ -84,14 +84,14 @@ export function ChatSidebar() {
                 </SidebarMenuButton>
                 {item.label && <SidebarMenuBadge className="font-medium">{item.label}</SidebarMenuBadge>}
               </SidebarMenuItem>
-            ))}
+            ))} */}
           </SidebarMenu>
         </SidebarGroup>
 
         <SidebarGroup>
           <SidebarGroupLabel className="font-normal">Views</SidebarGroupLabel>
           <SidebarMenu className="gap-1">
-            {viewItems.map((item) => (
+            {/* {viewItems.map((item) => (
               <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton className="[&_svg]:size-3.5" size="sm" isActive={item.isActive} tooltip={item.title}>
                   <item.icon />
@@ -99,7 +99,7 @@ export function ChatSidebar() {
                 </SidebarMenuButton>
                 {item.label && <SidebarMenuBadge className="font-medium">{item.label}</SidebarMenuBadge>}
               </SidebarMenuItem>
-            ))}
+            ))} */}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
@@ -115,11 +115,11 @@ export function ChatSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar>
-                    <AvatarFallback className="text-xs">{getInitials(currentUser.name)}</AvatarFallback>
+                    <AvatarFallback className="text-xs">{getInitials("")}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{currentUser.name}</span>
-                    <span className="truncate text-muted-foreground text-xs">{currentUser.email}</span>
+                    <span className="truncate font-medium">{""}</span>
+                    <span className="truncate text-muted-foreground text-xs">{""}</span>
                   </div>
                   <EllipsisVertical className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -128,11 +128,11 @@ export function ChatSidebar() {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar>
-                      <AvatarFallback className="text-xs">{getInitials(currentUser.name)}</AvatarFallback>
+                      <AvatarFallback className="text-xs">{getInitials("")}</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">{currentUser.name}</span>
-                      <span className="truncate text-muted-foreground text-xs">{currentUser.email}</span>
+                      <span className="truncate font-medium">{""}</span>
+                      <span className="truncate text-muted-foreground text-xs">{""}</span>
                     </div>
                   </div>
                 </DropdownMenuLabel>

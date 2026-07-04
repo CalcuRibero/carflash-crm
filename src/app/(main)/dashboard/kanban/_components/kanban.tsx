@@ -71,24 +71,30 @@ export function Kanban() {
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
-
+  
   useEffect(() => {
     const createdTicket = createTicketModal.createdTicket;
     if (!createdTicket) return;
     setBoard((currentBoard) => ({
-      ...currentBoard,
-      [createdTicket.status]: [createdTicket, ...currentBoard[createdTicket.status]],
-    }));
+        ...currentBoard,
+        [createdTicket.status]: [createdTicket, ...currentBoard[createdTicket.status]],
+      })
+    );
   }, [createTicketModal.createdTicket]);
 
   useEffect(() => {
     const tickets = getTickets.tickets
-    const templatedBoard: BoardState = INITIAL_BOARD;
-    tickets.forEach(ticket => {
-      templatedBoard[ticket.status]= [...templatedBoard[ticket.status], ticket];
-    })
 
-    setBoard(templatedBoard)
+    if (!tickets) return;
+
+    const templatedBoard: BoardState = {
+      open: tickets.filter((ticket) => ticket.status === "open"),
+      in_progress: tickets.filter((ticket) => ticket.status === "in_progress"),
+      resolved: tickets.filter((ticket) => ticket.status === "resolved"),
+      closed: tickets.filter((ticket) => ticket.status === "closed"),
+    }
+
+    setBoard(templatedBoard as any as BoardState);
   }, [getTickets.tickets, createTicketModal.createdTicket])
 
   function handleDragStart(event: DragStartEvent) {

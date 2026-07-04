@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 
 import {
   closestCorners,
@@ -28,14 +28,11 @@ export interface TicketColumn {
   tickets: TicketCardItem[];
 }
 
-interface TicketBoardProps {
-  columns: TicketColumn[];
-}
 
-export function TicketBoard({ columns: initialColumns }: TicketBoardProps) {
-  const [columns, setColumns] = React.useState(initialColumns);
-  const [activeTicket, setActiveTicket] = React.useState<TicketCardItem | null>(null);
-  const [activeColumnId, setActiveColumnId] = React.useState<string | null>(null);
+export function TicketBoard() {
+  const [columns, setColumns] = useState([] as TicketColumn[]);
+  const [activeTicket, setActiveTicket] = useState<TicketCardItem | null>(null);
+  const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 

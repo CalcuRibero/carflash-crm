@@ -9,7 +9,7 @@ import { SearchBar } from "@/features/recurrent-tickets/components/SearchBar";
 import { useRecurrentTickets } from "@/features/recurrent-tickets/hooks/useRecurrentTickets";
 import { useCreateRecurrentTickets } from "@/features/recurrent-tickets/hooks/useCreateRecurrentTickets";
 import type { RecurrentTicket } from "@/features/recurrent-tickets/types";
-import { RecurrenceInterval, TicketPriority } from "@/features/recurrent-tickets/types";
+import { RecurrenceInterval, TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
 import { RecurrentTicketsService } from "@/features/recurrent-tickets/services/recurrentTicketsService";
 
 export default function RecurrentTicketsPage() {
@@ -92,7 +92,7 @@ export default function RecurrentTicketsPage() {
         totalActive={tickets.length.toString()}
         next24h="0"
         highPriority={tickets.filter((t) => t.priority === TicketPriority.HIGH).length.toString()}
-        complianceRate="95%"
+        complianceRate={tickets.length > 0 ? ((tickets.filter((t) => t.status === TicketStatus.COMPLETED).length / tickets.length) * 100).toFixed(2) : "0"}
       />
 
       <SearchBar
