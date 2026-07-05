@@ -11,8 +11,8 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn, getInitials } from "@/lib/utils";
 
-import type { Conversation } from "./data";
-import { useChat } from "./use-chat";
+import type { Conversation } from "../types";
+import { useChat } from "../hooks/use-chat";
 
 interface ChatConversationListProps {
   conversations: Conversation[];
