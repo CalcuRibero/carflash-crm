@@ -33,8 +33,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn, getInitials } from "@/lib/utils";
+import { Contact, Message } from "../types";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
-import { type Contact, currentUser, type Message } from "./data";
+
 
 interface ChatThreadProps {
   contact: Contact;
@@ -46,6 +48,7 @@ interface ChatThreadProps {
 }
 
 export function ChatThread({ contact, messages, onOpenContact, onBack, showBackButton, className }: ChatThreadProps) {
+  const user = useAuth().profile;
   return (
     <div className={cn("flex h-full flex-col py-3", className)}>
       <div className="flex flex-col gap-3">
@@ -143,7 +146,7 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
 
           {messages.map((message) => {
             const isOutbound = message.side === "out";
-            const senderName = isOutbound ? currentUser.name : contact.name;
+            const senderName = isOutbound ? "Tu" : contact.name;
 
             return (
               <div key={message.id} className={cn("flex items-end gap-2", isOutbound && "flex-row-reverse")}>

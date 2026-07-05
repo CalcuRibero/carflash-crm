@@ -224,7 +224,7 @@ function AccountMenuContent({
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem onClick={handleLogout}>
+        <DropdownMenuItem>
           <LogOut />
           Sign out
         </DropdownMenuItem>

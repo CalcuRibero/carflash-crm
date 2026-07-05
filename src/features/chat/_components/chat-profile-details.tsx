@@ -24,7 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getInitials } from "@/lib/utils";
 
-import type { Contact } from "./data";
+import type { Contact } from "../types";
 
 interface ChatProfileDetailsProps {
   contact: Contact;

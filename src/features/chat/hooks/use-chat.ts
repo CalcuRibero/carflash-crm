@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { type Conversation, conversations } from "./data";
+import { type Conversation, conversations } from "../types";
 
 type Config = {
   selected: Conversation["id"] | null;
