@@ -17,7 +17,7 @@ interface ChatProps {
   conversations: Conversation[];
 }
 
-export function Chat({ conversations }: ChatProps) {
+export function Chat({ conversations = [] }: ChatProps) {
   const [chat] = useChat();
   const [showContact, setShowContact] = useState(false);
   const [showThread, setShowThread] = useState(false);
@@ -25,6 +25,14 @@ export function Chat({ conversations }: ChatProps) {
   const isMobile = useIsMobile();
 
   const activeConversation = conversations.find((c) => c.id === chat.selected) ?? conversations[0];
+
+  if (!conversations.length) {
+    return (
+      <div className="flex h-[calc(100svh-var(--header-height))] min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden bg-background/50">
+        <p className="text-sm text-muted-foreground">No conversations available.</p>
+      </div>
+    );
+  }
 
   return (
     <>
