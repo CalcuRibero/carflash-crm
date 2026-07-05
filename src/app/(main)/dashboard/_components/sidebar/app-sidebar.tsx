@@ -36,7 +36,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   );
 
   const rootUser = useAuth().user;
-  console.log("AppSidebar rootUser: ", rootUser);
   // if (!rootUser) {
   //   redirect("/auth/login");
   //   return null;

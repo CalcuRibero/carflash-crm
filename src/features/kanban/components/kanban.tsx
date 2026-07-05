@@ -195,15 +195,12 @@ export function Kanban() {
     const sourceColumnId = findColumnId(board, activeId);
     const resolvedDropColumnId = dropColumnId ?? findColumnId(board, overId);
 
-    if (sourceColumnId && resolvedDropColumnId && sourceColumnId !== resolvedDropColumnId) {
-      void updateTicket.updateTicket(activeId, { status: resolvedDropColumnId }).catch(() => {
-        if (snapshot) {
-          setBoard(snapshot);
-        }
-      });
-      return;
-    }
-
+    console.log("Updating ticket status from", sourceColumnId, "to", resolvedDropColumnId);
+    void updateTicket.updateTicket(activeId, { 
+      ...active,
+      status: resolvedDropColumnId
+     });
+      
     setBoard((currentBoard) => {
       const activeColumnId = findColumnId(currentBoard, activeId);
       const overColumnId = findColumnId(currentBoard, overId);

@@ -54,7 +54,7 @@ export async function getTicketsService(options: { signal?: AbortSignal } = {}):
   }
 }
 
-export async function updateTicketService(id: string | number, payload: UpdateTicketRequest): Promise<Ticket> {
+export async function updateTicketService(id: string | number, payload: CreateTicketRequest): Promise<Ticket> {
   try {
     return await updateTicket(id, payload);
   } catch (error) {
