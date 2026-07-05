@@ -90,7 +90,7 @@ export function CreateRecurrentTicketModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <DialogHeader>
           <DialogTitle>Crear Ticket Recurrente</DialogTitle>
         </DialogHeader>

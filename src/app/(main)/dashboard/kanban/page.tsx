@@ -1,5 +1,5 @@
-import { initialBoard } from "./_components/data";
-import { Kanban } from "./_components/kanban";
+import { initialBoard } from "../../../../features/kanban/components/data";
+import { Kanban } from "../../../../features/kanban/components/kanban";
 
 export default function Page() {
   return (

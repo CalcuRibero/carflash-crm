@@ -5,7 +5,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { cn } from "@/lib/utils";
 
 import { TaskCard } from "./task-card";
-import type { ColumnId } from "./types";
+import type { ColumnId } from "../types";
 import type { Ticket } from "@/lib/api/types";
 
 export function SortableTaskCard({ task, columnId }: { task: Ticket; columnId: ColumnId }) {

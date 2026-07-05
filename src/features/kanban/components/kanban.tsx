@@ -51,7 +51,7 @@ import type { Ticket } from "@/lib/api/types";
 import { columnIds, columns } from "./data";
 import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
-import type { BoardState, ColumnId } from "./types";
+import type { BoardState, ColumnId } from "../types";
 import { findColumnId, findTask, INITIAL_BOARD } from "./utils";
 
 

@@ -1,4 +1,4 @@
-import type { BoardState, Column, TicketOwnerProfile, TicketStatus } from "./types";
+import type { BoardState, Column, TicketOwnerProfile, TicketStatus } from "../types";
 
 export const columns = [
   { id: "open", title: "Open" },

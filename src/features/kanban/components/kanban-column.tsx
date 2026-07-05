@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { SortableTaskCard } from "./sortable-task-card";
-import type { Column } from "./types";
+import type { Column } from "../types";
 import type { Ticket } from "@/lib/api/types";
 
 interface KanbanColumnProps {

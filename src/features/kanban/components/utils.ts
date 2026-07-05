@@ -1,5 +1,5 @@
 import { columnIds } from "./data";
-import type { BoardState, ColumnId } from "./types";
+import type { BoardState, ColumnId } from "../types";
 
 export const INITIAL_BOARD: BoardState = {
   open: [],

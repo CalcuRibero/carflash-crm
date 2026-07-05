@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn, getInitials } from "@/lib/utils";
 
 import { tagTones } from "./data";
-import type { ColumnId } from "./types";
+import type { ColumnId } from "../types";
 import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types";
 
 const taskInsightIcons: Record<TicketInsightLabel, LucideIcon> = {
