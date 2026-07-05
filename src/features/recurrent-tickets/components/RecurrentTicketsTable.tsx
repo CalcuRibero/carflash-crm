@@ -85,7 +85,7 @@ export function RecurrentTicketsTable({
   if (tickets.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center rounded-lg border border-dashed">
-        <p className="text-muted-foreground">No hay tickets recurrentes</p>
+        <p className="text-muted-foreground">No hay Tickets Fijos</p>
       </div>
     );
   }
