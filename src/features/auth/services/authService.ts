@@ -1,6 +1,7 @@
-import { apiRequest, clearApiToken, saveApiToken } from "@/shared/utils/apiClient";
+import { apiRequest, getApiToken } from "@/shared/utils/apiClient";
 import { setAuthToken, clearAuthToken } from "../actions/auth-actions";
 import type { LoginRequest, LoginResponse, AuthProfile } from "../types";
+import { clearApiToken, saveApiToken } from "@/lib/api";
 
 export async function login(payload: LoginRequest) {
   const response = await apiRequest<LoginResponse>("/auth/login", {
@@ -15,7 +16,9 @@ export async function login(payload: LoginRequest) {
 }
 
 export async function getProfile() {
-  return apiRequest<AuthProfile>("/auth/profile");
+  return apiRequest<AuthProfile>("/auth/profile", {
+    token: getApiToken(),
+  });
 }
 
 export async function logout() {

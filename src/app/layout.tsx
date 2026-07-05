@@ -11,6 +11,7 @@ import { ThemeBootScript } from "@/scripts/theme-boot";
 import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
 
 import "./globals.css";
+import { AuthProvider } from "@/stores/auth/auth-provider";
 
 export const metadata: Metadata = {
   title: APP_CONFIG.meta.title,
@@ -37,18 +38,20 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <ThemeBootScript />
       </head>
       <body className={`${fontVars} min-h-screen antialiased`}>
-        <TooltipProvider>
-          <PreferencesStoreProvider
-            themeMode={theme_mode}
-            themePreset={theme_preset}
-            contentLayout={content_layout}
-            navbarStyle={navbar_style}
-            font={font}
-          >
-            {children}
-            <Toaster />
-          </PreferencesStoreProvider>
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <PreferencesStoreProvider
+              themeMode={theme_mode}
+              themePreset={theme_preset}
+              contentLayout={content_layout}
+              navbarStyle={navbar_style}
+              font={font}
+            >
+              {children}
+              <Toaster />
+            </PreferencesStoreProvider>
+          </TooltipProvider>
+        </AuthProvider>
       </body>
     </html>
   );

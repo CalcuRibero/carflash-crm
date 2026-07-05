@@ -47,7 +47,7 @@ export function CreateRecurrentTicketModal({
   onSubmit,
 }: CreateRecurrentTicketModalProps) {
   const { users } = useUsers();
-
+  
   const [formData, setFormData] = useState<CreateRecurrentTicketData>({
     title: "",
     description: "",

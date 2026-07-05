@@ -89,18 +89,6 @@ export async function apiRequest<TResponse>(path: string, options: RequestOption
   return payload as TResponse;
 }
 
-export function saveApiToken(token: string) {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem("carflash_api_access_token", token);
-  }
-}
-
 export function getApiToken() {
   return getStoredToken();
-}
-
-export function clearApiToken() {
-  if (typeof window !== "undefined") {
-    window.localStorage.removeItem("carflash_api_access_token");
-  }
 }
