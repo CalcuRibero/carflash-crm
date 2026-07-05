@@ -1,6 +1,5 @@
-import { Chat } from "./_components/chat";
-import { conversations } from "./_components/data";
+import { Chat } from "../../../features/chat/_components/chat";
 
 export default function Page() {
-  return <Chat conversations={conversations} />;
+  return <Chat conversations={[]} />;
 }
