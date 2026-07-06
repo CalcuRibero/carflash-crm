@@ -92,7 +92,7 @@ export default function RecurrentTicketsPage() {
         totalActive={tickets.length.toString()}
         next24h="0"
         highPriority={tickets.filter((t) => t.priority === TicketPriority.HIGH).length.toString()}
-        complianceRate={tickets.length > 0 ? ((tickets.filter((t) => t.status === TicketStatus.COMPLETED).length / tickets.length) * 100).toFixed(2) : "0"}
+        complianceRate={tickets.length > 0 ? ((tickets.filter((t) => t.status === TicketStatus.RESOLVED).length / tickets.length) * 100).toFixed(2) : "0"}
       />
 
       <SearchBar

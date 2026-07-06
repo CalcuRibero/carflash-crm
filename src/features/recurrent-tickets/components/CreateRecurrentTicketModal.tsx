@@ -77,7 +77,7 @@ export function CreateRecurrentTicketModal({
     setFormData({
       title: "",
       description: "",
-      status: undefined,
+      status: TicketStatus.OPEN,
       priority: undefined,
       category: undefined,
       assignedTo: undefined,
@@ -131,12 +131,6 @@ export function CreateRecurrentTicketModal({
                 <SelectTrigger id="status">
                   <SelectValue placeholder="Seleccionar estado" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={TicketStatus.OPEN}>Abierto</SelectItem>
-                  <SelectItem value={TicketStatus.IN_PROGRESS}>En Progreso</SelectItem>
-                  <SelectItem value={TicketStatus.COMPLETED}>Completado</SelectItem>
-                  <SelectItem value={TicketStatus.CANCELLED}>Cancelado</SelectItem>
-                </SelectContent>
               </Select>
             </div>
 

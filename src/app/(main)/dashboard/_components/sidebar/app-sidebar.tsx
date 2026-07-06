@@ -18,7 +18,6 @@ import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { SidebarSupportCard } from "./sidebar-support-card";
 
 import Image from "next/image";
 import { sidebarItems } from "@/shared/components/navigation/sidebar/sidebar-items";
@@ -58,10 +57,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={sidebarItems} />
+        <NavMain items={sidebarItems} currentRole={rootUser?.role || 'CarSeller'} />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarSupportCard />
         <NavUser user={rootUser} />
       </SidebarFooter>
     </Sidebar>
