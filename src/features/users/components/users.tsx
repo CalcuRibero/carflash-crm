@@ -76,6 +76,8 @@ export function Users({ users }: { users: UserRow[] }) {
     table.setPageIndex(0);
   }
 
+  const handleAddUser = () => {}
+
   return (
     <Card>
       <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
@@ -110,7 +112,7 @@ export function Users({ users }: { users: UserRow[] }) {
           <Button variant="outline" size="sm">
             <Download /> Export
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => {}}>
             <Plus /> Add User
           </Button>
         </CardAction>

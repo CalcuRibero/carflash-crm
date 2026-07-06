@@ -9,3 +9,12 @@ export async function getUsersService(options: { signal?: AbortSignal } = {}): P
     token,
   });
 }
+
+export async function deleteUserService(id: string): Promise<void> {
+  const token = getApiToken();
+
+  await apiRequest<void>(`/users/${id}`, {
+    method: "DELETE",
+    token,
+  });
+}
