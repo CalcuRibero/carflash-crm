@@ -8,16 +8,16 @@ import { RecurrentTicketsTable } from "@/features/recurrent-tickets/components/R
 import { SearchBar } from "@/features/recurrent-tickets/components/SearchBar";
 import { useRecurrentTickets } from "@/features/recurrent-tickets/hooks/useRecurrentTickets";
 import { useCreateRecurrentTickets } from "@/features/recurrent-tickets/hooks/useCreateRecurrentTickets";
+import { useDeleteRecurrentTicket } from "@/features/recurrent-tickets/hooks/useDeleteRecurrentTicket";
 import type { RecurrentTicket } from "@/features/recurrent-tickets/types";
-import { RecurrenceInterval, TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
-import { RecurrentTicketsService } from "@/features/recurrent-tickets/services/recurrentTicketsService";
+import { TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
 
 export default function RecurrentTicketsPage() {
   const { tickets, isLoading, error, refetch } = useRecurrentTickets();
   const { createRecurrentTicket } = useCreateRecurrentTickets();
+  const { deleteRecurrentTicket } = useDeleteRecurrentTicket();
   const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const recurrentTicketsService = new RecurrentTicketsService();
   const filteredTickets = tickets.filter((ticket) =>
     ticket.title.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -28,14 +28,16 @@ export default function RecurrentTicketsPage() {
   };
 
   const handleDelete = async (ticketId: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar este ticket recurrente?")) {
-      try {
-        await recurrentTicketsService.deleteRecurrentTicket(ticketId);
-        // TODO: Refetch tickets after deletion
-        window.location.reload();
-      } catch (err) {
-        console.error("Failed to delete ticket:", err);
-      }
+    const shouldDelete = window.confirm("¿Estás seguro de que deseas eliminar este ticket recurrente?");
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    const deleted = await deleteRecurrentTicket(ticketId);
+
+    if (deleted) {
+      await refetch();
     }
   };
 

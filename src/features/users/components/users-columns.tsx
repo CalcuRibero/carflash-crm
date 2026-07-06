@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials } from "@/lib/utils";
 
+import { useDeleteUser } from "../hooks/useDeleteUser";
 import { statusMeta, type UserRow } from "./data";
 
 function formatDate(value: string) {
@@ -109,6 +110,8 @@ function AvatarCell({ lastActive, name }: { lastActive: number; name: string }) 
   );
 }
 
+
+
 export const usersColumns: ColumnDef<UserRow>[] = [
   {
     id: "select",
@@ -178,30 +181,47 @@ export const usersColumns: ColumnDef<UserRow>[] = [
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              aria-label={`Open actions for ${row.original.name}`}
-              className="size-8 rounded-md text-muted-foreground hover:bg-muted/50"
-              size="icon-sm"
-              variant="ghost"
-            >
-              <MoreHorizontal className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>View profile</DropdownMenuItem>
-            <DropdownMenuItem>Edit user</DropdownMenuItem>
-            <DropdownMenuItem>Manage team</DropdownMenuItem>
-            <DropdownMenuItem>Resend invite</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Deactivate user</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const { deleteUser } = useDeleteUser();
+
+      const handleDelete = async () => {
+        const shouldDelete = window.confirm(`¿Eliminar a ${row.original.fullName ?? row.original.username}?`);
+
+        if (!shouldDelete) {
+          return;
+        }
+
+        const deleted = await deleteUser(row.original.id);
+
+        if (deleted) {
+          window.location.reload();
+        }
+      };
+
+      return (
+        <div className="text-right">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label={`Open actions for ${row.original.fullName ?? row.original.username}`}
+                className="size-8 rounded-md text-muted-foreground hover:bg-muted/50"
+                size="icon-sm"
+                variant="ghost"
+              >
+                <MoreHorizontal className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Edit user</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={() => void handleDelete()}>
+                Borrar usuario
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
     enableHiding: false,
     enableSorting: false,
   },

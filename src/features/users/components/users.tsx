@@ -26,8 +26,15 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { filters, type UserRow } from "./data";
 import { usersColumns } from "./users-columns";
 import { UsersTable } from "./users-table";
+import { CreateUsersModal, type CreateUserData } from "./createUsersModal";
+import { useCreateUser } from "../hooks/useCreateUser";
 
-export function Users({ users }: { users: UserRow[] }) {
+interface UsersProps {
+  users: UserRow[];
+  refreshUsers?: () => Promise<UserRow[] | void>;
+}
+
+export function Users({ users, refreshUsers }: UsersProps) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "joinedDate", desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -39,6 +46,8 @@ export function Users({ users }: { users: UserRow[] }) {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
+  const { createUser } = useCreateUser();
 
   const table = useReactTable({
     data: users,
@@ -76,6 +85,17 @@ export function Users({ users }: { users: UserRow[] }) {
     table.setPageIndex(0);
   }
 
+  const handleAddUser = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateUser = async (userData: CreateUserData) => {
+    const createdUser = await createUser(userData);
+    if (createdUser) {
+      await refreshUsers?.();
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
@@ -110,7 +130,7 @@ export function Users({ users }: { users: UserRow[] }) {
           <Button variant="outline" size="sm">
             <Download /> Export
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={handleAddUser}>
             <Plus /> Add User
           </Button>
         </CardAction>
@@ -201,6 +221,12 @@ export function Users({ users }: { users: UserRow[] }) {
 
         <UsersTable table={table} />
       </CardContent>
+
+      <CreateUsersModal
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
+        onCreateUser={handleCreateUser}
+      />
     </Card>
   );
 }
