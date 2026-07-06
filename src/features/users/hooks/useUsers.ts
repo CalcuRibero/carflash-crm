@@ -2,11 +2,11 @@
 
 import * as React from "react";
 
+import { mapUserToRow, type UserRow } from "../components/data";
 import { getUsersService } from "../services/usersService";
-import type { User } from "@/lib/api/types";
 
 export function useUsers() {
-  const [users, setUsers] = React.useState<User[]>([]);
+  const [users, setUsers] = React.useState<UserRow[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
@@ -16,8 +16,9 @@ export function useUsers() {
 
     try {
       const response = await getUsersService({ signal });
-      setUsers(response);
-      return response;
+      const mappedUsers = response.map(mapUserToRow);
+      setUsers(mappedUsers);
+      return mappedUsers;
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
         return [];
