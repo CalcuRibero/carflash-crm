@@ -2,10 +2,9 @@
 "use no memo";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { parse } from "date-fns";
 import { Check, Clock, MoreHorizontal, X } from "lucide-react";
 
-import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar";
+import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,11 +19,24 @@ import { cn, getInitials } from "@/lib/utils";
 
 import { statusMeta, type UserRow } from "./data";
 
-function RoleCell({ role, team }: { role: string; team: string }) {
+function formatDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString("en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
+function RoleCell({ role, detail }: { role: string; detail: string }) {
   return (
     <div className="grid gap-0.5">
       <span className="whitespace-nowrap">{role}</span>
-      <span className="text-muted-foreground text-xs">{team}</span>
+      <span className="text-muted-foreground text-xs">{detail}</span>
     </div>
   );
 }
@@ -97,24 +109,6 @@ function AvatarCell({ lastActive, name }: { lastActive: number; name: string }) 
   );
 }
 
-function WorkspaceCell({ workspaces }: { workspaces: string[] }) {
-  const [firstWorkspace, ...remainingWorkspaces] = workspaces;
-  const remainingCount = remainingWorkspaces.length;
-
-  return (
-    <AvatarGroup className="*:data-[slot=avatar]:ring-0">
-      {firstWorkspace ? (
-        <Avatar className="after:rounded-sm">
-          <AvatarFallback className="rounded-sm ring-0">{getInitials(firstWorkspace)}</AvatarFallback>
-        </Avatar>
-      ) : null}
-      {remainingCount > 0 ? (
-        <AvatarGroupCount className="rounded-sm border ring-card">+{remainingCount}</AvatarGroupCount>
-      ) : null}
-    </AvatarGroup>
-  );
-}
-
 export const usersColumns: ColumnDef<UserRow>[] = [
   {
     id: "select",
@@ -141,52 +135,45 @@ export const usersColumns: ColumnDef<UserRow>[] = [
   },
   {
     id: "search",
-    accessorFn: (row) => `${row.name} ${row.email} ${row.role}`,
+    accessorFn: (row) => `${row.fullName ?? ""} ${row.username} ${row.email ?? ""} ${row.role}`,
     filterFn: "includesString",
     enableHiding: true,
   },
   {
-    accessorKey: "name",
+    accessorKey: "fullName",
     header: "User",
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
-        <AvatarCell name={row.original.name} lastActive={row.original.lastActive} />
+        <AvatarCell name={row.original.fullName ?? row.original.username} lastActive={row.original.lastActive ?? 0} />
         <div className="min-w-0">
-          <div className="truncate font-medium text-foreground text-sm">{row.original.name}</div>
-          <div className="truncate text-muted-foreground text-sm">{row.original.email}</div>
+          <div className="truncate font-medium text-foreground text-sm">{row.original.fullName ?? row.original.username}</div>
+          <div className="truncate text-muted-foreground text-sm">{row.original.username}</div>
+          {row.original.email ? <div className="truncate text-muted-foreground text-xs">{row.original.email}</div> : null}
         </div>
       </div>
     ),
   },
   {
     accessorKey: "role",
-    header: "Role / Team",
+    header: "Role",
     filterFn: "equalsString",
-    cell: ({ row }) => <RoleCell role={row.original.role} team={row.original.team} />,
-  },
-  {
-    accessorKey: "team",
-    header: "Team",
-    filterFn: "equalsString",
-    cell: ({ row }) => <div className="text-sm">{row.original.team}</div>,
-  },
-  {
-    accessorKey: "workspace",
-    header: "Workspace",
-    filterFn: "arrIncludes",
-    cell: ({ row }) => <WorkspaceCell workspaces={row.original.workspace} />,
+    cell: ({ row }) => <RoleCell role={row.original.role} detail={row.original.username} />,
   },
   {
     accessorKey: "status",
     header: "Status",
     filterFn: "equalsString",
-    cell: ({ row }) => <StatusBadge status={row.original.status} />,
+    cell: ({ row }) => <StatusBadge status={row.original.isActive ? "Active" : "Deactivated"} />,
   },
   {
-    id: "joinedDate",
-    accessorFn: (row) => parse(row.joinedDate, "dd MMM yyyy, h:mm a", new Date()).getTime(),
-    header: "Joined date",
-    cell: ({ row }) => <div className="text-foreground text-sm">{row.original.joinedDate}</div>,
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => <div className="text-foreground text-sm">{formatDate(row.original.createdAt)}</div>,
+  },
+  {
+    accessorKey: "updatedAt",
+    header: "Updated At",
+    cell: ({ row }) => <div className="text-foreground text-sm">{formatDate(row.original.updatedAt)}</div>,
   },
   {
     id: "actions",
