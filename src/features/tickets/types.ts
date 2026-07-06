@@ -47,6 +47,6 @@ export interface TicketsController {
 export interface UpdateTicketController {
   errorMessage: string | null;
   isUpdating: boolean;
-  updateTicket: (id: string | number, payload: UpdateTicketRequest) => Promise<Ticket>;
+  updateTicket: (id: string | number, payload: CreateTicketRequest) => Promise<Ticket>;
   updatedTicket: Ticket | null;
 }

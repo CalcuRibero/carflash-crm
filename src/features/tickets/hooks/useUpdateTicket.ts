@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import type { Ticket, UpdateTicketRequest } from "@/lib/api/types";
+import type { CreateTicketRequest, Ticket, UpdateTicketRequest } from "@/lib/api/types";
 
 import { updateTicketService } from "../services/ticketsService";
 import type { UpdateTicketController } from "../types";
@@ -12,7 +12,7 @@ export function useUpdateTicket(): UpdateTicketController {
   const [isUpdating, setIsUpdating] = React.useState(false);
   const [updatedTicket, setUpdatedTicket] = React.useState<Ticket | null>(null);
 
-  const updateTicket = React.useCallback(async (id: string | number, payload: UpdateTicketRequest) => {
+  const updateTicket = React.useCallback(async (id: string | number, payload: CreateTicketRequest) => {
     setIsUpdating(true);
     setErrorMessage(null);
 

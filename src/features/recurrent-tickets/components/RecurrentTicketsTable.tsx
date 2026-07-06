@@ -62,10 +62,10 @@ function getStatusLabel(status?: TicketStatus): string {
       return "Abierto";
     case TicketStatus.IN_PROGRESS:
       return "En Progreso";
-    case TicketStatus.COMPLETED:
-      return "Completado";
-    case TicketStatus.CANCELLED:
-      return "Cancelado";
+    case TicketStatus.RESOLVED:
+      return "Resuelto";
+    case TicketStatus.CLOSED:
+      return "Cerrado";
     default:
       return status;
   }

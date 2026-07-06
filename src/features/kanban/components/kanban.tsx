@@ -196,10 +196,11 @@ export function Kanban() {
     const resolvedDropColumnId = dropColumnId ?? findColumnId(board, overId);
 
     console.log("Updating ticket status from", sourceColumnId, "to", resolvedDropColumnId);
-    void updateTicket.updateTicket(activeId, { 
+    void updateTicket.updateTicket(activeId, {
       ...active,
-      status: resolvedDropColumnId
-     });
+      status: resolvedDropColumnId,
+      description: active.data.current?.description ?? "",
+    });
       
     setBoard((currentBoard) => {
       const activeColumnId = findColumnId(currentBoard, activeId);
