@@ -1,4 +1,4 @@
-export { API_BASE_PATH, API_TOKEN_STORAGE_KEY } from "./config";
+export { NEXT_PUBLIC_API_BASE_PATH, API_TOKEN_STORAGE_KEY } from "./config";
 export { ApiError } from "./errors";
 export { apiRequest, clearApiToken, getApiToken, saveApiToken } from "./http-client";
 export { getProfile, login } from "./auth";
