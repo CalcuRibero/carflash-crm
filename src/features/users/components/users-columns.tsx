@@ -141,7 +141,7 @@ export const usersColumns: ColumnDef<UserRow>[] = [
   },
   {
     id: "search",
-    accessorFn: (row) => `${row.name} ${row.email}`,
+    accessorFn: (row) => `${row.name} ${row.email} ${row.role}`,
     filterFn: "includesString",
     enableHiding: true,
   },
