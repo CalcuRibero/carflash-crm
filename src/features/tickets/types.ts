@@ -1,4 +1,4 @@
-import type { CreateTicketRequest, Ticket, TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
+import type { CreateTicketRequest, Ticket, TicketCategory, TicketPriority, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
 
 export interface TicketsModalFormValues {
   assignedTo: string;
@@ -42,4 +42,11 @@ export interface TicketsController {
   isLoading: boolean;
   refetch: () => Promise<Ticket[]>;
   tickets: Ticket[];
+}
+
+export interface UpdateTicketController {
+  errorMessage: string | null;
+  isUpdating: boolean;
+  updateTicket: (id: string | number, payload: UpdateTicketRequest) => Promise<Ticket>;
+  updatedTicket: Ticket | null;
 }

@@ -6,10 +6,10 @@ export enum RecurrenceInterval {
 }
 
 export enum TicketStatus {
-  OPEN = "open",
-  IN_PROGRESS = "in_progress",
-  COMPLETED = "completed",
-  CANCELLED = "cancelled",
+  OPEN = 'open',
+  IN_PROGRESS = 'in_progress',
+  RESOLVED = 'resolved',
+  CLOSED = 'closed',
 }
 
 export enum TicketPriority {

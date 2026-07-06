@@ -1,3 +1,4 @@
+import { UserRole } from "@/lib/api";
 import {
   Banknote,
   Calendar,
@@ -37,6 +38,7 @@ export interface NavMainItem {
   comingSoon?: boolean;
   newTab?: boolean;
   isNew?: boolean;
+  roles: UserRole[];
 }
 
 export interface NavGroup {
@@ -54,6 +56,7 @@ export const sidebarItems: NavGroup[] = [
         title: "Default",
         url: "/dashboard/default",
         icon: LayoutDashboard,
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
       // {
       //   title: "CRM",
@@ -86,20 +89,22 @@ export const sidebarItems: NavGroup[] = [
     id: 2,
     label: "Pages",
     items: [
-      {
-        title: "Email",
-        url: "/dashboard/mail",
-        icon: Mail,
-      },
+      // {
+      //   title: "Email",
+      //   url: "/dashboard/mail",
+      //   icon: Mail,
+      // },
       {
         title: "Chat",
         url: "/dashboard/chat",
         icon: MessageSquare,
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
       {
         title: "Tickets Fijos",
         url: "/dashboard/recurrent-tickets",
         icon: Repeat,
+        roles: ["SuperAdmin"],
       },
       // {
       //   title: "Calendar",
@@ -111,6 +116,7 @@ export const sidebarItems: NavGroup[] = [
         title: "Tickets Variables",
         url: "/dashboard/kanban",
         icon: Kanban,
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
       // {
       //   title: "Invoice",
@@ -122,6 +128,7 @@ export const sidebarItems: NavGroup[] = [
         title: "Users",
         url: "/dashboard/users",
         icon: Users,
+        roles: ["SuperAdmin"],
       },
       // {
       //   title: "Roles",

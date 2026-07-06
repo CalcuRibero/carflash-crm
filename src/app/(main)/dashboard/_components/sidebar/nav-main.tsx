@@ -26,9 +26,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import type { NavGroup, NavMainItem } from "@/shared/components/navigation/sidebar/sidebar-items";
+import { UserRole } from "@/lib/api/types";
 
 interface NavMainProps {
   readonly items: readonly NavGroup[];
+  readonly currentRole: UserRole;
 }
 
 const IsComingSoon = () => (
@@ -141,7 +143,7 @@ const NavItemCollapsed = ({
   );
 };
 
-export function NavMain({ items }: NavMainProps) {
+export function NavMain({ items, currentRole }: NavMainProps) {
   const path = usePathname();
   const { state, isMobile } = useSidebar();
 
@@ -187,6 +189,9 @@ export function NavMain({ items }: NavMainProps) {
           <SidebarGroupContent className="flex flex-col gap-2">
             <SidebarMenu>
               {group.items.map((item) => {
+                if (item.roles && !item.roles.includes(currentRole)) {
+                  return null; // Skip rendering this item if the current role is not allowed
+                }
                 if (state === "collapsed" && !isMobile) {
                   // If no subItems, just render the button as a link
                   if (!item.subItems) {

@@ -14,12 +14,12 @@ export function SearchBar({ searchValue, onSearchChange, onAddTicket }: SearchBa
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex-1">
         <label htmlFor="search" className="sr-only">
-          Buscar tickets recurrentes
+          Buscar Tickets Fijos
         </label>
         <Input
           id="search"
           type="text"
-          placeholder="BUSCAR TICKETS RECURRENTES"
+          placeholder="BUSCAR Tickets Fijos"
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
           className="max-w-md"

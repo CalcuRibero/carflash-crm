@@ -43,7 +43,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TicketsModal, useCreateTicketModal, useTickets } from "@/features/tickets";
+import { TicketsModal, useCreateTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Ticket } from "@/lib/api/types";
@@ -63,7 +63,9 @@ export function Kanban() {
 
   const getTickets = useTickets()
   const createTicketModal = useCreateTicketModal();
+  const updateTicket = useUpdateTicket();
   const boardBeforeDrag = useRef<BoardState | null>(null);
+  const hoveredColumnIdRef = useRef<ColumnId | null>(null);
   const orderedColumns = columnOrder.flatMap((columnId) => columns.find((column) => column.id === columnId) ?? []);
 
   const sensors = useSensors(
@@ -85,7 +87,10 @@ export function Kanban() {
   useEffect(() => {
     const tickets = getTickets.tickets
 
-    if (!tickets) return;
+    if (!tickets) { 
+      console.log("No tickets found");
+      return
+    };
 
     const templatedBoard: BoardState = {
       open: tickets.filter((ticket) => ticket.status === "open"),
@@ -101,6 +106,7 @@ export function Kanban() {
     if (event.active.data.current?.type === "column") return;
 
     boardBeforeDrag.current = board;
+    hoveredColumnIdRef.current = null;
     const task = findTask(board, String(event.active.id));
     setActiveTask(task ?? null);
     setActiveColumnId(findColumnId(board, String(event.active.id)) ?? null);
@@ -111,6 +117,7 @@ export function Kanban() {
       setBoard(boardBeforeDrag.current);
     }
     boardBeforeDrag.current = null;
+    hoveredColumnIdRef.current = null;
     setActiveTask(null);
     setActiveColumnId(null);
   }
@@ -127,7 +134,10 @@ export function Kanban() {
       const activeColId = findColumnId(currentBoard, activeId);
       const overColId = findColumnId(currentBoard, overId);
 
-      if (overColId) setActiveColumnId(overColId);
+      if (overColId) {
+        setActiveColumnId(overColId);
+        hoveredColumnIdRef.current = overColId;
+      }
 
       if (!activeColId || !overColId || activeColId === overColId) return currentBoard;
 
@@ -152,7 +162,9 @@ export function Kanban() {
     const { active, over } = event;
     const activeType = active.data.current?.type;
     const snapshot = boardBeforeDrag.current;
+    const dropColumnId = hoveredColumnIdRef.current;
     boardBeforeDrag.current = null;
+    hoveredColumnIdRef.current = null;
     setActiveTask(null);
     setActiveColumnId(null);
 
@@ -180,6 +192,15 @@ export function Kanban() {
     const activeId = String(active.id);
     const overId = String(over.id);
 
+    const sourceColumnId = findColumnId(board, activeId);
+    const resolvedDropColumnId = dropColumnId ?? findColumnId(board, overId);
+
+    console.log("Updating ticket status from", sourceColumnId, "to", resolvedDropColumnId);
+    void updateTicket.updateTicket(activeId, { 
+      ...active,
+      status: resolvedDropColumnId
+     });
+      
     setBoard((currentBoard) => {
       const activeColumnId = findColumnId(currentBoard, activeId);
       const overColumnId = findColumnId(currentBoard, overId);

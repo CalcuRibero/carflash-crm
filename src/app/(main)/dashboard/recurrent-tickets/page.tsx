@@ -64,7 +64,7 @@ export default function RecurrentTicketsPage() {
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <p className="text-muted-foreground">Cargando tickets recurrentes...</p>
+        <p className="text-muted-foreground">Cargando Tickets Fijos...</p>
       </div>
     );
   }
@@ -81,10 +81,10 @@ export default function RecurrentTicketsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Administración de Tickets Recurrentes
+          Administración de Tickets Fijos
         </h1>
         <p className="text-muted-foreground">
-          Gestiona y monitorea tus tickets recurrentes
+          Gestiona y monitorea tus Tickets Fijos
         </p>
       </div>
 
@@ -92,7 +92,7 @@ export default function RecurrentTicketsPage() {
         totalActive={tickets.length.toString()}
         next24h="0"
         highPriority={tickets.filter((t) => t.priority === TicketPriority.HIGH).length.toString()}
-        complianceRate={tickets.length > 0 ? ((tickets.filter((t) => t.status === TicketStatus.COMPLETED).length / tickets.length) * 100).toFixed(2) : "0"}
+        complianceRate={tickets.length > 0 ? ((tickets.filter((t) => t.status === TicketStatus.RESOLVED).length / tickets.length) * 100).toFixed(2) : "0"}
       />
 
       <SearchBar
