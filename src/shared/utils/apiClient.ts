@@ -1,6 +1,6 @@
 "use client";
 
-import { API_BASE_PATH } from "@/lib/api/config";
+import { NEXT_PUBLIC_API_BASE_PATH } from "@/lib/api/config";
 import { ApiError } from "@/lib/api/errors";
 
 type RequestOptions = Omit<RequestInit, "body"> & {
@@ -10,7 +10,7 @@ type RequestOptions = Omit<RequestInit, "body"> & {
 
 function resolveUrl(path: string) {
   if (/^https?:\/\//.test(path)) return path;
-  return `${API_BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
+  return `${NEXT_PUBLIC_API_BASE_PATH}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
 function getStoredToken() {
