@@ -50,3 +50,18 @@ export interface UpdateTicketController {
   updateTicket: (id: string | number, payload: CreateTicketRequest) => Promise<Ticket>;
   updatedTicket: Ticket | null;
 }
+
+
+export const STATUS_OPTIONS: SelectOption<TicketsModalFormValues["status"]>[] = [
+  { label: "Abierto", value: "open" },
+  { label: "En Progreso", value: "in_progress" },
+  { label: "Resuelto", value: "resolved" },
+  { label: "Cerrado", value: "closed" },
+];
+
+export const PRIORITY_OPTIONS: SelectOption<TicketsModalFormValues["priority"]>[] = [
+  { label: "Baja", value: "low" },
+  { label: "Media", value: "medium" },
+  { label: "Alta", value: "high" },
+  { label: "Critica", value: "critical" },
+];

@@ -2,6 +2,7 @@
 "use no memo";
 
 import type { MouseEvent } from "react";
+import { useRouter } from "next/navigation";
 
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
 
@@ -36,10 +37,19 @@ function getPageNumbers(currentPage: number, pageCount: number) {
 }
 
 export function UsersTable({ table }: { table: TableType<UserRow> }) {
+  const router = useRouter();
   const pageCount = Math.max(table.getPageCount(), 1);
   const currentPage = Math.min(table.getState().pagination.pageIndex + 1, pageCount);
   const pageNumbers = getPageNumbers(currentPage, pageCount);
   const rowsPerPage = `${table.getState().pagination.pageSize}`;
+
+  const handleRowClick = (userId: number) => {
+    router.push(`/dashboard/user-metrics?userId=${userId}`);
+  };
+
+  const handleCheckboxClick = (event: React.MouseEvent, userId: number) => {
+    event.stopPropagation();
+  };
 
   return (
     <div className="flex flex-1 flex-col gap-4">
@@ -62,8 +72,9 @@ export function UsersTable({ table }: { table: TableType<UserRow> }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="border-border/60 hover:bg-white/2.5"
+                  className="border-border/60 hover:bg-white/2.5 cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => handleRowClick(row.original.id)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-3 py-4 align-middle">

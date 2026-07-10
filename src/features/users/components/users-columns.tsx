@@ -1,6 +1,7 @@
 "use client";
 "use no memo";
 
+import { useRouter } from "next/navigation";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Clock, MoreHorizontal, X } from "lucide-react";
 
@@ -125,7 +126,7 @@ export const usersColumns: ColumnDef<UserRow>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         <Checkbox
           aria-label={`Select ${row.original.name}`}
           checked={row.getIsSelected()}
