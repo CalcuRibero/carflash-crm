@@ -15,3 +15,11 @@ export type TicketOwnerProfile = {
 };
 
 export type BoardState = Record<ColumnId, Ticket[]>;
+
+export const STATUS_LABELS: Record<string, string> = {
+  "open": "Abierto",
+  "in_progress": "En Progreso",
+  "resolved": "Resuelto",
+  "closed": "Cerrado"
+};
+

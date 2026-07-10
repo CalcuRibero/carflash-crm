@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Lock, Mail, User } from "lucide-react";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -40,14 +41,23 @@ export interface CreateUserData {
   isActive: boolean;
 }
 
-const userRoles: UserRole[] = [
+const userRoles = [
   "SuperAdmin",
   "AdministrationAccountant",
   "ComercialCordinator",
   "CarExpert",
   "Gestor",
   "CarSeller",
-];
+] as const;
+
+const createUserSchema = z.object({
+  fullName: z.string().min(1, { message: "Nombre completo es requerido." }),
+  username: z.string().min(1, { message: "Nombre de usuario es requerido." }),
+  role: z.string().min(1, { message: "Seleccione un rol válido." }),
+  email: z.email({ message: "Ingrese un correo electrónico válido." }),
+  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }),
+  isActive: z.boolean(),
+});
 
 export function CreateUsersModal({
   open,
@@ -60,12 +70,12 @@ export function CreateUsersModal({
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isActive, setIsActive] = React.useState(true);
+  const [formErrors, setFormErrors] = React.useState<Partial<Record<keyof CreateUserData, string>>>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!role) return;
 
-    onCreateUser({
+    const result = createUserSchema.safeParse({
       fullName,
       username,
       role,
@@ -73,6 +83,21 @@ export function CreateUsersModal({
       password,
       isActive,
     });
+
+    if (!result.success) {
+      const nextErrors: Partial<Record<keyof CreateUserData, string>> = {};
+      result.error.issues.forEach((error) => {
+        const field = error.path[0] as keyof CreateUserData | undefined;
+        if (field) {
+          nextErrors[field] ||= error.message;
+        }
+      });
+      setFormErrors(nextErrors);
+      return;
+    }
+
+    setFormErrors({});
+    onCreateUser(result.data as CreateUserData);
 
     // Reset form
     setFullName("");
@@ -91,6 +116,7 @@ export function CreateUsersModal({
     setEmail("");
     setPassword("");
     setIsActive(true);
+    setFormErrors({});
     onOpenChange(false);
   };
 
@@ -113,6 +139,7 @@ export function CreateUsersModal({
               onChange={(e) => setFullName(e.target.value)}
               required
             />
+            {formErrors.fullName && <p className="text-sm text-destructive">{formErrors.fullName}</p>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -128,6 +155,7 @@ export function CreateUsersModal({
                 required
               />
             </div>
+            {formErrors.username && <p className="text-sm text-destructive">{formErrors.username}</p>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -146,6 +174,7 @@ export function CreateUsersModal({
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {formErrors.role && <p className="text-sm text-destructive">{formErrors.role}</p>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -162,6 +191,7 @@ export function CreateUsersModal({
                 required
               />
             </div>
+            {formErrors.email && <p className="text-sm text-destructive">{formErrors.email}</p>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -177,6 +207,7 @@ export function CreateUsersModal({
                 required
               />
             </div>
+            {formErrors.password && <p className="text-sm text-destructive">{formErrors.password}</p>}
           </div>
 
           <div className="flex items-center gap-3">

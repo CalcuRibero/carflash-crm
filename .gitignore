@@ -13,6 +13,9 @@
 # codex
 /.codex
 
+# supabase
+supabase/
+
 # codex
 /.codeium/
 

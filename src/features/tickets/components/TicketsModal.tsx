@@ -16,23 +16,10 @@ import { Modal } from "@/shared/components/Modal";
 
 import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
 
-import type { SelectOption, TicketsModalFormValues, TicketsModalProps } from "../types";
+import { PRIORITY_OPTIONS, STATUS_OPTIONS, type SelectOption, type TicketsModalFormValues, type TicketsModalProps } from "../types";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
 
-const STATUS_OPTIONS: SelectOption<TicketsModalFormValues["status"]>[] = [
-  { label: "Open", value: "open" },
-  { label: "In progress", value: "in_progress" },
-  { label: "Resolved", value: "resolved" },
-  { label: "Closed", value: "closed" },
-];
-
-const PRIORITY_OPTIONS: SelectOption<TicketsModalFormValues["priority"]>[] = [
-  { label: "Low", value: "low" },
-  { label: "Medium", value: "medium" },
-  { label: "High", value: "high" },
-  { label: "Critical", value: "critical" },
-];
 
 export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
   assignedTo: "",
@@ -85,7 +72,7 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
 
   return (
     <Modal
-      description="Create a ticket and send it to the right queue."
+      description="Crear un ticket y dejarlo en la lista."
       isOpen={isOpen}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) resetAndClose();
@@ -100,7 +87,7 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
         label: "Cancel",
         onClick: resetAndClose,
       }}
-      title="New ticket"
+      title="Crear Nuevo Ticket"
     >
       <form
         className="grid gap-3"
@@ -110,28 +97,28 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
         }}
       >
         <div className="grid gap-1.5">
-          <Label htmlFor="ticket-title">Title</Label>
+          <Label htmlFor="ticket-title">Titulo</Label>
           <Input
             id="ticket-title"
             onChange={(event) => updateForm("title", event.target.value)}
-            placeholder="Short ticket title"
+            placeholder="Un titulo corto para el ticket..."
             value={formValues.title}
           />
         </div>
 
         <div className="grid gap-1.5">
-          <Label htmlFor="ticket-description">Description</Label>
+          <Label htmlFor="ticket-description">Descripcion</Label>
           <Textarea
             id="ticket-description"
             onChange={(event) => updateForm("description", event.target.value)}
-            placeholder="What needs attention?"
+            placeholder="Describe tu tarea..."
             value={formValues.description}
           />
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="grid gap-1.5">
-            <Label>Status</Label>
+            <Label>Estado</Label>
             <Select
               value={formValues.status}
               onValueChange={(value) => updateForm("status", value as TicketStatus)}
@@ -150,7 +137,7 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
           </div>
 
           <div className="grid gap-1.5">
-            <Label>Priority</Label>
+            <Label>Prioridad</Label>
             <Select
               value={formValues.priority}
               onValueChange={(value) => updateForm("priority", value as TicketPriority)}
@@ -171,7 +158,7 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="grid gap-1.5">
-            <Label>Category</Label>
+            <Label>Categoria</Label>
             <Select
               value={formValues.category}
               onValueChange={(value) => updateForm("category", value as TicketCategory)}
@@ -190,7 +177,7 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
           </div>
 
           <div className="grid gap-1.5">
-            <Label>Assigned to</Label>
+            <Label>Asignado a</Label>
             <Select value={formValues.assignedTo} onValueChange={(value) => updateForm("assignedTo", value)}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Unassigned" />
@@ -207,7 +194,7 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
         </div>
 
         <div className="grid gap-1.5">
-          <Label htmlFor="ticket-due-date">Due date</Label>
+          <Label htmlFor="ticket-due-date">Vecha de vencimiento</Label>
           <Input
             id="ticket-due-date"
             onChange={(event) => updateForm("dueDate", event.target.value)}
