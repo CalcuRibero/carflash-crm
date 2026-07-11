@@ -44,7 +44,7 @@ export function UsersTable({ table }: { table: TableType<UserRow> }) {
   const rowsPerPage = `${table.getState().pagination.pageSize}`;
 
   const handleRowClick = (userId: number) => {
-    router.push(`/dashboard/user-metrics?userId=${userId}`);
+    router.push(`/dashboard/user-metrics/${userId}`);
   };
 
   const handleCheckboxClick = (event: React.MouseEvent, userId: number) => {

@@ -26,7 +26,6 @@ export function NavUser({
 }) {
   const router = useRouter();
   const userName = user ? user.fullName : "Invitado";
-  console.log(user)
   const { isMobile } = useSidebar();
 
   const handleLogout = async () => {

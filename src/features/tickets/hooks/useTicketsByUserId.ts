@@ -5,13 +5,14 @@ import * as React from "react";
 import type { Ticket } from "@/lib/api/types";
 
 import { getTicketsByUserIdService } from "../services/ticketsService";
+import { useCallback, useEffect, useState } from "react";
 
 export function useTicketsByUserId(userId: number | null) {
-  const [tickets, setTickets] = React.useState<Ticket[]>([]);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const loadTickets = React.useCallback(async (signal?: AbortSignal) => {
+  const loadTickets = useCallback(async (signal?: AbortSignal) => {
     if (!userId) {
       setTickets([]);
       setIsLoading(false);
@@ -40,7 +41,7 @@ export function useTicketsByUserId(userId: number | null) {
     }
   }, [userId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController();
 
     void loadTickets(controller.signal).catch(() => {
