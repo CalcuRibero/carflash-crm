@@ -15,7 +15,7 @@ export function MetricsCards({ tickets = [], isLoading, errorMessage }: MetricsC
             </div>
         )
     }
-
+    
     const inProgressCount = tickets.filter((t) => t.status === "in_progress").length;
     const openCount = tickets.filter((t) => t.status === "open").length;
     const overdueCount = tickets.filter((t) => {

@@ -1,4 +1,5 @@
 import { Ticket, TicketStatus } from "@/lib/api"
+import type { ChartConfig } from "@/components/ui/chart"
 
 export type MetricsCardsProps = {
     tickets: Ticket[];
@@ -37,19 +38,25 @@ export const StatusVariant: Record<string, Variants | null | undefined> = {
 export const chartConfig = {
   abierto: {
     label: "Abierto",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   resuelto: {
     label: "Resuelto",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
   en_progreso: {
     label: "En Progreso",
-    color: "hsl(var(--chart-3))",
+    color: "var(--chart-3)",
   },
   cerrado: {
     label: "Cerrado",
-    color: "hsl(var(--chart-4))",
+    color: "var(--chart-4)",
   },
-} as const;
+} satisfies ChartConfig;
 
+export const CHART_COLORS: Record<string, string> = {
+  "open": "var(--chart-1)",
+  "resolved": "var(--chart-2)",
+  "in_progress": "var(--chart-3)",
+  "closed": "var(--chart-4)",
+}
