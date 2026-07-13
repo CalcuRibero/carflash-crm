@@ -9,6 +9,7 @@ import { SearchBar } from "@/features/recurrent-tickets/components/SearchBar";
 import { useRecurrentTickets } from "@/features/recurrent-tickets/hooks/useRecurrentTickets";
 import { useCreateRecurrentTickets } from "@/features/recurrent-tickets/hooks/useCreateRecurrentTickets";
 import { useDeleteRecurrentTicket } from "@/features/recurrent-tickets/hooks/useDeleteRecurrentTicket";
+import { useEditRecurrentTicketModal } from "@/features/recurrent-tickets/hooks/useEditRecurrentTicketModal";
 import type { RecurrentTicket } from "@/features/recurrent-tickets/types";
 import { TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
 
@@ -16,6 +17,7 @@ export default function RecurrentTicketsPage() {
   const { tickets, isLoading, error, refetch } = useRecurrentTickets();
   const { createRecurrentTicket } = useCreateRecurrentTickets();
   const { deleteRecurrentTicket } = useDeleteRecurrentTicket();
+  const editTicketModal = useEditRecurrentTicketModal();
   const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const filteredTickets = tickets.filter((ticket) =>
@@ -23,8 +25,7 @@ export default function RecurrentTicketsPage() {
   );
 
   const handleEdit = (ticket: RecurrentTicket) => {
-    console.log("Edit ticket:", ticket);
-    // TODO: Implement edit functionality
+    editTicketModal.openModal(ticket);
   };
 
   const handleDelete = async (ticketId: string) => {
@@ -57,10 +58,15 @@ export default function RecurrentTicketsPage() {
       interval: data.interval,
       first_run_at: data.first_run_at,
     });
-    
+
     if (result) {
       await refetch();
     }
+  };
+
+  const handleEditTicket = async (data: Partial<CreateRecurrentTicketData>) => {
+    await editTicketModal.submitTicket(data);
+    await refetch();
   };
 
   if (isLoading) {
@@ -113,6 +119,13 @@ export default function RecurrentTicketsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateTicket}
+      />
+
+      <CreateRecurrentTicketModal
+        currentTicket={editTicketModal.currentTicket}
+        isOpen={editTicketModal.isOpen}
+        onClose={editTicketModal.closeModal}
+        onSubmit={handleEditTicket}
       />
     </div>
   );

@@ -11,6 +11,7 @@ export interface TicketsModalFormValues {
 }
 
 export interface TicketsModalProps {
+  currentTicket?: Ticket | null;
   errorMessage?: string | null;
   isOpen: boolean;
   isSubmitting?: boolean;
@@ -34,6 +35,21 @@ export interface CreateTicketModalController extends CreateTicketModalState {
   closeModal: () => void;
   modalProps: TicketsModalProps;
   openModal: () => void;
+  submitTicket: (values: CreateTicketRequest) => Promise<void>;
+}
+
+export interface EditTicketModalState {
+  currentTicket: Ticket | null;
+  editedTicket: Ticket | null;
+  errorMessage: string | null;
+  isOpen: boolean;
+  isSubmitting: boolean;
+}
+
+export interface EditTicketModalController extends EditTicketModalState {
+  closeModal: () => void;
+  modalProps: TicketsModalProps & { currentTicket: Ticket | null };
+  openModal: (ticket: Ticket) => void;
   submitTicket: (values: CreateTicketRequest) => Promise<void>;
 }
 

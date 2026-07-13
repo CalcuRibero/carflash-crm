@@ -19,6 +19,7 @@ import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/typ
 import { PRIORITY_OPTIONS, STATUS_OPTIONS, type SelectOption, type TicketsModalFormValues, type TicketsModalProps } from "../types";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
+import { useNotificationsTickets } from "@/shared/hooks/useNotifications";
 
 
 export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
@@ -31,10 +32,29 @@ export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
   title: "",
 };
 
-export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClose, onSubmit }: TicketsModalProps) {
+export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting = false, onClose, onSubmit }: TicketsModalProps) {
   const [formValues, setFormValues] = React.useState<TicketsModalFormValues>(INITIAL_TICKETS_MODAL_FORM);
 
   const {users} = useUsers();
+  const triggerNotification = useNotificationsTickets
+
+  const isEditMode = !!currentTicket;
+
+  React.useEffect(() => {
+    if (currentTicket) {
+      setFormValues({
+        assignedTo: currentTicket.assignedTo?.toString() || "",
+        category: currentTicket.category || "support",
+        description: currentTicket.description,
+        dueDate: currentTicket.dueDate || "",
+        priority: currentTicket.priority,
+        status: currentTicket.status,
+        title: currentTicket.title,
+      });
+    } else {
+      setFormValues(INITIAL_TICKETS_MODAL_FORM);
+    }
+  }, [currentTicket]);
 
   const canSubmit = formValues.title.trim().length > 0 && formValues.description.trim().length > 0;
 
@@ -63,6 +83,13 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
         status: formValues.status,
         title: formValues.title.trim(),
       });
+      triggerNotification(
+        {
+          assignedTo: formValues.assignedTo, 
+          type: 'ticket', 
+          title: formValues.title 
+        }
+      )
     } catch {
       return;
     }
@@ -72,14 +99,14 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
 
   return (
     <Modal
-      description="Crear un ticket y dejarlo en la lista."
+      description={isEditMode ? "Editar un ticket existente." : "Crear un ticket y dejarlo en la lista."}
       isOpen={isOpen}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) resetAndClose();
       }}
       primaryAction={{
         disabled: !canSubmit || isSubmitting,
-        label: isSubmitting ? "Creating..." : "Create ticket",
+        label: isSubmitting ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update ticket" : "Create ticket"),
         onClick: handleSubmit,
       }}
       secondaryAction={{
@@ -87,7 +114,7 @@ export function TicketsModal({ errorMessage, isOpen, isSubmitting = false, onClo
         label: "Cancel",
         onClick: resetAndClose,
       }}
-      title="Crear Nuevo Ticket"
+      title={isEditMode ? "Editar Ticket" : "Crear Nuevo Ticket"}
     >
       <form
         className="grid gap-3"

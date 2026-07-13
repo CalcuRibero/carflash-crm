@@ -58,10 +58,12 @@ export function TaskCard({
   task,
   columnId,
   isOverlay = false,
+  onClick,
 }: {
   task: Ticket;
   columnId?: ColumnId;
   isOverlay?: boolean;
+  onClick?: () => void;
 }) {
   const isDone = columnId === "closed";
   const showBuildingDetails = columnId === "in_progress" && typeof task.progress === "number";
@@ -71,9 +73,10 @@ export function TaskCard({
   return (
     <article
       className={cn(
-        "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs",
+        "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs cursor-pointer hover:bg-accent/50 transition-colors",
         isOverlay && "w-68 rotate-1 shadow-lg",
       )}
+      onClick={onClick}
     >
       <div className="min-w-0 space-y-1.5">
         <div className="flex items-center justify-between gap-3">
