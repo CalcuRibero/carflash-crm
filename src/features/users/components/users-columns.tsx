@@ -4,6 +4,7 @@
 import { useRouter } from "next/navigation";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Clock, MoreHorizontal, X } from "lucide-react";
+import * as React from "react";
 
 import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +20,11 @@ import {
 import { cn, getInitials } from "@/lib/utils";
 
 import { useDeleteUser } from "../hooks/useDeleteUser";
+import { useUpdateUser } from "../hooks/useUpdateUser";
+import { EditUserModal, type UpdateUserData } from "./editUserModal";
 import { statusMeta, type UserRow } from "./data";
+
+
 
 function formatDate(value: string) {
   const date = new Date(value);
@@ -184,6 +189,27 @@ export const usersColumns: ColumnDef<UserRow>[] = [
     header: () => <div className="text-right">Actions</div>,
     cell: ({ row }) => {
       const { deleteUser } = useDeleteUser();
+      const { updateUser } = useUpdateUser();
+      const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+      
+      const router = useRouter();
+
+      const handleEdit = async () => {
+        setIsEditModalOpen(true);
+      };
+
+      const handleUpdateUser = async (userData: UpdateUserData) => {
+        const updated = await updateUser(String(row.original.id), userData);
+        if (updated) {
+          window.location.reload();
+        }
+      };
+
+      
+      const handleRowClick = (userId: number) => {
+        router.push(`/dashboard/user-metrics/${userId}`);
+      };
+
 
       const handleDelete = async () => {
         const shouldDelete = window.confirm(`¿Eliminar a ${row.original.fullName ?? row.original.username}?`);
@@ -201,6 +227,12 @@ export const usersColumns: ColumnDef<UserRow>[] = [
 
       return (
         <div className="text-right">
+          <EditUserModal
+            open={isEditModalOpen}
+            onOpenChange={setIsEditModalOpen}
+            onUpdateUser={handleUpdateUser}
+            user={row.original}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -213,7 +245,8 @@ export const usersColumns: ColumnDef<UserRow>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Edit user</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleRowClick(row.original.id)}>Ver Metricas</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleEdit()}>Editar usuario</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={() => void handleDelete()}>
                 Borrar usuario

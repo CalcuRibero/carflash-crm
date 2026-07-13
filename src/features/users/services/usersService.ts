@@ -29,6 +29,25 @@ export async function createUserService(payload: CreateUserRequest): Promise<Use
   });
 }
 
+export type UpdateUserRequest = {
+  fullName?: string;
+  username?: string;
+  role?: UserRole;
+  email?: string;
+  password?: string;
+  isActive?: boolean;
+};
+
+export async function updateUserService(id: string, payload: UpdateUserRequest): Promise<User> {
+  const token = getApiToken();
+
+  return apiRequest<User>(`/users/${id}`, {
+    method: "PATCH",
+    body: payload,
+    token,
+  });
+}
+
 export async function deleteUserService(id: string): Promise<void> {
   const token = getApiToken();
 
