@@ -51,7 +51,7 @@ export function UpdateRecurrentTicketModal({
     const { users } = useUsers();
 
     const [formData, setFormData] = useState<RecurrentTicket | null>(null);
-    
+
     useEffect(() => {
         if (currentTicket) {
             setFormData({
@@ -200,7 +200,7 @@ export function UpdateRecurrentTicketModal({
                             type="date"
                             defaultValue={formData.dueDate instanceof Date ? formData.dueDate.toISOString().split('T')[0] : ''}
                             onChange={(e) =>
-                                setFormData({ ...formData, dueDate: new Date(e.target.value)  })
+                                setFormData({ ...formData, dueDate: new Date(e.target.value) })
                             }
                         />
                     </div>

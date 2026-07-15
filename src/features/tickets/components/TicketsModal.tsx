@@ -19,7 +19,7 @@ import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/typ
 import { PRIORITY_OPTIONS, STATUS_OPTIONS, type SelectOption, type TicketsModalFormValues, type TicketsModalProps } from "../types";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
-import { useNotificationsTickets } from "@/shared/hooks/useNotifications";
+// import { useNotificationsTickets } from "@/shared/hooks/useNotifications";
 
 
 export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
@@ -36,7 +36,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
   const [formValues, setFormValues] = React.useState<TicketsModalFormValues>(INITIAL_TICKETS_MODAL_FORM);
 
   const {users} = useUsers();
-  const triggerNotification = useNotificationsTickets
+  // const triggerNotification = useNotificationsTickets
 
   const isEditMode = !!currentTicket;
 
@@ -83,13 +83,13 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
         status: formValues.status,
         title: formValues.title.trim(),
       });
-      triggerNotification(
-        {
-          assignedTo: formValues.assignedTo, 
-          type: 'ticket', 
-          title: formValues.title 
-        }
-      )
+      // triggerNotification(
+      //   {
+      //     assignedTo: formValues.assignedTo, 
+      //     type: 'ticket', 
+      //     title: formValues.title 
+      //   }
+      // )
     } catch {
       return;
     }
