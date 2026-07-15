@@ -40,7 +40,7 @@ export type UserRow = User & {
 export function mapUserToRow(user: User): UserRow {
   return {
     ...user,
-    email: user.username,
+    email: user.email,
     joinedDate: format(new Date(user.createdAt), "dd MMM yyyy, h:mm a"),
     lastActive: 0,
     name: user.fullName,

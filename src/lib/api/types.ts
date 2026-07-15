@@ -15,6 +15,7 @@ export type UserRole =
 export type User = {
   id: number;
   username: string;
+  email: string;
   password?: string;
   role: UserRole;
   fullName: string;
@@ -85,3 +86,24 @@ export type UpdateTicketRequest = Partial<CreateTicketRequest> & {
   resolvedAt?: string | Date | null;
 };
 
+export type NotificationType =
+  | "ticket_created"
+  | "ticket_updated"
+  | "ticket_assigned"
+  | "comment_added";
+
+export interface NotificationMeta {
+  ticketId?: string;
+  url?: string;
+  [key: string]: unknown; // por si agregas más campos a futuro sin romper el tipo
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  message: string;
+  meta: NotificationMeta | null;
+  read: boolean;
+  createdAt: string; // llega como string ISO desde el backend, no como Date
+}

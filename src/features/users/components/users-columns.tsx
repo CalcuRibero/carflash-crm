@@ -163,6 +163,17 @@ export const usersColumns: ColumnDef<UserRow>[] = [
     ),
   },
   {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-3">
+        <div className="min-w-0">
+          <div className="truncate text-muted-foreground text-xs">{row.original.email}</div>
+        </div>
+      </div>
+    ),
+  },
+  {
     accessorKey: "role",
     header: "Role",
     filterFn: "equalsString",
