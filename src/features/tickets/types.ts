@@ -11,6 +11,7 @@ export interface TicketsModalFormValues {
 }
 
 export interface TicketsModalProps {
+  currentTicket?: Ticket | null;
   errorMessage?: string | null;
   isOpen: boolean;
   isSubmitting?: boolean;
@@ -37,6 +38,21 @@ export interface CreateTicketModalController extends CreateTicketModalState {
   submitTicket: (values: CreateTicketRequest) => Promise<void>;
 }
 
+export interface EditTicketModalState {
+  currentTicket: Ticket | null;
+  editedTicket: Ticket | null;
+  errorMessage: string | null;
+  isOpen: boolean;
+  isSubmitting: boolean;
+}
+
+export interface EditTicketModalController extends EditTicketModalState {
+  closeModal: () => void;
+  modalProps: TicketsModalProps & { currentTicket: Ticket | null };
+  openModal: (ticket: Ticket) => void;
+  submitTicket: (values: CreateTicketRequest) => Promise<void>;
+}
+
 export interface TicketsController {
   errorMessage: string | null;
   isLoading: boolean;
@@ -50,3 +66,18 @@ export interface UpdateTicketController {
   updateTicket: (id: string | number, payload: CreateTicketRequest) => Promise<Ticket>;
   updatedTicket: Ticket | null;
 }
+
+
+export const STATUS_OPTIONS: SelectOption<TicketsModalFormValues["status"]>[] = [
+  { label: "Abierto", value: "open" },
+  { label: "En Progreso", value: "in_progress" },
+  { label: "Resuelto", value: "resolved" },
+  { label: "Cerrado", value: "closed" },
+];
+
+export const PRIORITY_OPTIONS: SelectOption<TicketsModalFormValues["priority"]>[] = [
+  { label: "Baja", value: "low" },
+  { label: "Media", value: "medium" },
+  { label: "Alta", value: "high" },
+  { label: "Critica", value: "critical" },
+];

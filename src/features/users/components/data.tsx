@@ -35,8 +35,6 @@ export type UserRow = User & {
   name: string;
   role: UserRole;
   status: UserStatus;
-  team: UserTeam;
-  workspace: string[];
 };
 
 export function mapUserToRow(user: User): UserRow {
@@ -48,16 +46,12 @@ export function mapUserToRow(user: User): UserRow {
     name: user.fullName,
     role: user.role,
     status: user.isActive ? "Active" : "Deactivated",
-    team: teamValues[0],
-    workspace: ["Weblabs Studio"],
   };
 }
 
 export const filters = {
   role: ["All", ...roleValues],
-  team: ["All", ...teamValues],
   status: ["All", "Active", "Pending invite", "Deactivated", "Locked", "Suspended"],
-  workspace: ["All", "Weblabs Studio", "Sandbox", "Internal Tools", "Acme Inc."],
 };
 
 export const roleMeta: Record<UserRole, { className: string; icon: LucideIcon }> = {

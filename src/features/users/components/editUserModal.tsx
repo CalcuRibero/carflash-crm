@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Lock, Mail, User } from "lucide-react";
+import { Lock, Mail, User as UserIcon } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -25,20 +25,22 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { UserRole } from "@/lib/api/types";
+import type { UserRow } from "./data";
 
-interface CreateUsersModalProps {
+interface EditUserModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreateUser: (userData: CreateUserData) => void;
+  onUpdateUser: (userData: UpdateUserData) => void;
+  user: UserRow;
 }
 
-export interface CreateUserData {
-  fullName: string;
-  username: string;
-  role: UserRole;
-  email: string;
-  password: string;
-  isActive: boolean;
+export interface UpdateUserData {
+  fullName?: string;
+  username?: string;
+  role?: UserRole;
+  email?: string;
+  password?: string;
+  isActive?: boolean;
 }
 
 const userRoles = [
@@ -50,44 +52,59 @@ const userRoles = [
   "CarSeller",
 ] as const;
 
-const createUserSchema = z.object({
-  fullName: z.string().min(1, { message: "Nombre completo es requerido." }),
-  username: z.string().min(1, { message: "Nombre de usuario es requerido." }),
-  role: z.string().min(1, { message: "Seleccione un rol válido." }),
-  email: z.email({ message: "Ingrese un correo electrónico válido." }),
-  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }),
-  isActive: z.boolean(),
+const updateUserSchema = z.object({
+  fullName: z.string().min(1, { message: "Nombre completo es requerido." }).optional(),
+  username: z.string().min(1, { message: "Nombre de usuario es requerido." }).optional(),
+  role: z.string().min(1, { message: "Seleccione un rol válido." }).optional(),
+  email: z.email({ message: "Ingrese un correo electrónico válido." }).optional().or(z.literal("")),
+  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }).optional().or(z.literal("")),
+  isActive: z.boolean().optional(),
 });
 
-export function CreateUsersModal({
+export function EditUserModal({
   open,
   onOpenChange,
-  onCreateUser,
-}: CreateUsersModalProps) {
-  const [fullName, setFullName] = React.useState("");
-  const [username, setUsername] = React.useState("");
-  const [role, setRole] = React.useState<UserRole | undefined>(undefined);
-  const [email, setEmail] = React.useState("");
+  onUpdateUser,
+  user,
+}: EditUserModalProps) {
+  const [fullName, setFullName] = React.useState(user.fullName ?? "");
+  const [username, setUsername] = React.useState(user.username);
+  const [role, setRole] = React.useState<UserRole | undefined>(user.role);
+  const [email, setEmail] = React.useState(user.email ?? "");
   const [password, setPassword] = React.useState("");
-  const [isActive, setIsActive] = React.useState(true);
-  const [formErrors, setFormErrors] = React.useState<Partial<Record<keyof CreateUserData, string>>>({});
+  const [isActive, setIsActive] = React.useState(user.isActive);
+  const [formErrors, setFormErrors] = React.useState<Partial<Record<keyof UpdateUserData, string>>>({});
+
+  React.useEffect(() => {
+    if (open) {
+      setFullName(user.fullName ?? "");
+      setUsername(user.username);
+      setRole(user.role);
+      setEmail(user.email ?? "");
+      setPassword("");
+      setIsActive(user.isActive);
+      setFormErrors({});
+    }
+  }, [open, user]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = createUserSchema.safeParse({
-      fullName,
-      username,
-      role,
-      email,
-      password,
+    const payload: Record<string, string | boolean | undefined> = {
+      fullName: fullName || undefined,
+      username: username || undefined,
+      role: role || undefined,
+      email: email || undefined,
+      password: password || undefined,
       isActive,
-    });
+    };
+
+    const result = updateUserSchema.safeParse(payload);
 
     if (!result.success) {
-      const nextErrors: Partial<Record<keyof CreateUserData, string>> = {};
+      const nextErrors: Partial<Record<keyof UpdateUserData, string>> = {};
       result.error.issues.forEach((error) => {
-        const field = error.path[0] as keyof CreateUserData | undefined;
+        const field = error.path[0] as keyof UpdateUserData | undefined;
         if (field) {
           nextErrors[field] ||= error.message;
         }
@@ -97,25 +114,18 @@ export function CreateUsersModal({
     }
 
     setFormErrors({});
-    onCreateUser(result.data as CreateUserData);
+    onUpdateUser(result.data as UpdateUserData);
 
-    // Reset form
-    setFullName("");
-    setUsername("");
-    setRole(undefined);
-    setEmail("");
-    setPassword("");
-    setIsActive(true);
     onOpenChange(false);
   };
 
   const handleCancel = () => {
-    setFullName("");
-    setUsername("");
-    setRole(undefined);
-    setEmail("");
+    setFullName(user.fullName ?? "");
+    setUsername(user.username);
+    setRole(user.role);
+    setEmail(user.email ?? "");
     setPassword("");
-    setIsActive(true);
+    setIsActive(user.isActive);
     setFormErrors({});
     onOpenChange(false);
   };
@@ -124,9 +134,9 @@ export function CreateUsersModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Crear Nuevo Usuario</DialogTitle>
+          <DialogTitle>Editar Usuario</DialogTitle>
           <DialogDescription>
-            Ingrese los detalles para registrar un nuevo integrante en la plataforma.
+            Actualice los detalles del usuario {user.fullName ?? user.username}.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -137,7 +147,6 @@ export function CreateUsersModal({
               placeholder="Ej. Juan Pérez"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              required
             />
             {formErrors.fullName && <p className="text-sm text-destructive">{formErrors.fullName}</p>}
           </div>
@@ -145,14 +154,13 @@ export function CreateUsersModal({
           <div className="flex flex-col gap-2">
             <Label htmlFor="username">Nombre de Usuario</Label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+              <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
                 id="username"
                 placeholder="jperez_fleet"
                 className="pl-9"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                required
               />
             </div>
             {formErrors.username && <p className="text-sm text-destructive">{formErrors.username}</p>}
@@ -160,7 +168,7 @@ export function CreateUsersModal({
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="role">Rol del Sistema</Label>
-            <Select value={role} onValueChange={(value) => setRole(value as UserRole)} required>
+            <Select value={role} onValueChange={(value) => setRole(value as UserRole)}>
               <SelectTrigger id="role">
                 <SelectValue placeholder="Seleccione un rol" />
               </SelectTrigger>
@@ -188,23 +196,22 @@ export function CreateUsersModal({
                 className="pl-9"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
             </div>
             {formErrors.email && <p className="text-sm text-destructive">{formErrors.email}</p>}
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Contraseña</Label>
+            <Label htmlFor="password">Contraseña (opcional)</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
                 id="password"
                 type="password"
+                placeholder="Dejar vacío para mantener actual"
                 className="pl-9"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
               />
             </div>
             {formErrors.password && <p className="text-sm text-destructive">{formErrors.password}</p>}
@@ -221,7 +228,7 @@ export function CreateUsersModal({
                 Estado de Usuario Activo
               </Label>
               <p className="text-xs text-muted-foreground">
-                Permite el acceso inmediato tras la creación.
+                Permite el acceso al sistema.
               </p>
             </div>
           </div>
@@ -230,7 +237,7 @@ export function CreateUsersModal({
             <Button type="button" variant="outline" onClick={handleCancel}>
               CANCELAR
             </Button>
-            <Button type="submit">CREAR USUARIO</Button>
+            <Button type="submit">ACTUALIZAR USUARIO</Button>
           </DialogFooter>
         </form>
       </DialogContent>

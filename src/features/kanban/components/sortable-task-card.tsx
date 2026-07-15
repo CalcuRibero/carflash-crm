@@ -8,7 +8,7 @@ import { TaskCard } from "./task-card";
 import type { ColumnId } from "../types";
 import type { Ticket } from "@/lib/api/types";
 
-export function SortableTaskCard({ task, columnId }: { task: Ticket; columnId: ColumnId }) {
+export function SortableTaskCard({ task, columnId, onClick }: { task: Ticket; columnId: ColumnId; onClick?: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { type: "task", task },
@@ -25,7 +25,7 @@ export function SortableTaskCard({ task, columnId }: { task: Ticket; columnId: C
       {...attributes}
       {...listeners}
     >
-      <TaskCard task={task} columnId={columnId} />
+      <TaskCard task={task} columnId={columnId} onClick={onClick} />
     </div>
   );
 }

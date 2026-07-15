@@ -43,7 +43,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TicketsModal, useCreateTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
+import { TicketsModal, useCreateTicketModal, useEditTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Ticket } from "@/lib/api/types";
@@ -63,6 +63,7 @@ export function Kanban() {
 
   const getTickets = useTickets()
   const createTicketModal = useCreateTicketModal();
+  const editTicketModal = useEditTicketModal();
   const updateTicket = useUpdateTicket();
   const boardBeforeDrag = useRef<BoardState | null>(null);
   const hoveredColumnIdRef = useRef<ColumnId | null>(null);
@@ -83,6 +84,21 @@ export function Kanban() {
       })
     );
   }, [createTicketModal.createdTicket]);
+
+  useEffect(() => {
+    const editedTicket = editTicketModal.editedTicket;
+    if (!editedTicket) return;
+    setBoard((currentBoard) => {
+      const updatedBoard = { ...currentBoard };
+      const columnIds = Object.keys(updatedBoard) as Array<keyof typeof updatedBoard>;
+      for (const columnId of columnIds) {
+        updatedBoard[columnId] = updatedBoard[columnId].map((ticket: Ticket) =>
+          ticket.id === editedTicket.id ? editedTicket : ticket
+        );
+      }
+      return updatedBoard;
+    });
+  }, [editTicketModal.editedTicket]);
 
   useEffect(() => {
     const tickets = getTickets.tickets
@@ -222,9 +238,10 @@ export function Kanban() {
   return (
     <div className="flex h-[calc(100dvh-var(--dashboard-header-height))] min-h-0 min-w-0 flex-col overflow-hidden">
       <TicketsModal {...createTicketModal.modalProps} />
+      <TicketsModal {...editTicketModal.modalProps} />
 
       <div className="flex shrink-0 flex-col gap-3 border-b px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
-        <Tabs defaultValue="board" className="min-w-0">
+        {/* <Tabs defaultValue="board" className="min-w-0">
           <TabsList className="w-full *:data-[slot=tabs-trigger]:flex-1 sm:w-fit sm:*:data-[slot=tabs-trigger]:flex-none">
             <TabsTrigger value="board" className="gap-2">
               <KanbanIcon />
@@ -239,39 +256,39 @@ export function Kanban() {
               Table
             </TabsTrigger>
           </TabsList>
-        </Tabs>
+        </Tabs> */}
 
-        <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center 2xl:justify-end">
-          <InputGroup className="min-w-0 sm:w-64 2xl:w-48">
+        <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
+          {/* <InputGroup className="min-w-0 sm:w-64 2xl:w-48">
             <InputGroupInput type="search" placeholder="Search tasks" />
             <InputGroupAddon>
               <Search />
             </InputGroupAddon>
-          </InputGroup>
-          <Button variant="outline" className="w-full sm:w-auto">
+          </InputGroup> */}
+          {/* <Button variant="outline" className="w-full sm:w-auto">
             <SlidersHorizontal data-icon="inline-start" />
             Filter
           </Button>
           <Button variant="outline" className="w-full sm:w-auto">
             <ArrowUpDown data-icon="inline-start" />
             Sort
-          </Button>
+          </Button> */}
           <ButtonGroup className="w-full sm:w-fit">
             <Button className="flex-1 sm:flex-none" onClick={createTicketModal.openModal}>
               <Plus data-icon="inline-start" />
-              Add task
+              Agregar Tarea
             </Button>
-            <ButtonGroupSeparator />
+            {/* <ButtonGroupSeparator />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button aria-label="Open add task menu">
+                <Button aria-label="Abrir Agregar Tarea menu">
                   <ChevronDown />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem>
                   <Upload />
-                  Import CSV
+                  Importar CSV
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <LayoutTemplate />
@@ -282,7 +299,7 @@ export function Kanban() {
                   Create automation
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </ButtonGroup>
         </div>
       </div>
@@ -300,7 +317,7 @@ export function Kanban() {
           <div className="inline-grid h-full min-w-full grid-cols-[repeat(5,minmax(20rem,1fr))] gap-4">
             <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
               {orderedColumns.map((column) => (
-                <KanbanColumn key={column.id} column={column} tasks={board[column.id]} />
+                <KanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={editTicketModal.openModal} />
               ))}
             </SortableContext>
           </div>

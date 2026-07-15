@@ -46,7 +46,20 @@ export interface RecurrentTicket {
   priority?: TicketPriority;
   category?: TicketCategory;
   assignedTo?: string | null;
-  dueDate?: Date;
+  dueDate: Date;
   interval: RecurrenceInterval;
   first_run_at: Date;
+}
+
+export const INITIAL_UPDATE_RECURRENT_TICKET_DATA = {
+    id: "",
+    title: "",
+    description: "",
+    status: TicketStatus.OPEN,
+    priority: TicketPriority.LOW,
+    category: TicketCategory.ADMINISTRATION_ACCOUNTANT,
+    assignedTo: "" ,
+    dueDate: new Date(),
+    interval: RecurrenceInterval.DAILY,
+    first_run_at: new Date(),
 }

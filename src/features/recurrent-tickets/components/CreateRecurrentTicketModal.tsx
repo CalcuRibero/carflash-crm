@@ -121,20 +121,6 @@ export function CreateRecurrentTicketModal({
 
           <div className="grid grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="status">Estado</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, status: value as TicketStatus })
-                }
-              >
-                <SelectTrigger id="status">
-                  <SelectValue placeholder="Seleccionar estado" />
-                </SelectTrigger>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="priority">Prioridad</Label>
               <Select
                 value={formData.priority}

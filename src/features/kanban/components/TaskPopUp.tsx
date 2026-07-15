@@ -189,7 +189,7 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
 }
 
 const TaskFormPopUp = withPopup(TaskForm, {
-  title: "Add task",
+  title: "Agregar Tarea",
   description: "Create a new task for the board.",
   primaryLabel: "Create task",
   secondaryLabel: "Cancel",

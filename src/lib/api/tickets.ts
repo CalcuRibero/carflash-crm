@@ -20,6 +20,14 @@ export function getTicket(id: string | number, options: TicketRequestOptions = {
   });
 }
 
+export function getTicketsByUserId(userId: number, options: TicketRequestOptions = {}) {
+  return apiRequest<Ticket[]>(`/tickets/users/${userId}`, {
+    method: "GET",
+    signal: options.signal,
+    token: options.token,
+  });
+}
+
 export async function createTicket(payload: CreateTicketRequest, options: TicketRequestOptions = {}) {
   return apiRequest<Ticket>("/tickets", {
     body: payload,

@@ -9,22 +9,35 @@ import { SearchBar } from "@/features/recurrent-tickets/components/SearchBar";
 import { useRecurrentTickets } from "@/features/recurrent-tickets/hooks/useRecurrentTickets";
 import { useCreateRecurrentTickets } from "@/features/recurrent-tickets/hooks/useCreateRecurrentTickets";
 import { useDeleteRecurrentTicket } from "@/features/recurrent-tickets/hooks/useDeleteRecurrentTicket";
+import { useEditRecurrentTicketModal } from "@/features/recurrent-tickets/hooks/useEditRecurrentTicketModal";
 import type { RecurrentTicket } from "@/features/recurrent-tickets/types";
-import { TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
+import { INITIAL_UPDATE_RECURRENT_TICKET_DATA, TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
+import { UpdateRecurrentTicketModal } from "@/features/recurrent-tickets/components/UpdateRecurrentTicketModal";
 
 export default function RecurrentTicketsPage() {
   const { tickets, isLoading, error, refetch } = useRecurrentTickets();
   const { createRecurrentTicket } = useCreateRecurrentTickets();
   const { deleteRecurrentTicket } = useDeleteRecurrentTicket();
+  const {
+    closeModal,
+    editedTicket,
+    errorMessage,
+    isOpen,
+    isSubmitting,
+    modalProps,
+    openModal,
+    submitTicket,
+  } = useEditRecurrentTicketModal();
   const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentTicket, setCurrentTicket] = useState<RecurrentTicket>(INITIAL_UPDATE_RECURRENT_TICKET_DATA)
   const filteredTickets = tickets.filter((ticket) =>
     ticket.title.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const handleEdit = (ticket: RecurrentTicket) => {
-    console.log("Edit ticket:", ticket);
-    // TODO: Implement edit functionality
+    setCurrentTicket(ticket)
+    openModal(ticket);
   };
 
   const handleDelete = async (ticketId: string) => {
@@ -53,14 +66,19 @@ export default function RecurrentTicketsPage() {
       priority: data.priority,
       category: data.category,
       assignedTo: data.assignedTo ?? null,
-      dueDate: data.dueDate,
+      dueDate: data.dueDate || new Date(),
       interval: data.interval,
       first_run_at: data.first_run_at,
     });
-    
+
     if (result) {
       await refetch();
     }
+  };
+
+  const handleEditTicket = async (data: Partial<CreateRecurrentTicketData>) => {
+    await submitTicket(data);
+    await refetch();
   };
 
   if (isLoading) {
@@ -113,6 +131,13 @@ export default function RecurrentTicketsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateTicket}
+      />
+
+      <UpdateRecurrentTicketModal
+        currentTicket={currentTicket}
+        isOpen={isOpen}
+        onClose={closeModal}
+        onSubmit={handleEditTicket}
       />
     </div>
   );

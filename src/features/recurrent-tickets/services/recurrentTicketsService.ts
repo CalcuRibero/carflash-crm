@@ -22,6 +22,16 @@ export class RecurrentTicketsService {
     return apiRequest<void>(`${this.uri}/${id}`, {
       method: "DELETE",
     });
+  }
+
+  async updateRecurrentTicket(
+    id: string,
+    data: Partial<Omit<RecurrentTicket, "id">>
+  ): Promise<RecurrentTicket> {
+    return apiRequest<RecurrentTicket>(`${this.uri}/${id}`, {
+      method: "PATCH",
+      body: data,
+    });
   }  
 }
 

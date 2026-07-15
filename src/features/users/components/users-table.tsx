@@ -36,10 +36,15 @@ function getPageNumbers(currentPage: number, pageCount: number) {
 }
 
 export function UsersTable({ table }: { table: TableType<UserRow> }) {
+
   const pageCount = Math.max(table.getPageCount(), 1);
   const currentPage = Math.min(table.getState().pagination.pageIndex + 1, pageCount);
   const pageNumbers = getPageNumbers(currentPage, pageCount);
   const rowsPerPage = `${table.getState().pagination.pageSize}`;
+
+  const handleCheckboxClick = (event: React.MouseEvent, userId: number) => {
+    event.stopPropagation();
+  };
 
   return (
     <div className="flex flex-1 flex-col gap-4">
@@ -62,7 +67,7 @@ export function UsersTable({ table }: { table: TableType<UserRow> }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="border-border/60 hover:bg-white/2.5"
+                  className="border-border/60 hover:bg-white/2.5 cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
