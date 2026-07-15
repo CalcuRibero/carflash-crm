@@ -1,36 +1,34 @@
 // hooks/useNotifications.ts
+'use client';
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { useAuth } from './useAuthContext';
+import { getApiToken } from '../utils/apiClient';
 
-type UseNotificationsProps = {
-    assignedTo: string,
-    title: string,
-    type: 'ticket' | 'recurrentTicket'
-}
+export function useNotifications() {
+  const token = getApiToken();
+  const [notifications, setNotifications] = useState<any[]>([]);
 
-export function useNotificationsTickets(
-    {
-        assignedTo,
-        title,
-        type
-    }: UseNotificationsProps) {
+  useEffect(() => {
+    if (!token) return;
 
-    const server = process.env.NEXT_PUBLIC_API_BASE_PATH || "";
-    const [notifications, setNotifications] = useState<any[]>([]);
+    const socket: Socket = io(`${process.env.NEXT_PUBLIC_WS_URL}/notifications`, {
+      auth: { token: token },
+    });
 
-    useEffect(() => {
-        const socket: Socket = io(server, {
-            query: { assignedTo, title },
-        });
+    socket.on('notification', (data) => {
+      setNotifications((prev) => [data, ...prev]);
+      // opcional: mostrar un toast
+    });
 
-        socket.on(type, (data) => {
-            setNotifications((prev) => [data, ...prev]);
-        });
+    socket.on('connect_error', (err) => {
+      console.error('WS auth error:', err.message);
+    });
 
-        return () => {
-            socket.disconnect();
-        };
-    }, [type]);
+    return () => {
+      socket.disconnect();
+    };
+  }, [token]);
 
-    return notifications;
+  return notifications;
 }
