@@ -6,8 +6,13 @@ import type { CreateTicketRequest, Ticket } from "@/lib/api/types";
 
 import { createTicketService } from "../services/ticketsService";
 import type { CreateTicketModalController } from "../types";
+import { createNotification } from "@/lib/api/notifications";
+import { Notification, NotificationType } from "@/lib/api/types";
+import { useRouter } from "next/navigation";
+
 
 export function useCreateTicketModal(): CreateTicketModalController {
+  const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -32,6 +37,17 @@ export function useCreateTicketModal(): CreateTicketModalController {
     try {
       const ticket = await createTicketService(values);
       setCreatedTicket(ticket);
+      
+      if(values.assignedTo) {
+        const notificationData: Omit<Notification, 'id' | 'createdAt'> = {
+          userId: values.assignedTo,
+          type: NotificationType.NEW_TICKET,
+          message: `Nuevo ticket creado: ${values.title}`,
+          meta: {},
+          read: false,
+        }
+        await createNotification(notificationData)
+      }
       setIsOpen(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : "We could not create the ticket.";

@@ -12,6 +12,7 @@ import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provi
 
 import "./globals.css";
 import { AuthProvider } from "@/stores/auth/auth-provider";
+import { NotificationsProvider } from "@/shared/hooks/useNotifications";
 
 export const metadata: Metadata = {
   title: APP_CONFIG.meta.title,
@@ -40,16 +41,18 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body className={`${fontVars} min-h-screen antialiased`}>
         <AuthProvider>
           <TooltipProvider>
-            <PreferencesStoreProvider
-              themeMode={theme_mode}
-              themePreset={theme_preset}
-              contentLayout={content_layout}
-              navbarStyle={navbar_style}
-              font={font}
-            >
-              {children}
-              <Toaster />
-            </PreferencesStoreProvider>
+            <NotificationsProvider>
+              <PreferencesStoreProvider
+                themeMode={theme_mode}
+                themePreset={theme_preset}
+                contentLayout={content_layout}
+                navbarStyle={navbar_style}
+                font={font}
+              >
+                {children}
+                <Toaster />
+              </PreferencesStoreProvider>
+            </NotificationsProvider>
           </TooltipProvider>
         </AuthProvider>
       </body>
