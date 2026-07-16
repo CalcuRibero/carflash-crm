@@ -18,7 +18,7 @@ export function proxy(request: NextRequest) {
 
   // If user is authenticated and trying to access auth page, redirect to dashboard
   if (token && pathname.startsWith("/auth")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard/kanban", request.url));
   }
 
   return NextResponse.next();

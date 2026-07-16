@@ -86,11 +86,11 @@ export type UpdateTicketRequest = Partial<CreateTicketRequest> & {
   resolvedAt?: string | Date | null;
 };
 
-export type NotificationType =
-  | "ticket_created"
-  | "ticket_updated"
-  | "ticket_assigned"
-  | "comment_added";
+// export 
+export enum NotificationType {
+    NEW_TICKET = "NewTicket",
+    NEW_CHAT_MESSAGE = "NewChatMessage"
+}
 
 export interface NotificationMeta {
   ticketId?: string;

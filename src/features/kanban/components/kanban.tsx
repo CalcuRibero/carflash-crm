@@ -116,7 +116,7 @@ export function Kanban() {
     }
 
     setBoard(templatedBoard as any as BoardState);
-  }, [getTickets.tickets, createTicketModal.createdTicket])
+  }, [getTickets.tickets])
 
   function handleDragStart(event: DragStartEvent) {
     if (event.active.data.current?.type === "column") return;

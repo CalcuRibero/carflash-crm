@@ -48,46 +48,46 @@ export interface NavGroup {
 }
 
 export const sidebarItems: NavGroup[] = [
+  // {
+  //   id: 1,
+  //   label: "Dashboards",
+  //   items: [
+  //     // {
+  //     //   title: "Default",
+  //     //   url: "/dashboard/default",
+  //     //   icon: LayoutDashboard,
+  //     //   roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+  //     // },
+  //     // {
+  //     //   title: "CRM",
+  //     //   url: "/dashboard/crm",
+  //     //   icon: ChartBar,
+  //     // },
+  //     // {
+  //     //   title: "Finance",
+  //     //   url: "/dashboard/finance",
+  //     //   icon: Banknote,
+  //     // },
+  //     // {
+  //     //   title: "Analytics",
+  //     //   url: "/dashboard/analytics",
+  //     //   icon: Gauge,
+  //     // },
+  //     // {
+  //     //   title: "Productivity",
+  //     //   url: "/dashboard/productivity",
+  //     //   icon: ListTodo,
+  //     // },
+  //     // {
+  //     //   title: "E-commerce",
+  //     //   url: "/dashboard/ecommerce",
+  //     //   icon: ShoppingBag,
+  //     // },
+  //   ],
+  // },
   {
     id: 1,
-    label: "Dashboards",
-    items: [
-      {
-        title: "Default",
-        url: "/dashboard/default",
-        icon: LayoutDashboard,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
-      },
-      // {
-      //   title: "CRM",
-      //   url: "/dashboard/crm",
-      //   icon: ChartBar,
-      // },
-      // {
-      //   title: "Finance",
-      //   url: "/dashboard/finance",
-      //   icon: Banknote,
-      // },
-      // {
-      //   title: "Analytics",
-      //   url: "/dashboard/analytics",
-      //   icon: Gauge,
-      // },
-      // {
-      //   title: "Productivity",
-      //   url: "/dashboard/productivity",
-      //   icon: ListTodo,
-      // },
-      // {
-      //   title: "E-commerce",
-      //   url: "/dashboard/ecommerce",
-      //   icon: ShoppingBag,
-      // },
-    ],
-  },
-  {
-    id: 2,
-    label: "Pages",
+    label: "Panel de control",
     items: [
       // {
       //   title: "Email",
@@ -125,7 +125,7 @@ export const sidebarItems: NavGroup[] = [
       //   comingSoon: true,
       // },
       {
-        title: "Users",
+        title: "Usuarios",
         url: "/dashboard/users",
         icon: Users,
         roles: ["SuperAdmin"],

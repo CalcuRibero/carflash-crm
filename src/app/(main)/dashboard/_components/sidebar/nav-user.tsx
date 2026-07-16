@@ -14,10 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
-import { getInitials } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import { clearAuthToken } from "@/features/auth/actions/auth-actions";
 import { AuthProfile } from "@/features/auth/types";
-import { User } from "@/lib/api/types";
+import { NotificationType, User } from "@/lib/api/types";
+import { Badge } from "@/components/ui/badge";
+import { useNotifications } from "@/shared/hooks/useNotifications";
 
 export function NavUser({
   user,
@@ -27,11 +29,17 @@ export function NavUser({
   const router = useRouter();
   const userName = user ? user.fullName : "Invitado";
   const { isMobile } = useSidebar();
+  const { notifications } = useNotifications();
 
   const handleLogout = async () => {
     await clearAuthToken();
     router.push("/auth/login"); 
   };
+
+  const NotificationsTypeLabels: Record<string, string> = {
+    "NewTicket": "Nuevo Ticket",
+    "NewChatMessage": "Nuevo Mensaje del chat"
+  }
 
   return (
     <SidebarMenu>
@@ -45,6 +53,9 @@ export function NavUser({
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate text-muted-foreground text-xs">{userName}</span>
               </div>
+              <Badge>
+                {notifications.length}
+              </Badge>
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -63,9 +74,30 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <MessageSquareDot />
-                Notificaciones
+              <DropdownMenuItem className={cn({"animate-pulse bg-primary text-white" : notifications.length})}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton>
+                      <MessageSquareDot />
+                      <span>Notificaciones</span>
+                      <Badge>
+                        {notifications.length}
+                      </Badge>
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {notifications.map((notification, idx) => 
+                      // notification.type === NotificationType.NEW_TICKET ?
+                      <DropdownMenuGroup key={idx}>
+                        <DropdownMenuItem  className="flex flex-col gap-2">
+                          <Badge className="text-xs bg-primary text-white hover:text-white! items-start">{NotificationsTypeLabels[notification.type]}</Badge>
+                          <span>{notification.message}</span>
+                        </DropdownMenuItem>
+
+                      </DropdownMenuGroup>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
