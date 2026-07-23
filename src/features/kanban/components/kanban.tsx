@@ -21,31 +21,11 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import {
-  ArrowUpDown,
-  Bot,
-  ChevronDown,
-  Kanban as KanbanIcon,
-  LayoutTemplate,
-  List,
-  Plus,
-  Search,
-  SlidersHorizontal,
-  Table2,
-  Upload,
-} from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { TicketsModal, useCreateTicketModal, useEditTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Ticket } from "@/lib/api/types";
 
 import { columnIds, columns } from "./data";
@@ -53,6 +33,7 @@ import { KanbanColumn } from "./kanban-column";
 import { TaskCard } from "./task-card";
 import type { BoardState, ColumnId } from "../types";
 import { findColumnId, findTask, INITIAL_BOARD } from "./utils";
+import { MobileKanbanColumn } from "./mobile-kanban-column";
 
 
 export function Kanban() {
@@ -314,13 +295,19 @@ export function Kanban() {
         onDragCancel={handleDragCancel}
       >
         <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 px-4 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-5 lg:pt-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
-          <div className="inline-grid h-full min-w-full grid-cols-[repeat(5,minmax(20rem,1fr))] gap-4">
+          <div className="h-full min-w-full grid-cols-4 gap-4 hidden md:inline-grid">
             <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
               {orderedColumns.map((column) => (
                 <KanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={editTicketModal.openModal} />
               ))}
             </SortableContext>
           </div>
+        </div>
+        <div className="flex md:hidden flex-col">
+          {orderedColumns.map((column) => (
+            <MobileKanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={editTicketModal.openModal}/>
+            ))
+          }
         </div>
         <DragOverlay dropAnimation={null}>
           {activeTask ? <TaskCard task={activeTask} columnId={activeColumnId ?? undefined} isOverlay /> : null}
