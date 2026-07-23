@@ -7,8 +7,8 @@ function writeClientCookie(serializedCookie: string) {
   document.cookie = serializedCookie;
 }
 
-export function setClientCookie(key: string, value: string, days = 7) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+export function setClientCookie(key: string, value: string) {
+  const expires = new Date(Date.now() + 12 * 60 * 60 * 1000).toUTCString();
   writeClientCookie(`${key}=${value}; expires=${expires}; path=/`);
 }
 
