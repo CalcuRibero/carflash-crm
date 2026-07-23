@@ -13,6 +13,9 @@
 # codex
 /.codex
 
+# windsurf
+/.windsurf/
+
 # supabase
 supabase/
 
