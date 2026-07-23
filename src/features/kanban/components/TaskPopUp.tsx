@@ -71,8 +71,6 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
 
   const { users } = useUsers();
 
-  console.log("users", users);
-
   return (
     <form
       className="grid gap-3"
@@ -82,28 +80,28 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
       }}
     >
       <div className="grid gap-1.5">
-        <Label htmlFor="task-title">Title</Label>
+        <Label htmlFor="task-title">Título</Label>
         <Input
           id="task-title"
           value={formValues.title}
           onChange={(event) => updateForm("title", event.target.value)}
-          placeholder="Write a task title"
+          placeholder="Escribe un título para la tarea"
         />
       </div>
 
       <div className="grid gap-1.5">
-        <Label htmlFor="task-description">Description</Label>
+        <Label htmlFor="task-description">Descripción</Label>
         <Textarea
           id="task-description"
           value={formValues.description}
           onChange={(event) => updateForm("description", event.target.value)}
-          placeholder="Describe the task"
+          placeholder="Describe la tarea"
         />
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="grid gap-1.5">
-          <Label>Status</Label>
+          <Label>Estado</Label>
           <Select value={formValues.status} onValueChange={(value) => updateForm("status", value as TicketStatus)}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -119,7 +117,7 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
         </div>
 
         <div className="grid gap-1.5">
-          <Label>Priority</Label>
+          <Label>Prioridad</Label>
           <Select
             value={formValues.priority}
             onValueChange={(value) => updateForm("priority", value as TicketPriority)}
@@ -140,7 +138,7 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="grid gap-1.5">
-          <Label>Category</Label>
+          <Label>Categoría</Label>
           <Select
             value={formValues.category}
             onValueChange={(value) => updateForm("category", value as TicketCategory)}
@@ -159,10 +157,10 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
         </div>
 
         <div className="grid gap-1.5">
-          <Label>Assigned to</Label>
+          <Label>Asignado a</Label>
           <Select value={formValues.assignedTo} onValueChange={(value) => updateForm("assignedTo", value)}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Unassigned" />
+              <SelectValue placeholder="Sin asignar" />
             </SelectTrigger>
             <SelectContent>
               {users.map((user) => (
@@ -176,7 +174,7 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
       </div>
 
       <div className="grid gap-1.5">
-        <Label htmlFor="task-due-date">Due date</Label>
+        <Label htmlFor="task-due-date">Fecha de vencimiento</Label>
         <Input
           id="task-due-date"
           type="date"
@@ -190,9 +188,9 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
 
 const TaskFormPopUp = withPopup(TaskForm, {
   title: "Agregar Tarea",
-  description: "Create a new task for the board.",
-  primaryLabel: "Create task",
-  secondaryLabel: "Cancel",
+  description: "Crear una nueva tarea para el tablero.",
+  primaryLabel: "Crear tarea",
+  secondaryLabel: "Cancelar",
 });
 
 export function TaskPopUp({ isOpen, onClose, onSubmit }: TaskPopUpProps) {

@@ -28,6 +28,7 @@ import { usersColumns } from "./users-columns";
 import { UsersTable } from "./users-table";
 import { CreateUsersModal, type CreateUserData } from "./createUsersModal";
 import { useCreateUser } from "../hooks/useCreateUser";
+import { UserCategoryLabel } from "@/features/users-metrics/type";
 
 interface UsersProps {
   users: UserRow[];
@@ -97,9 +98,9 @@ export function Users({ users, refreshUsers }: UsersProps) {
   return (
     <Card>
       <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
-        <CardTitle className="text-xl leading-none">Users</CardTitle>
+        <CardTitle className="text-xl leading-none">Usuarios</CardTitle>
         <CardDescription className="max-w-sm leading-snug">
-          Manage your organization members and their access.
+          Administra los miembros de tu organización.
         </CardDescription>
         <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
           <InputGroup className="h-7 w-full md:w-64">
@@ -108,7 +109,7 @@ export function Users({ users, refreshUsers }: UsersProps) {
             </InputGroupAddon>
             <InputGroupInput
               className="h-7"
-              placeholder="Search users..."
+              placeholder="Buscar usuarios..."
               value={searchQuery}
               onChange={(event) => {
                 table.getColumn("search")?.setFilterValue(event.target.value || undefined);
@@ -120,32 +121,32 @@ export function Users({ users, refreshUsers }: UsersProps) {
             </InputGroupAddon>
           </InputGroup>
           <Button variant="outline" size="sm">
-            <SlidersHorizontal /> Hide
+            <SlidersHorizontal /> Ocultar
           </Button>
           <Button variant="outline" size="sm">
-            <Cog /> Customize
+            <Cog /> Personalizar
           </Button>
           <Button variant="outline" size="sm">
-            <Download /> Export
+            <Download /> Exportar
           </Button>
           <Button size="sm" onClick={handleAddUser}>
-            <Plus /> Add User
+            <Plus /> Agregar Usuario
           </Button>
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 px-0">
         <div className="flex flex-wrap items-center justify-between gap-3 px-4">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap justify-center md:justify-end items-center gap-3">
             <Select value={roleFilter} onValueChange={(value) => setColumnSelectFilter("role", value)}>
               <SelectTrigger size="sm">
-                <span className="text-muted-foreground">Role:</span>
+                <span className="text-muted-foreground">Rol:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper" align="start">
                 <SelectGroup>
                   {filters.role.map((option) => (
                     <SelectItem key={option} value={option}>
-                      {option}
+                      {UserCategoryLabel[option] || 'Todos'}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -153,9 +154,9 @@ export function Users({ users, refreshUsers }: UsersProps) {
             </Select>
 
 
-            <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
+            {/* <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
               <SelectTrigger size="sm">
-                <span className="text-muted-foreground">Status:</span>
+                <span className="text-muted-foreground">Estado:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper" align="start">
@@ -167,24 +168,24 @@ export function Users({ users, refreshUsers }: UsersProps) {
                   ))}
                 </SelectGroup>
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3 px-4">
-          <div className="text-muted-foreground text-sm tabular-nums">{selectedCount} selected</div>
+        {/* <div className="flex items-center justify-between gap-3 px-4">
+          <div className="text-muted-foreground text-sm tabular-nums">{selectedCount} seleccionados</div>
 
           <Tabs defaultValue="list">
             <TabsList>
-              <TabsTrigger value="list" aria-label="List view">
+              <TabsTrigger value="list" aria-label="Vista de lista">
                 <Rows3 />
               </TabsTrigger>
-              <TabsTrigger value="grid" aria-label="Grid view">
+              <TabsTrigger value="grid" aria-label="Vista de cuadrícula">
                 <Grid />
               </TabsTrigger>
             </TabsList>
           </Tabs>
-        </div>
+        </div> */}
 
         <UsersTable table={table} />
       </CardContent>

@@ -49,12 +49,12 @@ export function withPopup<TProps extends object>(
             <DialogFooter>
               {secondaryButton ? (
                 <Button type="button" variant="outline" onClick={secondaryButton}>
-                  {options.secondaryLabel ?? "Cancel"}
+                  {options.secondaryLabel ?? "Cancelar"}
                 </Button>
               ) : null}
               {primaryButton ? (
                 <Button type="button" onClick={primaryButton}>
-                  {options.primaryLabel ?? "Confirm"}
+                  {options.primaryLabel ?? "Confirmar"}
                 </Button>
               ) : null}
             </DialogFooter>

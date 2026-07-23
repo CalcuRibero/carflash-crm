@@ -106,12 +106,12 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
       }}
       primaryAction={{
         disabled: !canSubmit || isSubmitting,
-        label: isSubmitting ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update ticket" : "Create ticket"),
+        label: isSubmitting ? (isEditMode ? "Actualizando..." : "Creando...") : (isEditMode ? "Actualizar ticket" : "Crear ticket"),
         onClick: handleSubmit,
       }}
       secondaryAction={{
         disabled: isSubmitting,
-        label: "Cancel",
+        label: "Cancelar",
         onClick: resetAndClose,
       }}
       title={isEditMode ? "Editar Ticket" : "Crear Nuevo Ticket"}
@@ -207,7 +207,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
             <Label>Asignado a</Label>
             <Select value={formValues.assignedTo} onValueChange={(value) => updateForm("assignedTo", value)}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Unassigned" />
+                <SelectValue placeholder="Sin asignar" />
               </SelectTrigger>
               <SelectContent>
                 {users.map((user) => (

@@ -104,7 +104,7 @@ export const sidebarItems: NavGroup[] = [
         title: "Tickets Fijos",
         url: "/dashboard/recurrent-tickets",
         icon: Repeat,
-        roles: ["SuperAdmin"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
       // {
       //   title: "Calendar",

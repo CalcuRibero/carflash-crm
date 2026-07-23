@@ -23,10 +23,10 @@ export function RecentNotesCard() {
   return (
     <Card className="shadow-xs">
       <CardHeader>
-        <CardTitle>Recent Notes</CardTitle>
+        <CardTitle>Notas Recientes</CardTitle>
         <CardAction>
           <Button variant="ghost" size="sm" className="text-muted-foreground">
-            View all
+            Ver todo
           </Button>
         </CardAction>
       </CardHeader>

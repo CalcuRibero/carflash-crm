@@ -15,7 +15,7 @@ export function useCreateUser() {
     try {
       return await createUserService(payload);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "We could not create the user.";
+      const message = error instanceof Error ? error.message : "No pudimos generar el usuario.";
       setErrorMessage(message);
       console.error(error);
       return null;

@@ -17,7 +17,7 @@ export function useRecurrentTickets() {
       setTickets(data);
       setError(null);
     } catch (err) {
-      setError("Failed to load recurrent tickets");
+      setError("Fallo la carga de tickets recurrentes.");
       console.error(err);
     } finally {
       setIsLoading(false);

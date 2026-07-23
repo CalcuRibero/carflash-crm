@@ -15,7 +15,7 @@ export function useDeleteRecurrentTicket() {
       await recurrentTicketsService.deleteRecurrentTicket(id);
       return true;
     } catch (err) {
-      setError("Failed to delete recurrent ticket");
+      setError("Fallo la eliminacion del ticket recurrente.");
       console.error(err);
       return false;
     } finally {

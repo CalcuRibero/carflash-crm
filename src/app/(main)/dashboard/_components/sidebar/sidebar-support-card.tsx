@@ -9,9 +9,9 @@ export function SidebarSupportCard() {
   return (
     <Card size="sm" className="shadow-none group-data-[collapsible=icon]:hidden">
       <CardHeader className="px-4">
-        <CardTitle className="text-sm">Looking for something more?</CardTitle>
+        <CardTitle className="text-sm">¿Buscas algo más?</CardTitle>
         <CardDescription>
-          Open an issue or do reach out to me on&nbsp;
+          Abre un issue o contáctame en
           <Link
             href="https://x.com/arhamkhnz"
             target="_blank"
