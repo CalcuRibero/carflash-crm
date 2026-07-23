@@ -59,7 +59,7 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
                 variant="ghost"
                 size="icon-sm"
                 className="md:hidden"
-                aria-label="Back to conversations"
+                aria-label="Volver a conversaciones"
                 onClick={onBack}
               >
                 <ArrowLeft />
@@ -82,7 +82,7 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
                   <PhoneCall />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Call</TooltipContent>
+              <TooltipContent>Llamar</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -90,7 +90,7 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
                   <Tag />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Tag</TooltipContent>
+              <TooltipContent>Etiquetar</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -98,7 +98,7 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
                   <AlarmClock />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Snooze</TooltipContent>
+              <TooltipContent>Pospuesta</TooltipContent>
             </Tooltip>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -110,20 +110,20 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
                 <DropdownMenuGroup>
                   <DropdownMenuItem onSelect={onOpenContact}>
                     <UserRound />
-                    View profile
+                    Ver perfil
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Copy />
-                    Copy email
+                    Copiar correo
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Flag />
-                    Mark priority
+                    Marcar como prioritario
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem variant="destructive">Block contact</DropdownMenuItem>
+                  <DropdownMenuItem variant="destructive">Bloquear contacto</DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -140,7 +140,7 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
         <div className="flex flex-col gap-6 px-2 py-8">
           <div className="flex items-center gap-2">
             <div className="h-px flex-1 bg-border" />
-            <span className="rounded-full bg-muted px-3 py-1 text-muted-foreground text-xs">May 6, 2026</span>
+            <span className="rounded-full bg-muted px-3 py-1 text-muted-foreground text-xs">6 de mayo de 2026</span>
             <div className="h-px flex-1 bg-border" />
           </div>
 
@@ -190,18 +190,18 @@ export function ChatThread({ contact, messages, onOpenContact, onBack, showBackB
             className="w-full justify-start gap-2 border-b px-3 **:data-[slot=tabs-trigger]:border-x-0 **:data-[slot=tabs-trigger]:px-6 group-data-horizontal/tabs:h-10"
           >
             <TabsTrigger value="reply" className="flex-none px-1">
-              Reply
+              Responder
             </TabsTrigger>
             <TabsTrigger value="note" className="flex-none px-1">
-              Internal note
+              Nota interna
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="reply" className="m-0">
-            <MessageComposer placeholder="Type your message..." />
+            <MessageComposer placeholder="Escribe tu mensaje..." />
           </TabsContent>
           <TabsContent value="note" className="m-0">
-            <MessageComposer placeholder="Write an internal note..." />
+            <MessageComposer placeholder="Escribe una nota interna..." />
           </TabsContent>
         </Tabs>
       </div>
@@ -216,19 +216,19 @@ function MessageComposer({ placeholder }: { placeholder: string }) {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon-sm" aria-label="Format">
+          <Button variant="ghost" size="icon-sm" aria-label="Formato">
             <Type />
           </Button>
           <Button variant="ghost" size="icon-sm" aria-label="Emoji">
             <Smile />
           </Button>
-          <Button variant="ghost" size="icon-sm" aria-label="Attach file">
+          <Button variant="ghost" size="icon-sm" aria-label="Adjuntar archivo">
             <Paperclip />
           </Button>
-          <Button variant="ghost" size="icon-sm" aria-label="Insert link">
+          <Button variant="ghost" size="icon-sm" aria-label="Insertar enlace">
             <Link />
           </Button>
-          <Button variant="outline" size="icon-sm" aria-label="AI assist">
+          <Button variant="outline" size="icon-sm" aria-label="Asistente IA">
             <Sparkles />
           </Button>
         </div>

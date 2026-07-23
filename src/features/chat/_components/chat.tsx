@@ -29,7 +29,7 @@ export function Chat({ conversations = [] }: ChatProps) {
   if (!conversations.length) {
     return (
       <div className="flex h-[calc(100svh-var(--header-height))] min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden bg-background/50">
-        <p className="text-sm text-muted-foreground">No conversations available.</p>
+        <p className="text-sm text-muted-foreground">No hay conversaciones disponibles.</p>
       </div>
     );
   }
@@ -85,8 +85,8 @@ export function Chat({ conversations = [] }: ChatProps) {
       {!isLg && (
         <Sheet open={showContact} onOpenChange={setShowContact}>
           <SheetContent side="right" className="w-80 p-0" showCloseButton={false}>
-            <SheetTitle className="sr-only">Contact profile</SheetTitle>
-            <SheetDescription className="sr-only">View contact details and activity</SheetDescription>
+            <SheetTitle className="sr-only">Perfil de contacto</SheetTitle>
+            <SheetDescription className="sr-only">Ver detalles y actividad del contacto</SheetDescription>
             <ChatProfileDetails contact={activeConversation.contact} onClose={() => setShowContact(false)} />
           </SheetContent>
         </Sheet>

@@ -7,7 +7,7 @@ export function FocusCard() {
   return (
     <Card className="shadow-xs">
       <CardHeader>
-        <CardTitle>Focus</CardTitle>
+        <CardTitle>Enfoque</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">

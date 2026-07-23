@@ -150,7 +150,7 @@ export const usersColumns: ColumnDef<UserRow>[] = [
   },
   {
     accessorKey: "fullName",
-    header: "User",
+    header: "Usuario",
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
         <AvatarCell name={row.original.fullName ?? row.original.username} lastActive={row.original.lastActive ?? 0} />
@@ -175,29 +175,29 @@ export const usersColumns: ColumnDef<UserRow>[] = [
   },
   {
     accessorKey: "role",
-    header: "Role",
+    header: "Rol",
     filterFn: "equalsString",
     cell: ({ row }) => <RoleCell role={row.original.role} detail={row.original.username} />,
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "Estado",
     filterFn: "equalsString",
     cell: ({ row }) => <StatusBadge status={row.original.isActive ? "Active" : "Deactivated"} />,
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: "Creado en",
     cell: ({ row }) => <div className="text-foreground text-sm">{formatDate(row.original.createdAt)}</div>,
   },
   {
     accessorKey: "updatedAt",
-    header: "Updated At",
+    header: "Actualizado en",
     cell: ({ row }) => <div className="text-foreground text-sm">{formatDate(row.original.updatedAt)}</div>,
   },
   {
     id: "actions",
-    header: () => <div className="text-right">Actions</div>,
+    header: () => <div className="text-right">Acciones</div>,
     cell: ({ row }) => {
       const { deleteUser } = useDeleteUser();
       const { updateUser } = useUpdateUser();

@@ -3,9 +3,9 @@ import { ArrowRight, Clock3, Focus, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const summaryCards = [
-  { title: "Today", value: "4", description: "tasks scheduled", icon: Clock3 },
-  { title: "This Week", value: "68%", description: "progress", icon: TrendingUp },
-  { title: "Focus", value: "Deep Work", description: "2 hours remaining", icon: Focus },
+  { title: "Hoy", value: "4", description: "tareas programadas", icon: Clock3 },
+  { title: "Esta Semana", value: "68%", description: "progreso", icon: TrendingUp },
+  { title: "Enfoque", value: "Trabajo Profundo", description: "2 horas restantes", icon: Focus },
 ] as const;
 
 export function SummaryCards() {

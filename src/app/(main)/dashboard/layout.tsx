@@ -59,7 +59,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
               </div>
               <div className="flex items-center gap-2">
                 {/* <LayoutControls /> */}
-                <ThemeSwitcher />
+                {/* <ThemeSwitcher /> */}
                 {/* <Button asChild size="icon">
                   <Link
                     prefetch={false}

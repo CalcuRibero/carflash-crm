@@ -18,7 +18,7 @@ export function useCreateRecurrentTickets() {
       const result = await recurrentTicketsService.createRecurrentTicket(data);
       return result;
     } catch (err) {
-      setError("Failed to create recurrent ticket");
+      setError("Fallo la creacion de tickets recurrentes");
       console.error(err);
       return null;
     } finally {

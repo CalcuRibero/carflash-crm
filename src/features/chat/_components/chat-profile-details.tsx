@@ -44,34 +44,34 @@ export function ChatProfileDetails({ contact, onClose }: ChatProfileDetailsProps
           <div className="truncate text-muted-foreground text-xs">{contact.role}</div>
         </div>
 
-        <Button variant="ghost" size="icon-sm" aria-label="Close profile" onClick={onClose}>
+        <Button variant="ghost" size="icon-sm" aria-label="Cerrar perfil" onClick={onClose}>
           <X />
         </Button>
       </div>
 
       <div className="flex gap-2">
-        <Button size="icon-sm" variant="ghost" aria-label="Email">
+        <Button size="icon-sm" variant="ghost" aria-label="Correo">
           <Mail className="size-3.5" />
         </Button>
-        <Button size="icon-sm" variant="ghost" aria-label="Call">
+        <Button size="icon-sm" variant="ghost" aria-label="Llamar">
           <PhoneCall className="size-3.5" />
         </Button>
-        <Button size="icon-sm" variant="ghost" aria-label="Schedule">
+        <Button size="icon-sm" variant="ghost" aria-label="Programar">
           <Calendar className="size-3.5" />
         </Button>
-        <Button size="icon-sm" variant="ghost" aria-label="Copy link">
+        <Button size="icon-sm" variant="ghost" aria-label="Copiar enlace">
           <Link className="size-3.5" />
         </Button>
-        <Button size="icon-sm" variant="ghost" aria-label="More">
+        <Button size="icon-sm" variant="ghost" aria-label="Más">
           <MoreHorizontal className="size-3.5" />
         </Button>
       </div>
 
       <Tabs defaultValue="details">
         <TabsList variant="line" className="w-full justify-between border-b px-0 **:data-[slot=tabs-trigger]:flex-1">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="files">Files</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="details">Detalles</TabsTrigger>
+          <TabsTrigger value="files">Archivos</TabsTrigger>
+          <TabsTrigger value="activity">Actividad</TabsTrigger>
         </TabsList>
       </Tabs>
 

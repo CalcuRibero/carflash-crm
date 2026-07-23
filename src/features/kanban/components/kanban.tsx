@@ -85,7 +85,6 @@ export function Kanban() {
     const tickets = getTickets.tickets
 
     if (!tickets) { 
-      console.log("No tickets found");
       return
     };
 
@@ -192,7 +191,6 @@ export function Kanban() {
     const sourceColumnId = findColumnId(board, activeId);
     const resolvedDropColumnId = dropColumnId ?? findColumnId(board, overId);
 
-    console.log("Updating ticket status from", sourceColumnId, "to", resolvedDropColumnId);
     void updateTicket.updateTicket(activeId, {
       ...active,
       status: resolvedDropColumnId,

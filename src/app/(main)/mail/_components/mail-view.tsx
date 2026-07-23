@@ -63,7 +63,7 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                 <X />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Close message</TooltipContent>
+            <TooltipContent>Cerrar mensaje</TooltipContent>
           </Tooltip>
           <Separator className="h-4 data-vertical:self-center" orientation="vertical" />
           <div className="flex items-center gap-0">
@@ -73,7 +73,7 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                   <ChevronLeft />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Previous message</TooltipContent>
+              <TooltipContent>Mensaje anterior</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -81,7 +81,7 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                   <ChevronRight />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Next message</TooltipContent>
+              <TooltipContent>Siguiente mensaje</TooltipContent>
             </Tooltip>
           </div>
         </div>
@@ -93,7 +93,7 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                 <Pin />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Pin thread</TooltipContent>
+            <TooltipContent>Fijar conversación</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -101,7 +101,7 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                 <Archive />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Archive</TooltipContent>
+            <TooltipContent>Archivar</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -109,7 +109,7 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                 <Reply />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Reply</TooltipContent>
+            <TooltipContent>Responder</TooltipContent>
           </Tooltip>
           <Tooltip>
             <DropdownMenu>
@@ -124,27 +124,27 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <ReplyAll />
-                    Reply all
+                    Responder a todos
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Forward />
-                    Forward
+                    Reenviar
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <MailOpen />
-                    Mark as unread
+                    Marcar como no leído
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Tag />
-                    Add label
+                    Agregar etiqueta
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-            <TooltipContent>More actions</TooltipContent>
+            <TooltipContent>Más acciones</TooltipContent>
           </Tooltip>
           <Separator className="h-4 data-vertical:self-center" orientation="vertical" />
           <Tooltip>
@@ -153,7 +153,7 @@ export function MailView({ mail, onClose }: MailDisplayProps) {
                 <Trash2 className="text-destructive" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Move to trash</TooltipContent>
+            <TooltipContent>Mover a papelera</TooltipContent>
           </Tooltip>
         </div>
       </div>

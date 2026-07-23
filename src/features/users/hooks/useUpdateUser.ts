@@ -16,7 +16,7 @@ export function useUpdateUser() {
     try {
       return await updateUserService(id, payload);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "We could not update the user.";
+      const message = error instanceof Error ? error.message : "No pudimos actualizar el usuario.";
       setErrorMessage(message);
       console.error(error);
       return null;

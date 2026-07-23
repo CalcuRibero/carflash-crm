@@ -46,9 +46,9 @@ export function TopProducts() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="font-normal text-muted-foreground text-sm">Top Products</CardTitle>
+        <CardTitle className="font-normal text-muted-foreground text-sm">Productos Principales</CardTitle>
         <CardDescription className="text-foreground text-xl tabular-nums leading-none tracking-tight">
-          73% of sales
+          73% de ventas
         </CardDescription>
         <CardAction>
           <ArrowUpRight className="size-4" />

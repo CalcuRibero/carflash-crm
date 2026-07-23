@@ -60,3 +60,13 @@ export const CHART_COLORS: Record<string, string> = {
   "in_progress": "var(--chart-3)",
   "closed": "var(--chart-4)",
 }
+
+export const UserCategoryLabel: Record<string, string> = {
+  'SuperAdmin': 'Super Admin',
+  'AdministrationAccountant': 'Administracion y Contabilidad',
+  'ComercialCordinator': 'Cordinador Comercial',
+  'CarExpert': 'Perito',
+  'Gestor': 'Gestor',
+  'CarSeller': 'Vendedor de Autos',
+  'Marketing': 'Marketing'
+}
