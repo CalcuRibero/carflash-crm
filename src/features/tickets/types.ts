@@ -1,5 +1,13 @@
 import type { CreateTicketRequest, Ticket, TicketCategory, TicketPriority, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
 
+export const INITIAL_TICKET: Ticket = {
+    id: '',
+    title: '',
+    description: '',
+    status: 'open',
+    priority: 'low',
+}
+
 export interface TicketsModalFormValues {
   assignedTo: string;
   category: TicketCategory;
@@ -81,3 +89,5 @@ export const PRIORITY_OPTIONS: SelectOption<TicketsModalFormValues["priority"]>[
   { label: "Alta", value: "high" },
   { label: "Critica", value: "critical" },
 ];
+
+

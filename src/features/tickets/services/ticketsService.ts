@@ -1,5 +1,5 @@
 import { ApiError } from "@/lib/api/errors";
-import { createTicket, getTickets, getTicketsByUserId, updateTicket } from "@/lib/api/tickets";
+import { createTicket, deleteTicket, getTicket, getTickets, getTicketsByUserId, updateTicket } from "@/lib/api/tickets";
 import type { CreateTicketRequest, Ticket, UpdateTicketRequest } from "@/lib/api/types";
 
 function normalizeTicketsPayload(payload: Ticket[]): Ticket[] {
@@ -85,5 +85,47 @@ export async function getTicketsByUserIdService(userId: number, options: { signa
     }
 
     throw new Error("We could not load the tickets.");
+  }
+
+}
+
+export async function getTicketsByTicketIdService(ticketId: string, options: { signal?: AbortSignal } = {}): Promise<Ticket> {
+  try {
+    const ticket = await getTicket(ticketId, { signal: options.signal });
+    return ticket;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw error;
+    }
+
+    if (error instanceof ApiError) {
+      throw new Error(error.message || "We could not load the ticket.");
+    }
+
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("We could not load the ticket.");
+  }
+}
+
+export async function deleteTicketService(id: string | number, options: { signal?: AbortSignal } = {}): Promise<void> {
+  try {
+    await deleteTicket(id, { signal: options.signal });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw error;
+    }
+
+    if (error instanceof ApiError) {
+      throw new Error(error.message || "We could not delete the ticket.");
+    }
+
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("We could not delete the ticket.");
   }
 }

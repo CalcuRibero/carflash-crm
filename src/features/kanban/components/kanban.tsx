@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { TicketsModal, useCreateTicketModal, useEditTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
 import type { Ticket } from "@/lib/api/types";
+import { useRouter } from "next/navigation";
 
 import { columnIds, columns } from "./data";
 import { KanbanColumn } from "./kanban-column";
@@ -37,6 +38,7 @@ import { MobileKanbanColumn } from "./mobile-kanban-column";
 
 
 export function Kanban() {
+  const router = useRouter();
   const [board, setBoard] = useState<BoardState>(INITIAL_BOARD);
   const [columnOrder, setColumnOrder] = useState<ColumnId[]>(columnIds);
   const [activeTask, setActiveTask] = useState<Ticket | null>(null);
@@ -49,6 +51,10 @@ export function Kanban() {
   const boardBeforeDrag = useRef<BoardState | null>(null);
   const hoveredColumnIdRef = useRef<ColumnId | null>(null);
   const orderedColumns = columnOrder.flatMap((columnId) => columns.find((column) => column.id === columnId) ?? []);
+
+  const handleTaskClick = (ticket: Ticket) => {
+    router.push(`/dashboard/kanban/${ticket.id}`);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -296,14 +302,14 @@ export function Kanban() {
           <div className="h-full min-w-full grid-cols-4 gap-4 hidden md:inline-grid">
             <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
               {orderedColumns.map((column) => (
-                <KanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={editTicketModal.openModal} />
+                <KanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={handleTaskClick} />
               ))}
             </SortableContext>
           </div>
         </div>
         <div className="flex md:hidden flex-col">
           {orderedColumns.map((column) => (
-            <MobileKanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={editTicketModal.openModal}/>
+            <MobileKanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={handleTaskClick}/>
             ))
           }
         </div>
