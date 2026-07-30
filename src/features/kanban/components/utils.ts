@@ -12,9 +12,9 @@ export function isColumnId(id: string): id is ColumnId {
   return columnIds.includes(id as ColumnId);
 }
 
-export function findColumnId(board: BoardState, id: string): ColumnId | undefined {
+export function findColumnId(board: BoardState, id: string): ColumnId {
   if (isColumnId(id)) return id;
-  return columnIds.find((columnId) => board[columnId].some((task) => task.id === id));
+  return columnIds[0]
 }
 
 export function findTask(board: BoardState, id: string) {

@@ -10,6 +10,7 @@ import {
   DragOverlay,
   type DragStartEvent,
   KeyboardSensor,
+  Modifier,
   PointerSensor,
   TouchSensor,
   useSensor,
@@ -26,7 +27,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { TicketsModal, useCreateTicketModal, useEditTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
-import type { Ticket } from "@/lib/api/types";
+import type { Ticket, TicketStatus } from "@/lib/api/types";
 import { useRouter } from "next/navigation";
 
 import { columnIds, columns } from "./data";
@@ -61,7 +62,7 @@ export function Kanban() {
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
-  
+
   useEffect(() => {
     const createdTicket = createTicketModal.createdTicket;
     if (!createdTicket) return;
@@ -111,7 +112,7 @@ export function Kanban() {
     hoveredColumnIdRef.current = null;
     const task = findTask(board, String(event.active.id));
     setActiveTask(task ?? null);
-    setActiveColumnId(findColumnId(board, String(event.active.id)) ?? null);
+    setActiveColumnId(findColumnId(board, String(event.active.id)));
   }
 
   function handleDragCancel() {
@@ -195,7 +196,7 @@ export function Kanban() {
     const overId = String(over.id);
 
     const sourceColumnId = findColumnId(board, activeId);
-    const resolvedDropColumnId = dropColumnId ?? findColumnId(board, overId);
+    const resolvedDropColumnId: TicketStatus = findColumnId(board, overId);
 
     void updateTicket.updateTicket(activeId, {
       ...active,
@@ -226,65 +227,12 @@ export function Kanban() {
       <TicketsModal {...editTicketModal.modalProps} />
 
       <div className="flex shrink-0 flex-col gap-3 border-b px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
-        {/* <Tabs defaultValue="board" className="min-w-0">
-          <TabsList className="w-full *:data-[slot=tabs-trigger]:flex-1 sm:w-fit sm:*:data-[slot=tabs-trigger]:flex-none">
-            <TabsTrigger value="board" className="gap-2">
-              <KanbanIcon />
-              Board
-            </TabsTrigger>
-            <TabsTrigger value="list" className="gap-2">
-              <List />
-              List
-            </TabsTrigger>
-            <TabsTrigger value="table" className="gap-2">
-              <Table2 />
-              Table
-            </TabsTrigger>
-          </TabsList>
-        </Tabs> */}
-
         <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
-          {/* <InputGroup className="min-w-0 sm:w-64 2xl:w-48">
-            <InputGroupInput type="search" placeholder="Search tasks" />
-            <InputGroupAddon>
-              <Search />
-            </InputGroupAddon>
-          </InputGroup> */}
-          {/* <Button variant="outline" className="w-full sm:w-auto">
-            <SlidersHorizontal data-icon="inline-start" />
-            Filter
-          </Button>
-          <Button variant="outline" className="w-full sm:w-auto">
-            <ArrowUpDown data-icon="inline-start" />
-            Sort
-          </Button> */}
           <ButtonGroup className="w-full sm:w-fit">
             <Button className="flex-1 sm:flex-none" onClick={createTicketModal.openModal}>
               <Plus data-icon="inline-start" />
               Agregar Tarea
             </Button>
-            {/* <ButtonGroupSeparator />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button aria-label="Abrir Agregar Tarea menu">
-                  <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem>
-                  <Upload />
-                  Importar CSV
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <LayoutTemplate />
-                  Add from template
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Bot />
-                  Create automation
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
           </ButtonGroup>
         </div>
       </div>
@@ -292,6 +240,7 @@ export function Kanban() {
       <DndContext
         id="kanban-board"
         sensors={sensors}
+        // modifiers={modifiers}
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
@@ -300,11 +249,9 @@ export function Kanban() {
       >
         <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 px-4 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-5 lg:pt-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
           <div className="h-full min-w-full grid-cols-4 gap-4 hidden md:inline-grid">
-            <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
-              {orderedColumns.map((column) => (
-                <KanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={handleTaskClick} />
-              ))}
-            </SortableContext>
+            {orderedColumns.map((column) => (
+              <KanbanColumn key={column.id} column={column} tasks={board[column.id]} onTaskClick={handleTaskClick} />
+            ))}
           </div>
         </div>
         <div className="flex md:hidden flex-col">

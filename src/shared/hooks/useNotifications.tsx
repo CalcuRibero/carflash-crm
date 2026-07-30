@@ -7,6 +7,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 
 type NotificationContextValues = {
   notifications: Notification[],
+  removeNotification: (id: string) => void,
 }
 
 const NotificationsContext = createContext<NotificationContextValues | null >(null)
@@ -17,6 +18,10 @@ export function NotificationsProvider ({children}: {children: ReactNode}) {
   const getNotifications = async() => {
     const unreads = await fetchUnread()
     setNotifications(unreads)
+  }
+
+  const removeNotification = (id: string) => {
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id))
   }
 
   useEffect(() =>
@@ -35,7 +40,7 @@ export function NotificationsProvider ({children}: {children: ReactNode}) {
   )
 
   return (
-    <NotificationsContext.Provider value={{notifications}}>
+    <NotificationsContext.Provider value={{notifications, removeNotification}}>
       {children}
     </NotificationsContext.Provider>
   )

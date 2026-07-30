@@ -160,7 +160,7 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
                 <p className="text-muted-foreground whitespace-pre-wrap">{ticket.description || "Sin descripción"}</p>
               </div>
               <Separator />
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
                   <h3 className="font-semibold text-sm">Estado</h3>
                   <Badge variant={getStatusBadgeVariant(ticket.status)}>{statusLabel}</Badge>
@@ -168,6 +168,12 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
                 <div className="space-y-2">
                   <h3 className="font-semibold text-sm">Prioridad</h3>
                   <Badge variant={getPriorityBadgeVariant(ticket.priority)}>{priorityLabel}</Badge>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-sm">Recurrente</h3>
+                  <Badge variant={ticket.isRecurrent ? "default" : "secondary"}>
+                    {ticket.isRecurrent ? "Sí" : "No"}
+                  </Badge>
                 </div>
               </div>
             </CardContent>

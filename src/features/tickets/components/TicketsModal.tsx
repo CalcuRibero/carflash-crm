@@ -46,7 +46,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
         assignedTo: currentTicket.assignedTo?.toString() || "",
         category: currentTicket.category || "support",
         description: currentTicket.description,
-        dueDate: currentTicket.dueDate || "",
+        dueDate: currentTicket.dueDate?.toDateString() || "",
         priority: currentTicket.priority,
         status: currentTicket.status,
         title: currentTicket.title,
