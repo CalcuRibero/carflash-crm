@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn, getInitials } from "@/lib/utils";
 
 import { tagTones } from "./data";
-import type { ColumnId } from "../types";
+import { STATUS_LABELS, type ColumnId } from "../types";
 import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types";
 
 const taskInsightIcons: Record<TicketInsightLabel, LucideIcon> = {
@@ -66,8 +66,8 @@ export function TaskCard({
   onClick?: () => void;
 }) {
   const isDone = columnId === "closed";
-  const showBuildingDetails = columnId === "in_progress" && typeof task.progress === "number";
-  const owner = task.owner;
+  const showBuildingDetails = columnId === "in_progress";
+  const owner = task.createdBy;
   const PriorityIcon = priorityBadgeConfig[task.priority as TicketPriority].icon;
 
   return (
@@ -98,15 +98,15 @@ export function TaskCard({
       {!showBuildingDetails && owner ? (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <Avatar className={cn("size-5 after:rounded-sm", owner.tone)}>
-              <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.name)}</AvatarFallback>
+            <Avatar className="size-5 after:rounded-sm">
+              <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.fullName)}</AvatarFallback>
             </Avatar>
 
-            <span className="text-muted-foreground text-sm">{owner.name}</span>
+            <span className="text-muted-foreground text-sm">{owner.fullName}</span>
           </div>
 
           <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
-            <span className="truncate text-sm">{task.dueDate}</span>
+            <span className="truncate text-sm">{new Date().toISOString().split('T')[0]}</span>
             <CalendarDays className="size-3" />
           </div>
         </div>
@@ -114,42 +114,30 @@ export function TaskCard({
 
       {showBuildingDetails ? (
         <div className="flex flex-col gap-3">
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-muted-foreground text-xs">
-              <span className="leading-none">Progress</span>
-              <span className="tabular-nums leading-none">{task.progress}%</span>
-            </div>
-            <Progress value={task.progress} />
-          </div>
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Owner</span>
+              <span className="text-muted-foreground text-sm">Creador</span>
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-muted-foreground text-sm">{owner?.name}</span>
-                {owner && (
-                  <Avatar className={cn("size-5 after:rounded-sm", owner.tone)}>
-                    <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.name)}</AvatarFallback>
-                  </Avatar>
-                )}
+                <span className="truncate text-muted-foreground text-sm">{owner.fullName}</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Due date</span>
+              <span className="text-muted-foreground text-sm">Fecha de Vencimiento</span>
               <span className="flex items-center gap-1.5 text-muted-foreground">
-                <span className="truncate text-sm">{task.dueDate}</span>
+                <span className="truncate text-sm">{new Date().toISOString().split('T')[0]}</span>
                 <CalendarDays className="size-3" />
               </span>
             </div>
 
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Status</span>
+              <span className="text-muted-foreground text-sm">Estado</span>
               {task.status ? (
                 <Badge
                   variant="secondary"
                   className={cn("rounded-md border-transparent px-2 font-medium", tagTones[task.status])}
                 >
-                  {task.status}
+                  {STATUS_LABELS[task.status]}
                 </Badge>
               ) : null}
             </div>
@@ -163,22 +151,7 @@ export function TaskCard({
         {isDone ? (
           <div className="flex items-center gap-1 font-medium text-green-700 text-sm dark:text-green-600">
             <BadgeCheck className="size-4" />
-            Done
-          </div>
-        ) : null}
-
-        {!isDone && task.insights ? (
-          <div className="flex items-center gap-3 text-muted-foreground text-sm">
-            {task.insights.map((insight) => {
-              const Icon = taskInsightIcons[insight.label];
-
-              return (
-                <span key={insight.label} className="flex items-center gap-1.5 text-sm">
-                  <Icon className="size-3.5" />
-                  {insight.count}
-                </span>
-              );
-            })}
+            Hecho
           </div>
         ) : null}
       </div>

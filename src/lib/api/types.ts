@@ -42,16 +42,14 @@ export type Ticket = {
   description: string;
   status: TicketStatus;
   priority: TicketPriority;
-  category?: TicketCategory;
-  createdBy?: User;
-  assignedTo?: User | null;
-  createdAt?: string;
-  updatedAt?: string;
-  dueDate?: string | null;
-  resolvedAt?: string | null;
-  progress?: number;
-  insights?: TicketInsight[];
-  owner?: TicketOwnerProfile;
+  category: TicketCategory;
+  isRecurrent: boolean;
+  createdBy: User;
+  assignedTo: User | null;
+  createdAt: Date;
+  updatedAt: Date;
+  dueDate: Date | null;
+  resolvedAt: Date | null;
 };
 
 export type LoginRequest = {
@@ -88,8 +86,8 @@ export type UpdateTicketRequest = Partial<CreateTicketRequest> & {
 
 // export 
 export enum NotificationType {
-    NEW_TICKET = "NewTicket",
-    NEW_CHAT_MESSAGE = "NewChatMessage"
+  NEW_TICKET = "NewTicket",
+  NEW_CHAT_MESSAGE = "NewChatMessage"
 }
 
 export interface NotificationMeta {
