@@ -65,6 +65,14 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
   const { deleteTicket, isDeleting } = useDeleteTicket();
   const editTicketModal = useEditTicketModal();
 
+  const creationDate = new Date(ticket.createdAt).toLocaleDateString('es-AR')
+  const dueDate = ticket.dueDate ? 
+    new Date(ticket.dueDate).toLocaleDateString('es-AR') : 
+    new Date().toLocaleDateString('es-AR')
+  const resolvedAt = ticket.resolvedAt ? 
+    new Date(ticket.resolvedAt).toLocaleDateString('es-AR') : 
+    new Date().toLocaleDateString('es-AR')
+
   const handleDelete = async () => {
     if (!ticket?.id) return;
     try {
@@ -210,7 +218,7 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
                 <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Fecha de vencimiento</p>
-                  <p className="text-sm text-muted-foreground">{formatDate(ticket.dueDate)}</p>
+                  <p className="text-sm text-muted-foreground">{dueDate}</p>
                 </div>
               </div>
               <Separator />
@@ -218,7 +226,7 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
                 <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Creado el</p>
-                  <p className="text-sm text-muted-foreground">{formatDate(ticket.createdAt)}</p>
+                  <p className="text-sm text-muted-foreground">{creationDate}</p>
                 </div>
               </div>
               {ticket.resolvedAt && (
@@ -228,7 +236,7 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
                     <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div className="space-y-1">
                       <p className="text-sm font-medium">Resuelto el</p>
-                      <p className="text-sm text-muted-foreground">{formatDate(ticket.resolvedAt)}</p>
+                      <p className="text-sm text-muted-foreground">{resolvedAt}</p>
                     </div>
                   </div>
                 </>
