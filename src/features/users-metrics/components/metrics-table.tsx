@@ -27,6 +27,7 @@ export function MetricsTable({tickets}: MetricsTableProps) {
         (currentPage + 1) * itemsPerPage
     );
 
+    const formatDate = (date: Date) => new Date(date).toLocaleDateString('es-AR')
 
     return (
         <Card>
@@ -66,7 +67,7 @@ export function MetricsTable({tickets}: MetricsTableProps) {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>{formatDate(ticket.createdAt)}</TableCell>
-                                    <TableCell>{formatDate(ticket.dueDate)}</TableCell>
+                                    <TableCell>{formatDate(ticket.dueDate || new Date())}</TableCell>
                                 </TableRow>
                             ))
                         )}

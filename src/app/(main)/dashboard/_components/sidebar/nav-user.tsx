@@ -17,9 +17,10 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/c
 import { cn, getInitials } from "@/lib/utils";
 import { clearAuthToken } from "@/features/auth/actions/auth-actions";
 import { AuthProfile } from "@/features/auth/types";
-import { NotificationType, User } from "@/lib/api/types";
+import { Notification, NotificationType, User } from "@/lib/api/types";
 import { Badge } from "@/components/ui/badge";
 import { useNotifications } from "@/shared/hooks/useNotifications";
+import { markNotificationAsRead } from "@/lib/api/notifications";
 
 export function NavUser({
   user,
@@ -29,7 +30,25 @@ export function NavUser({
   const router = useRouter();
   const userName = user ? user.fullName : "Invitado";
   const { isMobile } = useSidebar();
-  const { notifications } = useNotifications();
+  const { notifications, removeNotification } = useNotifications();
+
+  const markAsRead = async (id: string) => {
+    try {
+      await markNotificationAsRead(id)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const handleNotificationClick = (notification: Notification) => {
+    markAsRead(notification.id)
+    removeNotification(notification.id)
+    if(!notification.meta?.ticketId) {
+      router.replace('/dashboard/kanban')
+      return
+    }
+    router.replace(`/dashboard/kanban/${notification.meta?.ticketId}`)
+  } 
 
   const handleLogout = async () => {
     await clearAuthToken();
@@ -40,6 +59,8 @@ export function NavUser({
     "NewTicket": "Nuevo Ticket",
     "NewChatMessage": "Nuevo Mensaje del chat"
   }
+
+  
 
   return (
     <SidebarMenu>
@@ -77,7 +98,7 @@ export function NavUser({
               <DropdownMenuItem className={cn({"animate-pulse bg-primary text-white" : notifications.length})}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton>
+                    <SidebarMenuButton disabled={!notifications.length}>
                       <MessageSquareDot />
                       <span>Notificaciones</span>
                       <Badge>
@@ -89,7 +110,7 @@ export function NavUser({
                     {notifications.map((notification, idx) => 
                       // notification.type === NotificationType.NEW_TICKET ?
                       <DropdownMenuGroup key={idx}>
-                        <DropdownMenuItem  className="flex flex-col gap-2">
+                        <DropdownMenuItem  className="flex flex-col gap-2" onClick={() => handleNotificationClick(notification)}>
                           <Badge className="text-xs bg-primary text-white hover:text-white! items-start">{NotificationsTypeLabels[notification.type]}</Badge>
                           <span>{notification.message}</span>
                         </DropdownMenuItem>

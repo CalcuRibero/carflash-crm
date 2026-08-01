@@ -37,8 +37,8 @@ export function MobileKanbanColumn({ column, tasks, onTaskClick }: KanbanColumnP
         >
             <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
                 <div className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-3 pb-3 [scrollbar-color:var(--border)_transparent] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1">
-                    {tasks.map((task) => (
-                        <SortableTaskCard key={task.id} task={task} columnId={column.id} onClick={() => onTaskClick?.(task)} />
+                    {tasks.map((task, index) => (
+                        <SortableTaskCard key={task.id} task={task} columnId={column.id} index={index} onClick={() => onTaskClick?.(task)} />
                     ))}
                 </div>
             </SortableContext>

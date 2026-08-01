@@ -40,7 +40,7 @@ export function useEditTicketModal(): EditTicketModalController {
       setIsOpen(false);
       setCurrentTicket(null);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "We could not update the ticket.";
+      const message = "Estamos teniendo algunos inconvenientes... Intente mas tarde";
       setErrorMessage(message);
       throw error;
     } finally {

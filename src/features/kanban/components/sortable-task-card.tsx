@@ -1,6 +1,6 @@
 "use client";
 
-import { useSortable } from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/react/sortable";
 
 import { cn } from "@/lib/utils";
 
@@ -8,22 +8,20 @@ import { TaskCard } from "./task-card";
 import type { ColumnId } from "../types";
 import type { Ticket } from "@/lib/api/types";
 
-export function SortableTaskCard({ task, columnId, onClick }: { task: Ticket; columnId: ColumnId; onClick?: () => void }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+export function SortableTaskCard({ task, columnId, index, onClick }: { task: Ticket; columnId: ColumnId; index: number; onClick?: () => void }) {
+  const { ref, isDragging } = useSortable({
     id: task.id,
-    data: { type: "task", task },
+    index,
+    type: "task", 
+    accept: "task",
+    group: columnId,
   });
 
   return (
     <div
-      ref={setNodeRef}
-      style={{
-        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
-        transition,
-      }}
+      ref={ref}
+      data-dragging={isDragging}
       className={cn("touch-none", isDragging && "opacity-30")}
-      {...attributes}
-      {...listeners}
     >
       <TaskCard task={task} columnId={columnId} onClick={onClick} />
     </div>

@@ -19,8 +19,11 @@ import { Separator } from "@/components/ui/separator";
 import { cn, getInitials } from "@/lib/utils";
 
 import { tagTones } from "./data";
-import type { ColumnId } from "../types";
+import { STATUS_LABELS, type ColumnId } from "../types";
 import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types";
+import { PRIORITY_LABELS } from "@/features/tickets/types";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const taskInsightIcons: Record<TicketInsightLabel, LucideIcon> = {
   Attachments: Paperclip,
@@ -65,122 +68,107 @@ export function TaskCard({
   isOverlay?: boolean;
   onClick?: () => void;
 }) {
-  const isDone = columnId === "closed";
-  const showBuildingDetails = columnId === "in_progress" && typeof task.progress === "number";
-  const owner = task.owner;
+  const router = useRouter()
+  
+  
+  const showBuildingDetails = columnId === "in_progress";
+  const owner = task.createdBy;
   const PriorityIcon = priorityBadgeConfig[task.priority as TicketPriority].icon;
+  const creationDate = new Date(task.createdAt).toLocaleDateString('es-AR')
+
+  const handleClickDetail = (ticket: Ticket) => {
+    router.push(`/dashboard/kanban/${ticket.id}`);
+  };
 
   return (
     <article
       className={cn(
         "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs cursor-pointer hover:bg-accent/50 transition-colors",
-        isOverlay && "w-68 rotate-1 shadow-lg",
+        isOverlay && "w-68 rotate-1 shadow-lg cursor-grabbing",
       )}
       onClick={onClick}
     >
       <div className="min-w-0 space-y-1.5">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="min-w-0 truncate font-medium text-sm leading-none">{task.title}</h3>
-          <Badge
-            variant={priorityBadgeConfig[task.priority as TicketPriority].variant}
-            className={cn(
-              "shrink-0 rounded-md border-transparent px-2 font-medium",
-              priorityBadgeConfig[task.priority as TicketPriority].className,
-            )}
-          >
-            <PriorityIcon data-icon="inline-start" />
-            {task.priority}
-          </Badge>
+        <div className="flex flex-col justify-between gap-3">
+          <div className="flex items-center">
+            <h3 className="min-w-0 truncate font-medium text-sm leading-none items-center">{task.title}</h3>
+          </div>
+          <Separator />
+          <div className="flex items-right gap-2">
+            <Badge
+              variant={task.isRecurrent ? "default" : "secondary"}
+              className="shrink-0 rounded-md border-transparent px-2 font-medium"
+            >
+              {task.isRecurrent ? "Recurrente" : "No recurrente"}
+            </Badge>
+            <Badge
+              variant={priorityBadgeConfig[task.priority as TicketPriority].variant}
+              className={cn(
+                "shrink-0 rounded-md border-transparent px-2 font-medium",
+                priorityBadgeConfig[task.priority as TicketPriority].className,
+              )}
+            >
+              <PriorityIcon data-icon="inline-start" />
+              {PRIORITY_LABELS[task.priority]}
+            </Badge>
+          </div>
         </div>
         <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>
       </div>
 
       {!showBuildingDetails && owner ? (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <Avatar className={cn("size-5 after:rounded-sm", owner.tone)}>
-              <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.name)}</AvatarFallback>
-            </Avatar>
+        <div className="flex items-center gap-1.5">
+          <Avatar className="size-5 after:rounded-sm">
+            <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.fullName)}</AvatarFallback>
+          </Avatar>
 
-            <span className="text-muted-foreground text-sm">{owner.name}</span>
-          </div>
-
-          <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
-            <span className="truncate text-sm">{task.dueDate}</span>
-            <CalendarDays className="size-3" />
-          </div>
+          <span className="text-muted-foreground text-sm">{owner.fullName}</span>
         </div>
       ) : null}
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-muted-foreground text-sm">Fecha de Creacion</span>
+        <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
+          <span className="truncate text-sm">{creationDate}</span>
+          <CalendarDays className="size-3" />
+        </div>
+      </div>
 
-      {showBuildingDetails ? (
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-muted-foreground text-sm">Estado</span>
+        {task.status ? (
+          <Badge
+            variant="secondary"
+            className={cn("rounded-md border-transparent px-2 font-medium", tagTones[task.status])}
+          >
+            {STATUS_LABELS[task.status]}
+          </Badge>
+        ) : null}
+      </div>
+      {task.dueDate ? (
         <div className="flex flex-col gap-3">
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-muted-foreground text-xs">
-              <span className="leading-none">Progress</span>
-              <span className="tabular-nums leading-none">{task.progress}%</span>
-            </div>
-            <Progress value={task.progress} />
-          </div>
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Owner</span>
+              <span className="text-muted-foreground text-sm">Creador</span>
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-muted-foreground text-sm">{owner?.name}</span>
-                {owner && (
-                  <Avatar className={cn("size-5 after:rounded-sm", owner.tone)}>
-                    <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.name)}</AvatarFallback>
-                  </Avatar>
-                )}
+                <span className="truncate text-muted-foreground text-sm">{owner.fullName}</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Due date</span>
+              <span className="text-muted-foreground text-sm">Fecha de Vencimiento</span>
               <span className="flex items-center gap-1.5 text-muted-foreground">
-                <span className="truncate text-sm">{task.dueDate}</span>
+                <span className="truncate text-sm">{new Date(task.dueDate).toLocaleDateString('es-AR')}</span>
                 <CalendarDays className="size-3" />
               </span>
             </div>
 
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Status</span>
-              {task.status ? (
-                <Badge
-                  variant="secondary"
-                  className={cn("rounded-md border-transparent px-2 font-medium", tagTones[task.status])}
-                >
-                  {task.status}
-                </Badge>
-              ) : null}
-            </div>
           </div>
         </div>
       ) : null}
-
-      <Separator />
-
-      <div>
-        {isDone ? (
-          <div className="flex items-center gap-1 font-medium text-green-700 text-sm dark:text-green-600">
-            <BadgeCheck className="size-4" />
-            Done
-          </div>
-        ) : null}
-
-        {!isDone && task.insights ? (
-          <div className="flex items-center gap-3 text-muted-foreground text-sm">
-            {task.insights.map((insight) => {
-              const Icon = taskInsightIcons[insight.label];
-
-              return (
-                <span key={insight.label} className="flex items-center gap-1.5 text-sm">
-                  <Icon className="size-3.5" />
-                  {insight.count}
-                </span>
-              );
-            })}
-          </div>
-        ) : null}
+      <div className="flex items-end w-full">
+        <Button variant={"link"} className="hover:cursor-pointer">
+          Ver Detalle
+        </Button>
       </div>
     </article>
   );

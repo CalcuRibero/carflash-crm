@@ -1,5 +1,31 @@
 import type { CreateTicketRequest, Ticket, TicketCategory, TicketPriority, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
 
+export const INITIAL_TICKET: Ticket = {
+  id: '',
+  title: '',
+  description: '',
+  status: 'open',
+  priority: 'low',
+  category: "support",
+  isRecurrent: false,
+  createdBy: {
+    id: 0,
+    username: "",
+    email: "",
+    password: undefined,
+    role: "SuperAdmin",
+    fullName: "",
+    isActive: false,
+    createdAt: "",
+    updatedAt: ""
+  },
+  assignedTo: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  dueDate: null,
+  resolvedAt: null
+}
+
 export interface TicketsModalFormValues {
   assignedTo: string;
   category: TicketCategory;
@@ -67,6 +93,13 @@ export interface UpdateTicketController {
   updatedTicket: Ticket | null;
 }
 
+export interface UpdateTicketStatusController {
+  errorMessage: string | null;
+  isUpdating: boolean;
+  updateTicketStatus: (id: string | number, status: TicketStatus) => Promise<Ticket>;
+  updatedTicket: Ticket | null;
+}
+
 
 export const STATUS_OPTIONS: SelectOption<TicketsModalFormValues["status"]>[] = [
   { label: "Abierto", value: "open" },
@@ -81,3 +114,12 @@ export const PRIORITY_OPTIONS: SelectOption<TicketsModalFormValues["priority"]>[
   { label: "Alta", value: "high" },
   { label: "Critica", value: "critical" },
 ];
+
+export const PRIORITY_LABELS: Record<string, string> = {
+  "low": "Baja", 
+  "medium": "Media", 
+  "high": "Alta", 
+  "critical": "Critica", 
+};
+
+
