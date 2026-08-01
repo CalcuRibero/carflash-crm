@@ -3,6 +3,7 @@ import {
   Banknote,
   Calendar,
   ChartBar,
+  FilePlus2,
   Fingerprint,
   Forklift,
   Gauge,
@@ -116,6 +117,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Tickets Variables",
         url: "/dashboard/kanban",
         icon: Kanban,
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+      },
+      {
+        title: "Registro de Operación",
+        url: "/dashboard/operaciones",
+        icon: FilePlus2,
         roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
       // {
