@@ -1,7 +1,7 @@
 "use client";
 
-import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/react";
+import {CollisionPriority} from '@dnd-kit/abstract';
 import { MoreVertical, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -18,17 +18,19 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ column, tasks, onTaskClick }: KanbanColumnProps) {
-  const { setNodeRef, isOver } = useDroppable({
+  const { ref, isDropTarget } = useDroppable({
     id: column.id,
-    data: { type: "column", columnId: column.id },
+    type: "column", 
+    accept: "task",
+    collisionPriority: CollisionPriority.Low
   });
 
   return (
     <section
-      ref={setNodeRef}
+      ref={ref}
       className={cn(
         "flex min-h-0 flex-col rounded-t-xl border bg-muted/50 transition-colors",
-        isOver && "bg-muted/70",
+        isDropTarget && "bg-muted/70",
       )}
     >
       <div className="flex items-start justify-between gap-3 px-4 pt-4 pb-3">
@@ -40,23 +42,13 @@ export function KanbanColumn({ column, tasks, onTaskClick }: KanbanColumnProps) 
             {tasks.length} {tasks.length === 1 ? "tarea" : "tareas"}
           </p>
         </div>
-        <div className="-mr-2 flex items-center gap-0.5 text-muted-foreground">
-          <Button variant="ghost" size="icon-sm" aria-label={`Agregar Tarea to ${column.title}`}>
-            <Plus />
-          </Button>
-          <Button variant="ghost" size="icon-sm" aria-label={`${column.title} column actions`}>
-            <MoreVertical />
-          </Button>
-        </div>
       </div>
 
-      <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
         <div className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-3 pb-3 [scrollbar-color:var(--border)_transparent] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1">
-          {tasks.map((task) => (
-            <SortableTaskCard key={task.id} task={task} columnId={column.id} />
+          {tasks.map((task, index) => (
+            <SortableTaskCard key={task.id} task={task} columnId={column.id} index={index} />
           ))}
         </div>
-      </SortableContext>
     </section>
   );
 }

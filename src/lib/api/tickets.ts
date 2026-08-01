@@ -1,5 +1,5 @@
 import { apiRequest } from "./http-client";
-import type { CreateTicketRequest, Ticket, UpdateTicketRequest } from "./types";
+import type { CreateTicketRequest, Ticket, TicketStatus, UpdateTicketRequest } from "./types";
 
 type TicketRequestOptions = {
   signal?: AbortSignal;
@@ -40,6 +40,15 @@ export async function createTicket(payload: CreateTicketRequest, options: Ticket
 export function updateTicket(id: string | number, payload: UpdateTicketRequest, options: TicketRequestOptions = {}) {
   return apiRequest<Ticket>(`/tickets/${id}`, {
     body: payload,
+    method: "PATCH",
+    signal: options.signal,
+    token: options.token,
+  });
+}
+
+export function updateTicketStatus(id: string | number, status: TicketStatus, options: TicketRequestOptions = {}) {
+  return apiRequest<Ticket>(`/tickets/status/${id}`, {
+    body: { status },
     method: "PATCH",
     signal: options.signal,
     token: options.token,

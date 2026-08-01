@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/api/errors";
-import { createTicket, deleteTicket, getTicket, getTickets, getTicketsByUserId, updateTicket } from "@/lib/api/tickets";
-import type { CreateTicketRequest, Ticket, UpdateTicketRequest } from "@/lib/api/types";
+import { createTicket, deleteTicket, getTicket, getTickets, getTicketsByUserId, updateTicket, updateTicketStatus } from "@/lib/api/tickets";
+import type { CreateTicketRequest, Ticket, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
 
 function normalizeTicketsPayload(payload: Ticket[]): Ticket[] {
 
@@ -58,6 +58,18 @@ export async function getTicketsService(options: { signal?: AbortSignal } = {}):
 export async function updateTicketService(id: string | number, payload: CreateTicketRequest): Promise<Ticket> {
   try {
     return await updateTicket(id, payload);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw new Error(error.message || "We could not update the ticket.");
+    }
+
+    throw new Error("We could not update the ticket.");
+  }
+}
+
+export async function updateTicketStatusService(id: string | number, status: TicketStatus): Promise<Ticket> {
+  try {
+    return await updateTicketStatus(id, status );
   } catch (error) {
     if (error instanceof ApiError) {
       throw new Error(error.message || "We could not update the ticket.");

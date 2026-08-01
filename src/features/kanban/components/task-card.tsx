@@ -22,6 +22,8 @@ import { tagTones } from "./data";
 import { STATUS_LABELS, type ColumnId } from "../types";
 import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types";
 import { PRIORITY_LABELS } from "@/features/tickets/types";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const taskInsightIcons: Record<TicketInsightLabel, LucideIcon> = {
   Attachments: Paperclip,
@@ -66,11 +68,17 @@ export function TaskCard({
   isOverlay?: boolean;
   onClick?: () => void;
 }) {
+  const router = useRouter()
+  
+  
   const showBuildingDetails = columnId === "in_progress";
   const owner = task.createdBy;
   const PriorityIcon = priorityBadgeConfig[task.priority as TicketPriority].icon;
   const creationDate = new Date(task.createdAt).toLocaleDateString('es-AR')
 
+  const handleClickDetail = (ticket: Ticket) => {
+    router.push(`/dashboard/kanban/${ticket.id}`);
+  };
 
   return (
     <article
@@ -157,6 +165,11 @@ export function TaskCard({
           </div>
         </div>
       ) : null}
+      <div className="flex items-end w-full">
+        <Button variant={"link"} className="hover:cursor-pointer">
+          Ver Detalle
+        </Button>
+      </div>
     </article>
   );
 }

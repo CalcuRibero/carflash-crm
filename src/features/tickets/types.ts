@@ -93,6 +93,13 @@ export interface UpdateTicketController {
   updatedTicket: Ticket | null;
 }
 
+export interface UpdateTicketStatusController {
+  errorMessage: string | null;
+  isUpdating: boolean;
+  updateTicketStatus: (id: string | number, status: TicketStatus) => Promise<Ticket>;
+  updatedTicket: Ticket | null;
+}
+
 
 export const STATUS_OPTIONS: SelectOption<TicketsModalFormValues["status"]>[] = [
   { label: "Abierto", value: "open" },
