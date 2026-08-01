@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
 import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
 
 const initialPayment: PaymentMethodEntry = {
@@ -23,7 +24,7 @@ const initialPayment: PaymentMethodEntry = {
 };
 
 const initialFormState: OperationFormState = {
-  vehicle: "",
+  vehicleId: "",
   domain: "",
   seller: "",
   salePrice: "",
@@ -202,7 +203,7 @@ export function OperationRegistrationForm() {
               <div className="grid gap-6 md:grid-cols-[1.4fr_0.6fr]">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
-                  <Input value={form.vehicle} onChange={(event) => setForm((current) => ({ ...current, vehicle: event.target.value }))} placeholder="Ej: Toyota Hilux 2.8 SRX AT" />
+                  <VehicleSelector value={form.vehicleId} onValueChange={(vehicleId) => setForm((current) => ({ ...current, vehicleId }))} />
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
