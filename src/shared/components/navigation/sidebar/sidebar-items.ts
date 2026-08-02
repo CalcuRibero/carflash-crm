@@ -2,6 +2,7 @@ import { UserRole } from "@/lib/api";
 import {
   Banknote,
   Calendar,
+  CarFront,
   ChartBar,
   FilePlus2,
   Fingerprint,
@@ -123,6 +124,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Registro de Operación",
         url: "/dashboard/operaciones",
         icon: FilePlus2,
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+      },
+      {
+        title: "Vehículos",
+        url: "/dashboard/vehiculos",
+        icon: CarFront,
         roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
       // {

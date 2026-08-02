@@ -33,8 +33,6 @@ export function VehicleSelector({ value, onValueChange }: VehicleSelectorProps) 
     });
   }, [cars, search]);
 
-  console.log("Filtered cars:", filteredCars);
-
   return (
     <div className="space-y-2">
       <div className="relative">
