@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { FileText, Plus, Save, Printer, CarFront, CircleDollarSign, UserRound, Repeat2, BadgeDollarSign } from "lucide-react";
+import { BadgeDollarSign, CarFront, CircleDollarSign, FileText, Plus, Printer, Repeat2, Save, UserRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from "@/components/ui/textarea";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
 import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
+import { printInvoice } from "@/lib/printer/printer";
 
 const initialPayment: PaymentMethodEntry = {
   id: crypto.randomUUID(),
@@ -24,17 +25,35 @@ const initialPayment: PaymentMethodEntry = {
 };
 
 const initialFormState: OperationFormState = {
-  vehicleId: "",
-  domain: "",
+  id: "",
+  invoiceNumber: "",
+  subtotal: "",
+  taxAmount: "",
+  totalAmount: "",
+  status: "PENDING",
+  paymentMethod: "contado",
+  customer: {
+    id: "",
+    fullName: "",
+    document: "",
+    address: "",
+    phone: "",
+    email: "",
+  },
+  car: {
+    id: "",
+    domain: "",
+    brand: "",
+    model: "",
+    year: 0,
+    vin: "",
+    price: 0,
+    status: "AVAILABLE",
+  },
   seller: "",
   salePrice: "",
   transferCost: "",
   folderCost: "",
-  customerName: "",
-  document: "",
-  address: "",
-  phone: "",
-  email: "",
   observations: "",
   swapModel: "",
   swapYear: "",
@@ -140,9 +159,9 @@ export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
 
   const totals = useMemo(() => {
-    const price = Number.parseFloat(form.salePrice) || 0;
-    const transfer = Number.parseFloat(form.transferCost) || 0;
-    const folder = Number.parseFloat(form.folderCost) || 0;
+    const price = Number.parseFloat(String(form.salePrice)) || 0;
+    const transfer = Number.parseFloat(String(form.transferCost)) || 0;
+    const folder = Number.parseFloat(String(form.folderCost)) || 0;
     return {
       price,
       transfer,
@@ -154,6 +173,12 @@ export function InvoiceRegistrationForm() {
   const addPayment = () => {
     setForm((current) => ({ ...current, payments: [...current.payments, { ...initialPayment, id: crypto.randomUUID() }] }));
   };
+
+  const handlePrintInvoice = () => {
+    // Aquí podrías llamar a la función de impresión con los datos del formulario.
+    printInvoice(form);
+    console.log("Imprimiendo factura con los siguientes datos:", form);
+  }
 
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
     setForm((current) => ({
@@ -171,7 +196,7 @@ export function InvoiceRegistrationForm() {
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">Captura los datos del vehículo, cliente, permuta y los métodos de pago para consolidar la liquidación.</p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={handlePrintInvoice}>
             <Printer className="size-4" />
             Imprimir
           </Button>
@@ -203,11 +228,11 @@ export function InvoiceRegistrationForm() {
               <div className="grid gap-6 md:grid-cols-[1.4fr_0.6fr]">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
-                  <VehicleSelector value={form.vehicleId} onValueChange={(vehicleId) => setForm((current) => ({ ...current, vehicleId }))} />
+                  <VehicleSelector value={form.car.id ?? ""} onValueChange={(vehicleId) => setForm((current) => ({ ...current, car: { ...current.car, id: vehicleId } }))} />
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
-                  <Input value={form.domain} onChange={(event) => setForm((current) => ({ ...current, domain: event.target.value }))} placeholder="ABC-123" />
+                  <Input value={form.car.domain} onChange={(event) => setForm((current) => ({ ...current, car: { ...current.car, domain: event.target.value } }))} placeholder="ABC-123" />
                 </label>
               </div>
               <label className="space-y-2 text-sm">
@@ -256,25 +281,25 @@ export function InvoiceRegistrationForm() {
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Nombre completo</span>
-                  <Input value={form.customerName} onChange={(event) => setForm((current) => ({ ...current, customerName: event.target.value }))} placeholder="Nombre y apellido" />
+                  <Input value={form.customer.fullName} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, fullName: event.target.value } }))} placeholder="Nombre y apellido" />
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">CUIL / DNI</span>
-                  <Input value={form.document} onChange={(event) => setForm((current) => ({ ...current, document: event.target.value }))} placeholder="20-12345678-9" />
+                  <Input value={form.customer.document} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, document: event.target.value } }))} placeholder="20-12345678-9" />
                 </label>
               </div>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Domicilio</span>
-                <Input value={form.address} onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))} placeholder="Calle y número" />
+                <Input value={form.customer.address} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, address: event.target.value } }))} placeholder="Calle y número" />
               </label>
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Celular</span>
-                  <Input value={form.phone} onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))} placeholder="11 1234 5678" />
+                  <Input value={form.customer.phone} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, phone: event.target.value } }))} placeholder="11 1234 5678" />
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">E-mail</span>
-                  <Input value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} placeholder="cliente@correo.com" />
+                  <Input value={form.customer.email} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, email: event.target.value } }))} placeholder="cliente@correo.com" />
                 </label>
               </div>
               <label className="space-y-2 text-sm">

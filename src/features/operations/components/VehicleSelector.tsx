@@ -63,7 +63,7 @@ export function VehicleSelector({ value, onValueChange }: VehicleSelectorProps) 
             <SelectGroup>
               {filteredCars.length > 0 ? (
                 filteredCars.map((car) => (
-                  <SelectItem key={car.id} value={car.id}>
+                  <SelectItem key={car.id} value={car.id ?? ""}>
                     {formatCarLabel(car)}
                   </SelectItem>
                 ))
