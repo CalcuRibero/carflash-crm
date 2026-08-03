@@ -121,16 +121,16 @@ export const sidebarItems: NavGroup[] = [
         roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
       {
-        title: "Registro de Operación",
-        url: "/dashboard/operaciones",
+        title: "Facturación",
+        url: "/dashboard/invoice",
         icon: FilePlus2,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+        roles: ["SuperAdmin", "AdministrationAccountant"],
       },
       {
         title: "Vehículos",
         url: "/dashboard/vehiculos",
         icon: CarFront,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "CarExpert", "Gestor", "CarSeller"],
       },
       // {
       //   title: "Invoice",

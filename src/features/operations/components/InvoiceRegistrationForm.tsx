@@ -136,7 +136,7 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
   );
 }
 
-export function OperationRegistrationForm() {
+export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
 
   const totals = useMemo(() => {
@@ -166,8 +166,8 @@ export function OperationRegistrationForm() {
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
       <div className="flex flex-col gap-4 border-b border-border/80 pb-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/80">Operaciones especiales</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Registro de Operación <span className="text-primary">CarFlash</span></h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/80">Facturación</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Registro de Factura <span className="text-primary">CarFlash</span></h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">Captura los datos del vehículo, cliente, permuta y los métodos de pago para consolidar la liquidación.</p>
         </div>
         <div className="flex flex-wrap gap-3">
