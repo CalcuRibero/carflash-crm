@@ -2,7 +2,9 @@ import { UserRole } from "@/lib/api";
 import {
   Banknote,
   Calendar,
+  CarFront,
   ChartBar,
+  FilePlus2,
   Fingerprint,
   Forklift,
   Gauge,
@@ -117,6 +119,18 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/kanban",
         icon: Kanban,
         roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+      },
+      {
+        title: "Facturación",
+        url: "/dashboard/invoice",
+        icon: FilePlus2,
+        roles: ["SuperAdmin", "AdministrationAccountant"],
+      },
+      {
+        title: "Vehículos",
+        url: "/dashboard/vehiculos",
+        icon: CarFront,
+        roles: ["SuperAdmin", "AdministrationAccountant", "CarExpert", "Gestor", "CarSeller"],
       },
       // {
       //   title: "Invoice",

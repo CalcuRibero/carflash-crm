@@ -99,7 +99,7 @@ export function TaskCard({
               variant={task.isRecurrent ? "default" : "secondary"}
               className="shrink-0 rounded-md border-transparent px-2 font-medium"
             >
-              {task.isRecurrent ? "Recurrente" : "No recurrente"}
+              {task.isRecurrent ? "Fijo" : "Variable"}
             </Badge>
             <Badge
               variant={priorityBadgeConfig[task.priority as TicketPriority].variant}
@@ -166,7 +166,7 @@ export function TaskCard({
         </div>
       ) : null}
       <div className="flex items-end w-full">
-        <Button variant={"link"} className="hover:cursor-pointer">
+        <Button variant={"link"} className="hover:cursor-pointer" onClick={() => handleClickDetail(task)}>
           Ver Detalle
         </Button>
       </div>
