@@ -41,3 +41,19 @@ export interface InvoiceFilters {
   dateFrom?: string;
   dateTo?: string;
 }
+
+export type PaymentStatus = "PENDING" | "PAID" | "PARTIALLY_PAID" | "CANCELLED" | "REFUNDED" | string;
+
+export class CreateOperationRegistrationDto {
+  invoiceNumber!: string;
+  subtotal!: number;
+  taxAmount!: number;
+  totalAmount!: number;
+  status!: PaymentStatus;
+  paymentMethod!: string;
+  customer!: string;
+  car!: string;
+  carSwapped?: string;
+  administrationNotes!: string;
+  paidAt!: Date;
+}

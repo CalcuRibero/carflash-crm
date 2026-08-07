@@ -8,8 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { SellerSelector } from "@/features/operations/components/SellerSelector";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
 import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
+import { useCreateInvoice } from "@/features/invoice/hooks/useCreateInvoice";
 import { printInvoice } from "@/lib/printer/printer";
 
 const initialPayment: PaymentMethodEntry = {
@@ -157,6 +159,7 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
 
 export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
+  const { createInvoice, isCreating, errorMessage } = useCreateInvoice();
 
   const totals = useMemo(() => {
     const price = Number.parseFloat(String(form.salePrice)) || 0;
@@ -180,6 +183,35 @@ export function InvoiceRegistrationForm() {
     console.log("Imprimiendo factura con los siguientes datos:", form);
   }
 
+  const handleSave = async () => {
+    const subtotal = Number.parseFloat(String(form.subtotal)) || 0;
+    const taxAmount = Number.parseFloat(String(form.taxAmount)) || 0;
+    const totalAmount = Number.parseFloat(String(form.totalAmount)) || 0;
+
+    const invoiceData = {
+      invoiceNumber: form.invoiceNumber || "",
+      subtotal,
+      taxAmount,
+      totalAmount,
+      status: form.status,
+      paymentMethod: form.paymentMethod,
+      customer: form.customer.id || "",
+      car: form.car.id || "",
+      carSwapped: form.carSwapped?.id,
+      administrationNotes: form.administrationNotes || form.observations || "",
+      paidAt: form.paidAt ? new Date(form.paidAt) : new Date(),
+    };
+
+    const result = await createInvoice(invoiceData);
+    
+    if (result) {
+      console.log("Factura creada exitosamente:", result);
+      // Aquí podrías agregar lógica adicional como resetear el formulario o redirigir
+    } else {
+      console.error("Error al crear la factura:", errorMessage);
+    }
+  }
+
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
     setForm((current) => ({
       ...current,
@@ -200,7 +232,7 @@ export function InvoiceRegistrationForm() {
             <Printer className="size-4" />
             Imprimir
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={handleSave} disabled={isCreating}>
             <Save className="size-4" />
             Guardar registro
           </Button>
@@ -237,7 +269,7 @@ export function InvoiceRegistrationForm() {
               </div>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
-                <Input value={form.seller} onChange={(event) => setForm((current) => ({ ...current, seller: event.target.value }))} placeholder="Seleccione un asesor comercial" />
+                <SellerSelector value={form.seller} onValueChange={(sellerId) => setForm((current) => ({ ...current, seller: sellerId }))} />
               </label>
               <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">
                 <label className="space-y-2 text-sm">

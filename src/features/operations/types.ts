@@ -1,5 +1,12 @@
 export type CarStatus = "AVAILABLE" | "SOLD" | "IN_REPAIR" | "PENDING" | string;
 
+export interface Seller {
+  id: string;
+  fullName: string;
+  email?: string;
+  phone?: string;
+}
+
 export interface Car {
   id: string;
   brand?: string;
