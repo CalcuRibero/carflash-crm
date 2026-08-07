@@ -19,6 +19,7 @@ import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/typ
 import { PRIORITY_OPTIONS, STATUS_OPTIONS, type SelectOption, type TicketsModalFormValues, type TicketsModalProps } from "../types";
 import { useUsers } from "@/features/users/hooks/useUsers";
 import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
+import { useEffect, useState } from "react";
 // import { useNotificationsTickets } from "@/shared/hooks/useNotifications";
 
 
@@ -33,20 +34,22 @@ export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
 };
 
 export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting = false, onClose, onSubmit }: TicketsModalProps) {
-  const [formValues, setFormValues] = React.useState<TicketsModalFormValues>(INITIAL_TICKETS_MODAL_FORM);
+  const [formValues, setFormValues] = useState<TicketsModalFormValues>(INITIAL_TICKETS_MODAL_FORM);
 
   const {users} = useUsers();
   // const triggerNotification = useNotificationsTickets
 
   const isEditMode = !!currentTicket;
 
-  React.useEffect(() => {
+  console.log(currentTicket)
+  
+  useEffect(() => {
     if (currentTicket) {
       setFormValues({
-        assignedTo: currentTicket.assignedTo?.toString() || "",
+        assignedTo: currentTicket.assignedTo?.id.toString() || "",
         category: currentTicket.category || "support",
         description: currentTicket.description,
-        dueDate: currentTicket.dueDate?.toDateString() || "",
+        dueDate: currentTicket.dueDate?.toLocaleString("es-AR", { timeZone: "UTC" }) || new Date().toLocaleDateString("es-AR", { timeZone: "UTC" }),
         priority: currentTicket.priority,
         status: currentTicket.status,
         title: currentTicket.title,
