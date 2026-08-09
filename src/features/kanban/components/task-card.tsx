@@ -116,7 +116,7 @@ export function TaskCard({
         <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>
       </div>
 
-      {!showBuildingDetails && owner ? (
+      { owner ? (
         <div className="flex items-center gap-1.5">
           <Avatar className="size-5 after:rounded-sm">
             <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.fullName)}</AvatarFallback>
@@ -147,13 +147,14 @@ export function TaskCard({
       {task.dueDate ? (
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-muted-foreground text-sm">Creador</span>
-              <div className="flex items-center gap-1.5">
-                <span className="truncate text-muted-foreground text-sm">{owner.fullName}</span>
-              </div>
-            </div>
-
+            { owner &&(
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-muted-foreground text-sm">Creador</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="truncate text-muted-foreground text-sm">{owner.fullName}</span>
+                </div>
+              </div>)
+            }
             <div className="flex items-center justify-between gap-3">
               <span className="text-muted-foreground text-sm">Fecha de Vencimiento</span>
               <span className="flex items-center gap-1.5 text-muted-foreground">
