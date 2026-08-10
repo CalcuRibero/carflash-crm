@@ -204,18 +204,6 @@ export function CreateRecurrentTicketModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="dueDate">Fecha de Vencimiento</Label>
-            <Input
-              id="dueDate"
-              type="date"
-              value={formData.dueDate ? formData.dueDate.toISOString().split('T')[0] : ''}
-              onChange={(e) =>
-                setFormData({ ...formData, dueDate: e.target.value ? new Date(e.target.value) : undefined })
-              }
-            />
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="startDate">Fecha de Inicio</Label>
             <Input
               id="startDate"
@@ -227,6 +215,22 @@ export function CreateRecurrentTicketModal({
               required
             />
           </div>
+
+
+          <div className="space-y-2">
+            <Label htmlFor="dueDate">Fecha de Vencimiento</Label>
+            <Input
+              id="dueDate"
+              type="date"
+              value={formData.dueDate ? formData.dueDate.toISOString().split('T')[0] : ''}
+              onChange={(e) =>
+                setFormData({ ...formData, dueDate: e.target.value ? new Date(e.target.value) : undefined })
+              }
+              min={formData.first_run_at ? formData.first_run_at.toISOString().split('T')[0] : undefined}
+              disabled={!formData.first_run_at}
+            />
+          </div>
+
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose}>

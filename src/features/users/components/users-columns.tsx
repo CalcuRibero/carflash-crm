@@ -23,6 +23,7 @@ import { useDeleteUser } from "../hooks/useDeleteUser";
 import { useUpdateUser } from "../hooks/useUpdateUser";
 import { EditUserModal, type UpdateUserData } from "./editUserModal";
 import { statusMeta, type UserRow } from "./data";
+import { UserCategoryLabel } from "@/features/users-metrics/type";
 
 
 
@@ -177,7 +178,7 @@ export const usersColumns: ColumnDef<UserRow>[] = [
     accessorKey: "role",
     header: "Rol",
     filterFn: "equalsString",
-    cell: ({ row }) => <RoleCell role={row.original.role} detail={row.original.username} />,
+    cell: ({ row }) => <RoleCell role={UserCategoryLabel[row.original.role]} detail={row.original.username} />,
   },
   {
     accessorKey: "status",
