@@ -7,19 +7,16 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { TicketsModal, useCreateTicketModal, useEditTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
-import type { Ticket, TicketStatus } from "@/lib/api/types";
+import type { Ticket } from "@/lib/api/types";
 
 import { columnIds, columns } from "./data";
 import { KanbanColumn } from "./kanban-column";
-import { TaskCard } from "./task-card";
 import type { BoardState, ColumnId } from "../types";
 import { findColumnId, findTask, INITIAL_BOARD } from "./utils";
 import { MobileKanbanColumn } from "./mobile-kanban-column";
 import { DragDropProvider } from "@dnd-kit/react";
 import { move } from '@dnd-kit/helpers';
-import { updateTicketStatus } from "@/lib/api/tickets";
 import { useUpdateTicketStatus } from "@/features/tickets/hooks/useUpdateTicketStatus";
-import { Infer } from "next/dist/compiled/superstruct";
 import { isSortable } from "@dnd-kit/react/sortable";
 
 export function Kanban() {
@@ -42,6 +39,7 @@ export function Kanban() {
         [createdTicket.status]: [createdTicket, ...currentBoard[createdTicket.status]],
       })
     );
+
   }, [createTicketModal.createdTicket]);
 
   useEffect(() => {
@@ -83,7 +81,7 @@ export function Kanban() {
       <div className="flex shrink-0 flex-col gap-3 border-b px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
         <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
           <ButtonGroup className="w-full sm:w-fit">
-            <Button className="flex-1 sm:flex-none" onClick={createTicketModal.openModal}>
+            <Button className="flex-1 sm:flex-none" onClick={() => createTicketModal.openModal()}>
               <Plus data-icon="inline-start" />
               Agregar Tarea
             </Button>
@@ -124,6 +122,7 @@ export function Kanban() {
           }
         </div>
           {/* {activeTask ? <TaskCard task={activeTask} columnId={activeColumnId ?? undefined} isOverlay /> : null} */}
+          <TicketsModal {...createTicketModal.modalProps}/>
     </div>
   );
 }
