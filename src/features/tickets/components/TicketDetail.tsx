@@ -14,6 +14,8 @@ import { useTicketsByTicketId } from "../hooks/useTicketById";
 import { useDeleteTicket } from "../hooks/useDeleteTicket";
 import { useEditTicketModal } from "../hooks/useEditTicketModal";
 import { TicketsModal } from "./TicketsModal";
+import { useState } from "react";
+import { TicketModalWarning } from "./TicketModalWarning";
 
 interface TicketDetailProps {
   ticketId: string;
@@ -60,6 +62,9 @@ function formatDate(dateString: string | null | undefined): string {
 }
 
 export function TicketDetail({ ticketId }: TicketDetailProps) {
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const router = useRouter();
   const { ticket, isLoading, errorMessage, refetch } = useTicketsByTicketId(ticketId);
   const { deleteTicket, isDeleting } = useDeleteTicket();
@@ -73,7 +78,7 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
     new Date(ticket.resolvedAt).toLocaleDateString('es-AR') : 
     new Date().toLocaleDateString('es-AR')
 
-  const handleDelete = async () => {
+  const deleteCurrentTicket = async () => {
     if (!ticket?.id) return;
     try {
       await deleteTicket(ticket.id);
@@ -82,6 +87,10 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
       console.error("Error deleting ticket:", error);
     }
   };
+
+  const handleDelete = async () => {
+    setIsDeleteModalOpen(true);
+  }
 
   const handleEdit = () => {
     if (ticket) {
@@ -258,6 +267,12 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
       </div>
 
       <TicketsModal {...editTicketModal.modalProps} />
+      <TicketModalWarning 
+        onClick={deleteCurrentTicket} 
+        isOpen={isDeleteModalOpen} 
+        onClose={() => setIsDeleteModalOpen(false)} 
+        ticketTitle={ticket.title} 
+      />
     </div>
   );
 }
