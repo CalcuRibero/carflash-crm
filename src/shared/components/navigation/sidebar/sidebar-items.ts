@@ -1,25 +1,10 @@
 import { UserRole } from "@/lib/api";
 import {
-  Banknote,
-  Calendar,
   CarFront,
-  ChartBar,
   FilePlus2,
-  Fingerprint,
-  Forklift,
-  Gauge,
-  GraduationCap,
   Kanban,
-  LayoutDashboard,
-  ListTodo,
-  Lock,
   type LucideIcon,
-  Mail,
-  MessageSquare,
-  ReceiptText,
   Repeat,
-  ShoppingBag,
-  SquareArrowUpRight,
   Users,
 } from "lucide-react";
 
@@ -50,70 +35,17 @@ export interface NavGroup {
 }
 
 export const sidebarItems: NavGroup[] = [
-  // {
-  //   id: 1,
-  //   label: "Dashboards",
-  //   items: [
-  //     // {
-  //     //   title: "Default",
-  //     //   url: "/dashboard/default",
-  //     //   icon: LayoutDashboard,
-  //     //   roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
-  //     // },
-  //     // {
-  //     //   title: "CRM",
-  //     //   url: "/dashboard/crm",
-  //     //   icon: ChartBar,
-  //     // },
-  //     // {
-  //     //   title: "Finance",
-  //     //   url: "/dashboard/finance",
-  //     //   icon: Banknote,
-  //     // },
-  //     // {
-  //     //   title: "Analytics",
-  //     //   url: "/dashboard/analytics",
-  //     //   icon: Gauge,
-  //     // },
-  //     // {
-  //     //   title: "Productivity",
-  //     //   url: "/dashboard/productivity",
-  //     //   icon: ListTodo,
-  //     // },
-  //     // {
-  //     //   title: "E-commerce",
-  //     //   url: "/dashboard/ecommerce",
-  //     //   icon: ShoppingBag,
-  //     // },
-  //   ],
-  // },
   {
     id: 1,
     label: "Panel de control",
     items: [
-      // {
-      //   title: "Email",
-      //   url: "/dashboard/mail",
-      //   icon: Mail,
-      // },
-      // {
-      //   title: "Chat",
-      //   url: "/dashboard/chat",
-      //   icon: MessageSquare,
-      //   roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
-      // },
       {
         title: "Tickets Fijos",
         url: "/dashboard/recurrent-tickets",
         icon: Repeat,
         roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
       },
-      // {
-      //   title: "Calendar",
-      //   url: "/dashboard/coming-soon",
-      //   icon: Calendar,
-      //   comingSoon: true,
-      // },
+
       {
         title: "Tickets Variables",
         url: "/dashboard/kanban",
@@ -132,12 +64,6 @@ export const sidebarItems: NavGroup[] = [
         icon: CarFront,
         roles: ["SuperAdmin", "AdministrationAccountant", "CarExpert", "Gestor", "CarSeller"],
       },
-      // {
-      //   title: "Invoice",
-      //   url: "/dashboard/coming-soon",
-      //   icon: ReceiptText,
-      //   comingSoon: true,
-      // },
       {
         title: "Usuarios",
         url: "/dashboard/users",
@@ -149,45 +75,6 @@ export const sidebarItems: NavGroup[] = [
       //   url: "/dashboard/roles",
       //   icon: Lock,
       // },
-      // {
-      //   title: "Authentication",
-      //   url: "/auth",
-      //   icon: Fingerprint,
-      //   subItems: [
-      //     { title: "Login v1", url: "/auth/v1/login", newTab: true },
-      //     { title: "Login v2", url: "/auth/v2/login", newTab: true },
-      //     { title: "Register v1", url: "/auth/v1/register", newTab: true },
-      //     { title: "Register v2", url: "/auth/v2/register", newTab: true },
-      //   ],
-      // },
     ],
   },
-  // {
-  //   id: 3,
-  //   label: "Legacy",
-  //   items: [
-  //     {
-  //       title: "Dashboards",
-  //       url: "/dashboard/default-v1",
-  //       subItems: [
-  //         { title: "Default V1", url: "/dashboard/default-v1" },
-  //         { title: "CRM V1", url: "/dashboard/crm-v1" },
-  //         { title: "Finance V1", url: "/dashboard/finance-v1" },
-  //         { title: "Analytics V1", url: "/dashboard/analytics-v1" },
-  //       ],
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: 4,
-  //   label: "Misc",
-  //   items: [
-  //     {
-  //       title: "Others",
-  //       url: "/dashboard/coming-soon",
-  //       icon: SquareArrowUpRight,
-  //       comingSoon: true,
-  //     },
-  //   ],
-  // },
 ];
