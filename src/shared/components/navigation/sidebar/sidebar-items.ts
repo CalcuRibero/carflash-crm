@@ -96,12 +96,12 @@ export const sidebarItems: NavGroup[] = [
       //   url: "/dashboard/mail",
       //   icon: Mail,
       // },
-      {
-        title: "Chat",
-        url: "/dashboard/chat",
-        icon: MessageSquare,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
-      },
+      // {
+      //   title: "Chat",
+      //   url: "/dashboard/chat",
+      //   icon: MessageSquare,
+      //   roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+      // },
       {
         title: "Tickets Fijos",
         url: "/dashboard/recurrent-tickets",
