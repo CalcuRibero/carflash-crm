@@ -10,7 +10,7 @@ import type { Car } from "@/features/operations/types";
 
 interface VehicleSelectorProps {
   value: string;
-  onValueChange: (vehicleId: string) => void;
+  onValueChange: (vehicle: Car) => void;
 }
 
 function formatCarLabel(car: Car) {
@@ -35,16 +35,6 @@ export function VehicleSelector({ value, onValueChange }: VehicleSelectorProps) 
 
   return (
     <div className="space-y-2">
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Buscar por marca, modelo, dominio o VIN"
-          className="pl-9"
-        />
-      </div>
-
       {isLoading ? (
         <div className="flex items-center gap-2 rounded-lg border border-dashed border-border/70 bg-slate-50/70 px-3 py-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
@@ -55,7 +45,12 @@ export function VehicleSelector({ value, onValueChange }: VehicleSelectorProps) 
           {error}
         </div>
       ) : (
-        <Select value={value} onValueChange={onValueChange}>
+        <Select value={value} onValueChange={(vehicleId) => {
+          const selectedCar = filteredCars.find((car) => car.id === vehicleId);
+          if (selectedCar) {
+            onValueChange(selectedCar);
+          }
+        }}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecciona un vehículo" />
           </SelectTrigger>

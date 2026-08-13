@@ -1,3 +1,5 @@
+import type { User } from "@/lib/api/types";
+
 export type CarStatus = "AVAILABLE" | "SOLD" | "IN_REPAIR" | "PENDING" | string;
 
 export interface Car {
@@ -17,7 +19,13 @@ export interface Car {
   lastUpdated?: string;
 }
 
-export type PaymentStatus = "PENDING" | "PAID" | "PARTIALLY_PAID" | "CANCELLED" | "REFUNDED" | string;
+export enum PaymentStatus {
+    PENDING = 'pending',
+    PARTIAL = 'partial_payment',
+    PAID = 'paid',
+    CANCELLED = 'cancelled',
+}
+
 
 export type PaymentMethod = "sena" | "permuta" | "contado" | "tarjeta" | "financiacion" | "pagares";
 
@@ -53,7 +61,7 @@ export interface OperationFormState {
   customer: Customer;
   car: Car;
   carSwapped?: Car;
-  seller: string;
+  seller: User;
   salePrice: string | number;
   transferCost: string | number;
   folderCost: string | number;

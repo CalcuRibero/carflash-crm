@@ -9,7 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
-import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
+import { SellerSelector } from "@/features/operations/components/SellerSelector";
+import { useCars } from "@/features/operations/hooks/useCars";
+import { Car, OperationFormState, PaymentMethod, PaymentMethodEntry, PaymentStatus } from "@/features/operations/types";
+import type { User } from "@/lib/api/types";
+import { useCreateInvoice } from "@/features/invoice";
 import { printInvoice } from "@/lib/printer/printer";
 
 const initialPayment: PaymentMethodEntry = {
@@ -30,7 +34,7 @@ const initialFormState: OperationFormState = {
   subtotal: "",
   taxAmount: "",
   totalAmount: "",
-  status: "PENDING",
+  status: PaymentStatus.PENDING,
   paymentMethod: "contado",
   customer: {
     id: "",
@@ -50,7 +54,16 @@ const initialFormState: OperationFormState = {
     price: 0,
     status: "AVAILABLE",
   },
-  seller: "",
+  seller: {
+    id: 0,
+    username: "",
+    email: "",
+    role: "CarSeller",
+    fullName: "",
+    isActive: true,
+    createdAt: "",
+    updatedAt: "",
+  },
   salePrice: "",
   transferCost: "",
   folderCost: "",
@@ -60,6 +73,7 @@ const initialFormState: OperationFormState = {
   swapDomain: "",
   swapObservations: "",
   payments: [initialPayment],
+  administrationNotes: "",
 };
 
 function formatCurrency(value: string | number) {
@@ -157,6 +171,8 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
 
 export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
+  const { create, isLoading, error } = useCreateInvoice();
+  const { cars } = useCars();
 
   const totals = useMemo(() => {
     const price = Number.parseFloat(String(form.salePrice)) || 0;
@@ -175,9 +191,17 @@ export function InvoiceRegistrationForm() {
   };
 
   const handlePrintInvoice = () => {
-    // Aquí podrías llamar a la función de impresión con los datos del formulario.
     printInvoice(form);
     console.log("Imprimiendo factura con los siguientes datos:", form);
+  }
+
+  const handleSaveInvoice = async () => {
+    try {
+      await create(form);
+      console.log("Factura creada exitosamente");
+    } catch (err) {
+      console.error("Error al crear factura:", err);
+    }
   }
 
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
@@ -185,6 +209,14 @@ export function InvoiceRegistrationForm() {
       ...current,
       payments: current.payments.map((entry) => (entry.id === updatedEntry.id ? updatedEntry : entry)),
     }));
+  };
+
+  const handleVehicleChange = (vehicle: Car) => {
+    setForm((current) => ({ ...current, car: vehicle }));
+  };
+
+  const handleSellerChange = (seller: User) => {
+    setForm((current) => ({ ...current, seller }));
   };
 
   return (
@@ -200,14 +232,19 @@ export function InvoiceRegistrationForm() {
             <Printer className="size-4" />
             Imprimir
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={handleSaveInvoice} disabled={isLoading}>
             <Save className="size-4" />
-            Guardar registro
+            {isLoading ? "Guardando..." : "Guardar registro"}
           </Button>
         </div>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.6fr_0.8fr]">
+        {error && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
         <div className="space-y-6">
           <Card className="overflow-visible border-0 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.07)]">
             <CardHeader className="border-b border-border/60 bg-slate-50/70 px-6 py-5">
@@ -224,20 +261,16 @@ export function InvoiceRegistrationForm() {
                 <span className="rounded-full border border-border/70 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Ref: CF-2024-001</span>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6 p-6">
-              <div className="grid gap-6 md:grid-cols-[1.4fr_0.6fr]">
+            <CardContent className="flex flex-col gap-4">
+              <div className="grid gap-6">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
-                  <VehicleSelector value={form.car.id ?? ""} onValueChange={(vehicleId) => setForm((current) => ({ ...current, car: { ...current.car, id: vehicleId } }))} />
-                </label>
-                <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
-                  <Input value={form.car.domain} onChange={(event) => setForm((current) => ({ ...current, car: { ...current.car, domain: event.target.value } }))} placeholder="ABC-123" />
+                  <VehicleSelector value={form.car.id ?? ""} onValueChange={handleVehicleChange} />
                 </label>
               </div>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
-                <Input value={form.seller} onChange={(event) => setForm((current) => ({ ...current, seller: event.target.value }))} placeholder="Seleccione un asesor comercial" />
+                <SellerSelector value={String(form.seller.id)} onValueChange={handleSellerChange} />
               </label>
               <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">
                 <label className="space-y-2 text-sm">
@@ -260,6 +293,16 @@ export function InvoiceRegistrationForm() {
                     <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                     <Input value={form.folderCost} onChange={(event) => setForm((current) => ({ ...current, folderCost: event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
                   </div>
+                </label>
+              </div>
+              <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-2">
+                <label className="space-y-2 text-sm">
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Número de factura</span>
+                  <Input value={form.invoiceNumber} onChange={(event) => setForm((current) => ({ ...current, invoiceNumber: event.target.value }))} placeholder="FC-2024-0001" />
+                </label>
+                <label className="space-y-2 text-sm">
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Fecha de pago</span>
+                  <Input value={form.paidAt ? new Date(form.paidAt).toISOString().split('T')[0] : ''} onChange={(event) => setForm((current) => ({ ...current, paidAt: event.target.value ? new Date(event.target.value) : undefined }))} type="date" />
                 </label>
               </div>
             </CardContent>
@@ -306,6 +349,49 @@ export function InvoiceRegistrationForm() {
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Observaciones</span>
                 <Textarea value={form.observations} onChange={(event) => setForm((current) => ({ ...current, observations: event.target.value }))} rows={3} placeholder="Comentarios sobre la operación o entregables" />
               </label>
+              <label className="space-y-2 text-sm">
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Notas de administración</span>
+                <Textarea value={form.administrationNotes} onChange={(event) => setForm((current) => ({ ...current, administrationNotes: event.target.value }))} rows={2} placeholder="Notas internas del área de administración" />
+              </label>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-visible border-0 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.07)]">
+            <CardHeader className="border-b border-border/60 bg-slate-50/70 px-6 py-5">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl bg-primary/10 p-2 text-primary">
+                  <FileText className="size-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Detalles financieros</CardTitle>
+                  <p className="text-sm text-muted-foreground">Información contable de la factura</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6 p-6">
+              <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">
+                <label className="space-y-2 text-sm">
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Subtotal</span>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                    <Input value={form.subtotal} onChange={(event) => setForm((current) => ({ ...current, subtotal: event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                  </div>
+                </label>
+                <label className="space-y-2 text-sm">
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Impuestos (IVA)</span>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                    <Input value={form.taxAmount} onChange={(event) => setForm((current) => ({ ...current, taxAmount: event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                  </div>
+                </label>
+                <label className="space-y-2 text-sm">
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Total</span>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                    <Input value={form.totalAmount} onChange={(event) => setForm((current) => ({ ...current, totalAmount: event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                  </div>
+                </label>
+              </div>
             </CardContent>
           </Card>
 

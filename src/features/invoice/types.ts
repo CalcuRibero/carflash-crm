@@ -34,6 +34,20 @@ export interface Invoice {
   seller: string;
 }
 
+export interface InvoiceCreateRequest {
+  invoiceNumber: string;
+  subtotal: number;
+  taxAmount: number;
+  totalAmount: number;
+  status: InvoiceStatus;
+  paymentMethod: PaymentMethod;
+  customer: InvoiceCustomer;
+  car: InvoiceCar;
+  carSwapped?: InvoiceCar;
+  administrationNotes: string;
+  paidAt?: Date;
+}
+
 export interface InvoiceFilters {
   search?: string;
   status?: InvoiceStatus;

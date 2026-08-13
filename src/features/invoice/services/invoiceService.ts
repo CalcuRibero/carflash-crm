@@ -1,5 +1,5 @@
 import { apiRequest } from "@/shared/utils/apiClient";
-import type { Invoice, InvoiceFilters } from "../types";
+import type { Invoice, InvoiceCreateRequest, InvoiceFilters } from "../types";
 
 export interface InvoiceListResponse {
   data: Invoice[];
@@ -35,4 +35,11 @@ export async function getInvoiceById(id: string): Promise<Invoice> {
 
 export async function deleteInvoice(id: string): Promise<void> {
   return apiRequest<void>(`/invoices/${id}`, { method: "DELETE" });
+}
+
+export async function createInvoice(data: InvoiceCreateRequest): Promise<Invoice> {
+  return apiRequest<Invoice>("/invoices", {
+    method: "POST",
+    body: data,
+  });
 }
