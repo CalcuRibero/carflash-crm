@@ -1,6 +1,18 @@
+import { Car } from "../operations/types";
+
 export type InvoiceStatus = "PENDING" | "PAID" | "PARTIALLY_PAID" | "CANCELLED" | "REFUNDED" | string;
 
-export type PaymentMethod = "sena" | "permuta" | "contado" | "tarjeta" | "financiacion" | "pagares";
+export enum PaymentMethod {
+  SENA = 'sena',
+  CASH = 'cash',
+  BANK_TRANSFER = 'bank_transfer',
+  FINANCING = 'financing',
+  CAR_SWAP = 'car_swap',
+  CREDIT_CARD = 'credit_card',
+  DEBIT_CARD = 'debit_card',
+  PROMISSORY_NOTE = 'promissory_note', 
+}
+
 
 export interface InvoiceCustomer {
   id?: string;
@@ -42,8 +54,8 @@ export interface InvoiceCreateRequest {
   status: InvoiceStatus;
   paymentMethod: PaymentMethod;
   customer: InvoiceCustomer;
-  car: InvoiceCar;
-  carSwapped?: InvoiceCar;
+  car: string;
+  carSwapped?: Omit<Car, "id" | "createdAt" | "updatedAt"> ;
   administrationNotes: string;
   paidAt?: Date;
 }

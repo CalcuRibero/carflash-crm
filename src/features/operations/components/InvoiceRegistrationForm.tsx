@@ -11,14 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
 import { SellerSelector } from "@/features/operations/components/SellerSelector";
 import { useCars } from "@/features/operations/hooks/useCars";
-import { Car, OperationFormState, PaymentMethod, PaymentMethodEntry, PaymentStatus } from "@/features/operations/types";
+import { Car, OperationFormState, PaymentMethodEntry, PaymentStatus } from "@/features/operations/types";
 import type { User } from "@/lib/api/types";
-import { useCreateInvoice } from "@/features/invoice";
+import { PaymentMethod, useCreateInvoice } from "@/features/invoice";
 import { printInvoice } from "@/lib/printer/printer";
 
 const initialPayment: PaymentMethodEntry = {
   id: crypto.randomUUID(),
-  method: "sena",
+  method: "cash",
   amount: "",
   observations: "",
   financingMedium: "",
@@ -35,7 +35,7 @@ const initialFormState: OperationFormState = {
   taxAmount: "",
   totalAmount: "",
   status: PaymentStatus.PENDING,
-  paymentMethod: "contado",
+  paymentMethod: "cash",
   customer: {
     id: "",
     fullName: "",
@@ -83,8 +83,8 @@ function formatCurrency(value: string | number) {
 }
 
 function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChange: (entry: PaymentMethodEntry) => void }) {
-  const showFinancing = entry.method === "financiacion";
-  const showPromissory = entry.method === "pagares";
+  const showFinancing = entry.method === "financing";
+  const showPromissory = entry.method === "promissory_note";
 
   return (
     <div className="rounded-2xl border border-border/70 bg-slate-50/70 p-4 shadow-sm">

@@ -29,18 +29,9 @@ export function adaptOperationFormToInvoiceRequest(formData: OperationFormState)
       phone: formData.customer.phone,
       email: formData.customer.email,
     },
-    car: {
-      id: formData.car.id,
-      domain: formData.car.domain,
-      brand: formData.car.brand,
-      model: formData.car.model,
-      year: formData.car.year,
-      vin: formData.car.vin,
-      price: formData.car.price,
-    },
+    car:formData.car.id,
     carSwapped: formData.carSwapped
       ? {
-          id: formData.carSwapped.id,
           domain: formData.carSwapped.domain,
           brand: formData.carSwapped.brand,
           model: formData.carSwapped.model,
@@ -52,4 +43,12 @@ export function adaptOperationFormToInvoiceRequest(formData: OperationFormState)
     administrationNotes: formData.administrationNotes || "",
     paidAt: formData.paidAt ? new Date(formData.paidAt) : undefined,
   };
+}
+
+
+export const PAYMENT_METHOD_LABEL = {
+  credit_card: "Tarjeta de Crédito",
+  debit_card: "Tarjeta de Débito",
+  bank_transfer: "Transferencia Bancaria",
+  cash: "Contado"
 }

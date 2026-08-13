@@ -60,11 +60,13 @@ const statusConfig: Record<InvoiceStatus, { label: string; variant: "default" | 
 
 const paymentMethodConfig: Record<PaymentMethod, string> = {
   sena: "Seña",
-  permuta: "Permuta",
-  contado: "Contado",
-  tarjeta: "Tarjeta",
-  financiacion: "Financiación",
-  pagares: "Pagarés",
+  car_swap: "Permuta",
+  cash: "Contado",
+  credit_card: "Tarjeta de Crédito",
+  debit_card: "Tarjeta de Débito",
+  financing: "Financiación",
+  promissory_note: "Pagarés",
+  bank_transfer: "Transferencia Bancaria",
 };
 
 const getStatusIcon = (status: InvoiceStatus) => {

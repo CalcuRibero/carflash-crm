@@ -26,9 +26,6 @@ export enum PaymentStatus {
     CANCELLED = 'cancelled',
 }
 
-
-export type PaymentMethod = "sena" | "permuta" | "contado" | "tarjeta" | "financiacion" | "pagares";
-
 export interface Customer {
   id?: string;
   fullName: string;
