@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { RecurrenceInterval, TicketStatus, TicketPriority, TicketCategory, type RecurrentTicket, TicketCategoryLabel } from "../types";
+import { useAuth } from "@/stores/auth/auth-provider";
 
 interface RecurrentTicketsTableProps {
   tickets: RecurrentTicket[];
@@ -90,6 +91,9 @@ export function RecurrentTicketsTable({
     );
   }
 
+  const user = useAuth().user
+  const isSuperAdmin = user?.role === "SuperAdmin"
+
   return (
     <div className="rounded-lg border bg-card">
       <Table>
@@ -121,7 +125,8 @@ export function RecurrentTicketsTable({
               <TableCell>{formatDate(ticket.first_run_at)}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button
+                  { isSuperAdmin &&
+                    <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => onEdit(ticket)}
@@ -142,6 +147,7 @@ export function RecurrentTicketsTable({
                       <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                     </svg>
                   </Button>
+                  }
                   <Button
                     variant="ghost"
                     size="sm"
