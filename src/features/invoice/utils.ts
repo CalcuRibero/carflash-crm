@@ -22,7 +22,6 @@ export function adaptOperationFormToInvoiceRequest(formData: OperationFormState)
     status: formData.status as any,
     paymentMethod: formData.paymentMethod,
     customer: {
-      id: formData.customer.id,
       fullName: formData.customer.fullName,
       document: formData.customer.document,
       address: formData.customer.address,

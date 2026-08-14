@@ -1,4 +1,5 @@
 import type { User } from "@/lib/api/types";
+import { PaymentMethod } from "../invoice/types";
 
 export type CarStatus = "AVAILABLE" | "SOLD" | "IN_REPAIR" | "PENDING" | string;
 

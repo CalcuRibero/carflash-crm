@@ -31,20 +31,20 @@ const cell = (value?: string | number): string => {
 
 function getPaymentBreakdown(data: OperationFormState) {
   const payments = data.payments ?? [];
-  const getAmount = (method: PaymentMethodEntry["method"]): number => {
+  const getAmount = (method: string): number => {
     const entry = payments.find((payment) => payment.method === method);
     return entry ? Number.parseFloat(String(entry.amount)) || 0 : 0;
   };
 
-  const financingEntry = payments.find((payment) => payment.method === "financiacion");
-  const promissoryEntry = payments.find((payment) => payment.method === "pagares");
+  const financingEntry = payments.find((payment) => payment.method === "financing");
+  const promissoryEntry = payments.find((payment) => payment.method === "promissory_note");
 
   return {
     downPayment: getAmount("sena"),
-    tradeInValue: getAmount("permuta"),
-    cash: getAmount("contado"),
-    card: getAmount("tarjeta"),
-    financingAmount: getAmount("financiacion"),
+    tradeInValue: getAmount("car_swap"),
+    cash: getAmount("cash"),
+    card: getAmount("credit_card") + getAmount("debit_card"),
+    financingAmount: getAmount("financing"),
     financing: {
       method: financingEntry?.financingMedium ?? "",
       installments: financingEntry?.quotas ?? "",
@@ -57,9 +57,9 @@ function getPaymentBreakdown(data: OperationFormState) {
     },
     observations: {
       downPayment: payments.find((payment) => payment.method === "sena")?.observations ?? "",
-      tradeInValue: payments.find((payment) => payment.method === "permuta")?.observations ?? "",
-      cash: payments.find((payment) => payment.method === "contado")?.observations ?? "",
-      card: payments.find((payment) => payment.method === "tarjeta")?.observations ?? "",
+      tradeInValue: payments.find((payment) => payment.method === "car_swap")?.observations ?? "",
+      cash: payments.find((payment) => payment.method === "cash")?.observations ?? "",
+      card: payments.find((payment) => ["credit_card", "debit_card"].includes(payment.method))?.observations ?? "",
       financing: financingEntry?.observations ?? "",
       promissoryNotes: promissoryEntry?.observations ?? "",
     },
@@ -68,7 +68,7 @@ function getPaymentBreakdown(data: OperationFormState) {
 
 export function buildInvoiceHtml(data: OperationFormState): string {
   const invoiceNumber = data.invoiceNumber ?? data.id ?? "";
-  const sellerName = data.seller ?? "";
+  const sellerName = data.seller.fullName ?? "";
   const vehicleDescription = [data.car?.brand ?? "", data.car?.model ?? ""].filter(Boolean).join(" ").trim();
   const licensePlate = data.car?.domain ?? data.car?.domain ?? "";
   const salePrice = Number.parseFloat(String(data.salePrice)) || 0;

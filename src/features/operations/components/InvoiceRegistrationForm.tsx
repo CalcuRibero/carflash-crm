@@ -18,7 +18,7 @@ import { printInvoice } from "@/lib/printer/printer";
 
 const initialPayment: PaymentMethodEntry = {
   id: crypto.randomUUID(),
-  method: "cash",
+  method: "cash" as PaymentMethod,
   amount: "",
   observations: "",
   financingMedium: "",
@@ -29,15 +29,13 @@ const initialPayment: PaymentMethodEntry = {
 };
 
 const initialFormState: OperationFormState = {
-  id: "",
   invoiceNumber: "",
   subtotal: "",
   taxAmount: "",
   totalAmount: "",
   status: PaymentStatus.PENDING,
-  paymentMethod: "cash",
+  paymentMethod: "cash" as PaymentMethod,
   customer: {
-    id: "",
     fullName: "",
     document: "",
     address: "",
@@ -85,6 +83,7 @@ function formatCurrency(value: string | number) {
 function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChange: (entry: PaymentMethodEntry) => void }) {
   const showFinancing = entry.method === "financing";
   const showPromissory = entry.method === "promissory_note";
+
 
   return (
     <div className="rounded-2xl border border-border/70 bg-slate-50/70 p-4 shadow-sm">
