@@ -1,8 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Clock, Mail } from "lucide-react";
+import { AlertTriangle, Calendar, Clock, Mail } from "lucide-react";
 import { MetricsCardsProps } from "../type";
 import { Skeleton } from "@/components/ui/skeleton";
+import { isDateInThisWeek } from "../utils";
+import { isThisISOWeek } from "date-fns";
 
 export function MetricsCards({ tickets = [], isLoading, errorMessage }: MetricsCardsProps) {
 
@@ -18,6 +20,9 @@ export function MetricsCards({ tickets = [], isLoading, errorMessage }: MetricsC
     
     const inProgressCount = tickets.filter((t) => t.status === "in_progress").length;
     const openCount = tickets.filter((t) => t.status === "open").length;
+    const weeklyClosed = tickets.filter((t) => (
+        t.status === "closed" && (t.resolvedAt ? isThisISOWeek(t.resolvedAt) : false)
+    )).length;
     const overdueCount = tickets.filter((t) => {
         if (!t.dueDate) return false;
         const dueDate = new Date(t.dueDate);
@@ -25,11 +30,12 @@ export function MetricsCards({ tickets = [], isLoading, errorMessage }: MetricsC
     }).length;
 
 
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Tickets en Progreso */}
-            <Card>
-                <CardHeader className="pb-3">
+            <Card className="grid grid-rows-3 gap-4">
+                <CardHeader className="row-span-2">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="p-2 rounded-lg bg-primary/10">
@@ -43,14 +49,14 @@ export function MetricsCards({ tickets = [], isLoading, errorMessage }: MetricsC
                         </Badge>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex justify-center items-center">
                     <div className="text-3xl font-bold">{inProgressCount}</div>
                 </CardContent>
             </Card>
 
             {/* Tickets Abiertos */}
-            <Card>
-                <CardHeader className="pb-3">
+            <Card className="grid grid-rows-3 gap-4">
+                <CardHeader className="row-span-2">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="p-2 rounded-lg bg-yellow-500/10">
@@ -64,14 +70,14 @@ export function MetricsCards({ tickets = [], isLoading, errorMessage }: MetricsC
                         </Badge>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex justify-center">
                     <div className="text-3xl font-bold">{openCount}</div>
                 </CardContent>
             </Card>
 
             {/* Tickets Atrasados */}
-            <Card>
-                <CardHeader className="pb-3">
+            <Card className="grid grid-rows-3 gap-4">
+                <CardHeader className="row-span-2">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="p-2 rounded-lg bg-red-500/10">
@@ -85,10 +91,32 @@ export function MetricsCards({ tickets = [], isLoading, errorMessage }: MetricsC
                         </Badge>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex justify-center">
                     <div className="text-3xl font-bold">{overdueCount}</div>
                 </CardContent>
             </Card>
+            
+            {/* Tickets Cerrados esta semana */}
+            <Card className="grid grid-rows-3 gap-4">
+                <CardHeader className="row-span-2">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <div className="p-2 rounded-lg bg-blue-500/10">
+                                <Calendar className="size-5 text-blue-600" />
+                            </div>
+                            <CardTitle className="text-base">Tickets Cerrados Esta Semana</CardTitle>
+                        </div>
+                        <Badge variant="outline" className="gap-1">
+                            <span className="size-2 rounded-full bg-blue-500" />
+                            Semanal
+                        </Badge>
+                    </div>
+                </CardHeader>
+                <CardContent className="flex justify-center">
+                    <div className="text-3xl font-bold">{weeklyClosed}</div>
+                </CardContent>
+            </Card>
+
         </div>
     )
 }
