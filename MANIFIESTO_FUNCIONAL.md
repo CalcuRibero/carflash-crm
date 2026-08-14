@@ -560,9 +560,9 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Carflash Admin',
+    name: 'Tareas Carflash',
     short_name: 'Carflash',
-    description: 'Carflash Admin is a modern, open-source dashboard starter template built with Next.js 16, Tailwind CSS v4, and shadcn/ui.',
+    description: 'Tareas Carflash is a modern, open-source dashboard starter template built with Next.js 16, Tailwind CSS v4, and shadcn/ui.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
