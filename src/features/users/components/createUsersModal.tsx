@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { UserRole } from "@/lib/api/types";
+import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
 
 interface CreateUsersModalProps {
   open: boolean;
@@ -48,6 +49,7 @@ const userRoles = [
   "CarExpert",
   "Gestor",
   "CarSeller",
+  "Marketing"
 ] as const;
 
 const createUserSchema = z.object({
@@ -168,7 +170,7 @@ export function CreateUsersModal({
                 <SelectGroup>
                   {userRoles.map((userRole) => (
                     <SelectItem key={userRole} value={userRole}>
-                      {userRole}
+                      {TicketCategoryLabel[userRole]}
                     </SelectItem>
                   ))}
                 </SelectGroup>
