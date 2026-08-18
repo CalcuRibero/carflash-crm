@@ -43,14 +43,14 @@ export const sidebarItems: NavGroup[] = [
         title: "Tickets Fijos",
         url: "/dashboard/recurrent-tickets",
         icon: Repeat,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
       },
 
       {
         title: "Tickets Variables",
         url: "/dashboard/kanban",
         icon: Kanban,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
       },
       {
         title: "Facturación",
