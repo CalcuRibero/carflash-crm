@@ -11,6 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
 import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
 import { printInvoice } from "@/lib/printer/printer";
+import { SellerSelector } from "./SellersSelector";
+import { User } from "@/lib/api";
+import { useCreateInvoice } from "@/features/invoice/hooks/useCreateInvoice";
 
 const initialPayment: PaymentMethodEntry = {
   id: crypto.randomUUID(),
@@ -158,6 +161,8 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
 export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
 
+  const { create, isLoading, error } = useCreateInvoice();
+  
   const totals = useMemo(() => {
     const price = Number.parseFloat(String(form.salePrice)) || 0;
     const transfer = Number.parseFloat(String(form.transferCost)) || 0;
@@ -180,11 +185,25 @@ export function InvoiceRegistrationForm() {
     console.log("Imprimiendo factura con los siguientes datos:", form);
   }
 
+  const handleSaveInvoice = async () => {
+    try {
+      await create(form);
+      console.log("Factura creada exitosamente");
+    } catch (err) {
+      console.error("Error al crear factura:", err);
+    }
+  }
+
+
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
     setForm((current) => ({
       ...current,
       payments: current.payments.map((entry) => (entry.id === updatedEntry.id ? updatedEntry : entry)),
     }));
+  };
+
+  const handleSellerChange = (seller: User) => {
+    setForm((current) => ({ ...current, seller: String(seller.id) }));
   };
 
   return (
@@ -200,7 +219,7 @@ export function InvoiceRegistrationForm() {
             <Printer className="size-4" />
             Imprimir
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={handleSaveInvoice}>
             <Save className="size-4" />
             Guardar registro
           </Button>
@@ -224,23 +243,18 @@ export function InvoiceRegistrationForm() {
                 <span className="rounded-full border border-border/70 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Ref: CF-2024-001</span>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6 p-6">
-              <div className="grid gap-6 md:grid-cols-[1.4fr_0.6fr]">
-                <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
+            <CardContent className="grid grid-rows-3 gap-2">
+              <div className="grid gap-6">
+                <label className="text-sm">
                   <VehicleSelector value={form.car.id ?? ""} onValueChange={(vehicleId) => setForm((current) => ({ ...current, car: { ...current.car, id: vehicleId } }))} />
                 </label>
-                <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
-                  <Input value={form.car.domain} onChange={(event) => setForm((current) => ({ ...current, car: { ...current.car, domain: event.target.value } }))} placeholder="ABC-123" />
-                </label>
               </div>
-              <label className="space-y-2 text-sm">
+              <label className="text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
-                <Input value={form.seller} onChange={(event) => setForm((current) => ({ ...current, seller: event.target.value }))} placeholder="Seleccione un asesor comercial" />
+                <SellerSelector value={form.seller} onValueChange={handleSellerChange} />
               </label>
               <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">
-                <label className="space-y-2 text-sm">
+                <label className="text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Precio de venta</span>
                   <div className="relative">
                     <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>

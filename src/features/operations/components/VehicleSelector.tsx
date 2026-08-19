@@ -35,15 +35,15 @@ export function VehicleSelector({ value, onValueChange }: VehicleSelectorProps) 
 
   return (
     <div className="space-y-2">
-      <div className="relative">
+      {/* <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => { setSearch(event.target.value) }}
           placeholder="Buscar por marca, modelo, dominio o VIN"
           className="pl-9"
         />
-      </div>
+      </div> */}
 
       {isLoading ? (
         <div className="flex items-center gap-2 rounded-lg border border-dashed border-border/70 bg-slate-50/70 px-3 py-2 text-sm text-muted-foreground">
