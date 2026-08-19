@@ -52,6 +52,17 @@ const userRoles = [
   "Marketing"
 ] as const;
 
+
+export const UserCategoryLabel: Record<string, string> = {
+  'SuperAdmin': 'Super Admin',
+  'AdministrationAccountant': 'Administracion y Contabilidad',
+  'ComercialCordinator': 'Coordinador Comercial',
+  'CarExpert': 'Perito',
+  'Gestor': 'Gestor',
+  'CarSeller': 'Vendedor de Autos',
+  'Marketing': 'Marketing'
+}
+
 const createUserSchema = z.object({
   fullName: z.string().min(1, { message: "Nombre completo es requerido." }),
   username: z.string().min(1, { message: "Nombre de usuario es requerido." }),
@@ -170,7 +181,7 @@ export function CreateUsersModal({
                 <SelectGroup>
                   {userRoles.map((userRole) => (
                     <SelectItem key={userRole} value={userRole}>
-                      {TicketCategoryLabel[userRole]}
+                      {UserCategoryLabel[userRole]}
                     </SelectItem>
                   ))}
                 </SelectGroup>
