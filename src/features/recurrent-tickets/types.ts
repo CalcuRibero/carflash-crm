@@ -30,11 +30,11 @@ export enum TicketCategory {
 
 export const TicketCategoryLabel: Record<string, string> = {
   'SuperAdmin': 'Super Admin',
-  'AdministrationAccountancy': 'Administracion y Contabilidad',
-  'ComercialCordination': 'Cordinador Comercial',
+  'AdministrationAccountant': 'Administracion y Contabilidad',
+  'ComercialCordinator': 'Cordinador Comercial',
   'CarExpert': 'Perito',
   'Gestor': 'Gestor',
-  'CarSelling': 'Vendedor de Autos',
+  'CarSeller': 'Vendedor de Autos',
   'Marketing': 'Marketing'
 }
 
