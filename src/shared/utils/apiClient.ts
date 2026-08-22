@@ -83,6 +83,15 @@ export async function apiRequest<TResponse>(path: string, options: RequestOption
         ? String((payload as { message: unknown }).message)
         : `API request failed with status ${response.status}`;
 
+    // Handle 401 Unauthorized - token expired or invalid
+    if (response.status === 401) {
+      // Clear the token from localStorage
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("carflash_api_access_token");
+        window.location.href = "/auth/login";
+      }
+    }
+
     throw new ApiError(message, response.status, payload);
   }
 
