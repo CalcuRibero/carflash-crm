@@ -29,9 +29,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const profile = await apiRequest<User>("/auth/profile");
       setUser(profile);
-    } catch {
+    } catch (error) {
+      // Handle token expiration or invalid token
       clearApiToken();
       setUser(null);
+      // Redirect to login if we're in browser environment
+      if (typeof window !== "undefined") {
+        window.location.href = "/auth/login";
+      }
     } finally {
       setIsLoading(false);
     }

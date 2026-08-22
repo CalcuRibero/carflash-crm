@@ -83,6 +83,14 @@ export async function apiRequest<TResponse>(path: string, options: RequestOption
         ? String((payload as { message: unknown }).message)
         : `API request failed with status ${response.status}`;
 
+    // Handle 401 Unauthorized - token expired or invalid
+    if (response.status === 401) {
+      clearApiToken();
+      if (typeof window !== "undefined") {
+        window.location.href = "/auth/login";
+      }
+    }
+
     throw new ApiError(message, response.status, payload);
   }
 

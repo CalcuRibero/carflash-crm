@@ -41,8 +41,6 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
 
   const isEditMode = !!currentTicket;
 
-  console.log(currentTicket)
-  
   useEffect(() => {
     if (currentTicket) {
       setFormValues({
