@@ -29,6 +29,7 @@ export async function getInvoices(filters?: InvoiceFilters): Promise<Invoice[]> 
   }
 }
 
+
 export async function getInvoiceById(id: string): Promise<Invoice> {
   return apiRequest<Invoice>(`/invoices/${id}`);
 }

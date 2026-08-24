@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
 import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
 import { printInvoice } from "@/lib/printer/printer";
+import { SellerSelector } from "./SellersSelector";
 
 const initialPayment: PaymentMethodEntry = {
   id: crypto.randomUUID(),
@@ -25,32 +26,19 @@ const initialPayment: PaymentMethodEntry = {
 };
 
 const initialFormState: OperationFormState = {
-  id: "",
-  invoiceNumber: "",
   subtotal: "",
   taxAmount: "",
   totalAmount: "",
   status: "PENDING",
-  paymentMethod: "contado",
   customer: {
-    id: "",
     fullName: "",
     document: "",
     address: "",
     phone: "",
     email: "",
   },
-  car: {
-    id: "",
-    domain: "",
-    brand: "",
-    model: "",
-    year: 0,
-    vin: "",
-    price: 0,
-    status: "AVAILABLE",
-  },
-  seller: "",
+  carId: "",
+  sellerId: "",
   salePrice: "",
   transferCost: "",
   folderCost: "",
@@ -180,6 +168,10 @@ export function InvoiceRegistrationForm() {
     console.log("Imprimiendo factura con los siguientes datos:", form);
   }
 
+  const handleCreateInvoice = () => {
+    console.log(form)
+  }
+
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
     setForm((current) => ({
       ...current,
@@ -200,7 +192,7 @@ export function InvoiceRegistrationForm() {
             <Printer className="size-4" />
             Imprimir
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={handleCreateInvoice}>
             <Save className="size-4" />
             Guardar registro
           </Button>
@@ -225,20 +217,16 @@ export function InvoiceRegistrationForm() {
               </div>
             </CardHeader>
             <CardContent className="space-y-6 p-6">
-              <div className="grid gap-6 md:grid-cols-[1.4fr_0.6fr]">
-                <label className="space-y-2 text-sm">
+              <div className="gap-6 flex flex-col">
+                <label className="text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
-                  <VehicleSelector value={form.car.id ?? ""} onValueChange={(vehicleId) => setForm((current) => ({ ...current, car: { ...current.car, id: vehicleId } }))} />
+                  <VehicleSelector value={form.carId ?? ""} onValueChange={(vehicleId) => setForm((current) => ({ ...current, car: vehicleId  }))} />
                 </label>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
-                  <Input value={form.car.domain} onChange={(event) => setForm((current) => ({ ...current, car: { ...current.car, domain: event.target.value } }))} placeholder="ABC-123" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
+                  <SellerSelector value={form.sellerId} onValueChange={(sellerId) => setForm((current) => ({ ...current, sellerId: sellerId }))} />
                 </label>
               </div>
-              <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
-                <Input value={form.seller} onChange={(event) => setForm((current) => ({ ...current, seller: event.target.value }))} placeholder="Seleccione un asesor comercial" />
-              </label>
               <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Precio de venta</span>

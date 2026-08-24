@@ -19,6 +19,15 @@ export async function getUsersService(options: { signal?: AbortSignal } = {}): P
   });
 }
 
+export async function getUsersSellersService(options: { signal?: AbortSignal } = {}): Promise<User[]> {
+  const token = getApiToken();
+
+  return apiRequest<User[]>("/users/sellers", {
+    signal: options.signal,
+    token,
+  });
+}
+
 export async function createUserService(payload: CreateUserRequest): Promise<User> {
   const token = getApiToken();
 

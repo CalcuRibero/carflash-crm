@@ -43,17 +43,14 @@ export interface PaymentMethodEntry {
 }
 
 export interface OperationFormState {
-  id?: string;
-  invoiceNumber?: string;
   subtotal: string | number;
   taxAmount: string | number;
   totalAmount: string | number;
   status: PaymentStatus;
-  paymentMethod: PaymentMethod;
   customer: Customer;
-  car: Car;
+  carId: string;
   carSwapped?: Car;
-  seller: string;
+  sellerId: string;
   salePrice: string | number;
   transferCost: string | number;
   folderCost: string | number;
