@@ -18,10 +18,8 @@ import { DragDropProvider } from "@dnd-kit/react";
 import { move } from '@dnd-kit/helpers';
 import { useUpdateTicketStatus } from "@/features/tickets/hooks/useUpdateTicketStatus";
 import { isSortable } from "@dnd-kit/react/sortable";
-import { useAuth } from "@/stores/auth/auth-provider";
 
 export function Kanban() {
-  const {user} = useAuth()
   const [board, setBoard] = useState<BoardState>(INITIAL_BOARD);
   const [columnOrder, setColumnOrder] = useState<ColumnId[]>(columnIds);
   const [activeTask, setActiveTask] = useState<Ticket | null>(null);
@@ -35,10 +33,7 @@ export function Kanban() {
 
   useEffect(() => {
     const createdTicket = createTicketModal.createdTicket;
-    if (!user) return;
     if (!createdTicket) return;
-    if (!createdTicket.assignedTo) return;
-    if (createdTicket.assignedTo.id === user.id ) return;
     setBoard((currentBoard) => ({
         ...currentBoard,
         [createdTicket.status]: [createdTicket, ...currentBoard[createdTicket.status]],
