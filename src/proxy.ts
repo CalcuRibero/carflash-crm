@@ -41,24 +41,28 @@ export function proxy(request: NextRequest) {
   const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
   const isAuthPath = pathname === "/auth" || pathname.startsWith("/auth/");
 
+  // 1. Validar expiración si el token existe
+  if (token) {
+    const timestamp = getTimestampValue(tokenTimestamp);
+    const isExpired = timestamp === null || Date.now() - timestamp > TOKEN_EXPIRY_MS;
+
+    if (isExpired) {
+      // Si expiró, limpiamos cookies y redirigimos a login (a menos que ya esté en /auth)
+      const response = isAuthPath
+        ? NextResponse.next()
+        : NextResponse.redirect(new URL("/auth/login", request.url));
+
+      clearAuthCookies(response);
+      return response;
+    }
+  }
+
+  // 2. Si no hay token y la ruta no es pública, redirigir a login
   if (!token && !isPublicPath) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  const timestamp = getTimestampValue(tokenTimestamp);
-  const isExpired = Boolean(
-    token && (timestamp === null || Date.now() - timestamp > TOKEN_EXPIRY_MS),
-  );
-
-  if (isExpired) {
-    const response = isAuthPath
-      ? NextResponse.next()
-      : NextResponse.redirect(new URL("/auth/login", request.url));
-
-    clearAuthCookies(response);
-    return response;
-  }
-
+  // 3. Si hay token válido y está intentando ir al login/auth, redirigir al dashboard
   if (token && isAuthPath) {
     return NextResponse.redirect(new URL("/dashboard/kanban", request.url));
   }
@@ -68,14 +72,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - api routes
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
     "/((?!api|_next/static|_next/image|favicon.ico|public|manifest.webmanifest).*)",
   ],
 };
