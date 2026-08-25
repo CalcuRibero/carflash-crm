@@ -31,15 +31,14 @@ export interface Customer {
 }
 
 export interface PaymentMethodEntry {
-  id: string;
   method: PaymentMethod;
-  amount: string | number;
+  amount: number;
   observations: string;
   financingMedium: string;
-  quotas: string | number;
+  quotas: number;
   system: "UVA" | "Fija";
-  promissoryCount: string | number;
-  promissoryAmount: string | number;
+  promissoryCount: number;
+  promissoryAmount: number;
 }
 
 export interface OperationFormState {

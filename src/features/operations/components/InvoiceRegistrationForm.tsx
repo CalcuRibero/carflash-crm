@@ -12,17 +12,17 @@ import { VehicleSelector } from "@/features/operations/components/VehicleSelecto
 import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
 import { printInvoice } from "@/lib/printer/printer";
 import { SellerSelector } from "./SellersSelector";
+import { useCreateInvoices } from "@/features/invoice/hooks/useCreateInvoice";
 
 const initialPayment: PaymentMethodEntry = {
-  id: crypto.randomUUID(),
   method: "sena",
-  amount: "",
+  amount: 0,
   observations: "",
   financingMedium: "",
-  quotas: "",
+  quotas: 1,
   system: "UVA",
-  promissoryCount: "",
-  promissoryAmount: "",
+  promissoryCount: 0,
+  promissoryAmount: 0,
 };
 
 const initialFormState: OperationFormState = {
@@ -85,7 +85,7 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
           <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Monto</span>
           <div className="relative">
             <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-            <Input value={entry.amount} onChange={(event) => onChange({ ...entry, amount: event.target.value })} placeholder="0.00" className="pl-8" type="number" />
+            <Input value={entry.amount} onChange={(event) => onChange({ ...entry, amount: Number(event.target.value) })} placeholder="0.00" className="pl-8" type="number" />
           </div>
         </label>
         <label className="space-y-2 text-sm md:col-span-1">
@@ -104,7 +104,7 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Cuotas</span>
-                <Input value={entry.quotas} onChange={(event) => onChange({ ...entry, quotas: event.target.value })} placeholder="12, 24, 36" type="number" />
+                <Input value={entry.quotas} onChange={(event) => onChange({ ...entry, quotas: Number(event.target.value) })} placeholder="12, 24, 36" type="number" />
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Sistema</span>
@@ -126,13 +126,13 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
             <>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Cantidad de pagarés</span>
-                <Input value={entry.promissoryCount} onChange={(event) => onChange({ ...entry, promissoryCount: event.target.value })} placeholder="1, 2, 3" type="number" />
+                <Input value={entry.promissoryCount} onChange={(event) => onChange({ ...entry, promissoryCount: Number(event.target.value) })} placeholder="1, 2, 3" type="number" />
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Monto por pagaré</span>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                  <Input value={entry.promissoryAmount} onChange={(event) => onChange({ ...entry, promissoryAmount: event.target.value })} placeholder="0.00" className="pl-8" type="number" />
+                  <Input value={entry.promissoryAmount} onChange={(event) => onChange({ ...entry, promissoryAmount: Number(event.target.value) })} placeholder="0.00" className="pl-8" type="number" />
                 </div>
               </label>
             </>
@@ -145,6 +145,8 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
 
 export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
+
+  const {createInvoice, isLoading } = useCreateInvoices()
 
   const totals = useMemo(() => {
     const price = Number.parseFloat(String(form.salePrice)) || 0;
@@ -169,13 +171,13 @@ export function InvoiceRegistrationForm() {
   }
 
   const handleCreateInvoice = () => {
-    console.log(form)
+    createInvoice(form)
   }
 
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
     setForm((current) => ({
       ...current,
-      payments: current.payments.map((entry) => (entry.id === updatedEntry.id ? updatedEntry : entry)),
+      payments: current.payments.map((entry) => (entry.method === updatedEntry.method ? updatedEntry : entry)),
     }));
   };
 
@@ -352,8 +354,8 @@ export function InvoiceRegistrationForm() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4 p-6">
-              {form.payments.map((entry) => (
-                <PaymentFields key={entry.id} entry={entry} onChange={updatePayment} />
+              {form.payments.map((entry, idx) => (
+                <PaymentFields key={`${idx}-${entry.method}`} entry={entry} onChange={updatePayment} />
               ))}
             </CardContent>
           </Card>
