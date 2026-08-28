@@ -1,18 +1,8 @@
 "use client";
 
-import { CircleUser, CreditCard, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
+import { ChevronRight, CircleUser, CreditCard, DoorOpen, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { cn, getInitials } from "@/lib/utils";
 import { clearAuthToken } from "@/features/auth/actions/auth-actions";
@@ -21,6 +11,19 @@ import { Notification, NotificationType, User } from "@/lib/api/types";
 import { Badge } from "@/components/ui/badge";
 import { useNotifications } from "@/shared/hooks/useNotifications";
 import { markNotificationAsRead } from "@/lib/api/notifications";
+import { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Button } from "@/components/ui/button";
+
+function getNotificationTitle(notification: string) {
+  const title = notification.split(":")[1]
+  return title
+}
 
 export function NavUser({
   user,
@@ -31,6 +34,7 @@ export function NavUser({
   const userName = user ? user.fullName : "Invitado";
   const { isMobile } = useSidebar();
   const { notifications, removeNotification } = useNotifications();
+  const [isOpenSettings, setIsOpenSettings] = useState(true)
 
   const markAsRead = async (id: string) => {
     try {
@@ -43,92 +47,111 @@ export function NavUser({
   const handleNotificationClick = (notification: Notification) => {
     markAsRead(notification.id)
     removeNotification(notification.id)
-    if(!notification.meta?.ticketId) {
+    if (!notification.meta?.ticketId) {
       router.replace('/dashboard/kanban')
       return
     }
     router.replace(`/dashboard/kanban/${notification.meta?.ticketId}`)
-  } 
+  }
 
   const handleLogout = async () => {
     await clearAuthToken();
-    router.push("/auth/login"); 
+    router.push("/auth/login");
   };
+
+
+  const handleProfile = () => {
+    if (!user) return
+    router.push(`/dashboard/user-metrics/${user.id}`)
+  }
+
 
   const NotificationsTypeLabels: Record<string, string> = {
     "NewTicket": "Nuevo Ticket",
     "NewChatMessage": "Nuevo Mensaje del chat"
   }
 
-  
-
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate text-muted-foreground text-xs">{userName}</span>
-              </div>
-              <Badge>
-                {notifications.length}
-              </Badge>
-              <EllipsisVertical className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{userName}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className={cn({"animate-pulse bg-primary text-white" : notifications.length})}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton disabled={!notifications.length}>
-                      <MessageSquareDot />
-                      <span>Notificaciones</span>
-                      <Badge>
-                        {notifications.length}
-                      </Badge>
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    {notifications.map((notification, idx) => 
-                      // notification.type === NotificationType.NEW_TICKET ?
-                      <DropdownMenuGroup key={idx}>
-                        <DropdownMenuItem  className="flex flex-col gap-2" onClick={() => handleNotificationClick(notification)}>
-                          <Badge className="text-xs bg-primary text-white hover:text-white! items-start">{NotificationsTypeLabels[notification.type]}</Badge>
-                          <span>{notification.message}</span>
-                        </DropdownMenuItem>
+    <Accordion
+      type="single"
+      collapsible
+      className="max-w-lg"
+    >
+      <AccordionItem value="notification">
+        <AccordionContent className="flex flex-col bg-background text-foreground rounded-md">
+          {notifications.map((notification, idx) =>
+            // notification.type === NotificationType.NEW_TICKET ?
+            <Button variant={'ghost'} onClick={() => { handleNotificationClick(notification) }} className="flex justify-between hover:bg-primary hover:text-background">
+              <span key={idx} >{getNotificationTitle(notification.message)}</span>
+              <span>
+                <ChevronRight/>
+              </span>
+            </Button>
+          )}
+        </AccordionContent>
+        <AccordionTrigger disabled={!notifications.length} className="flex gap-2">
+          <span className="flex gap-2">
+            <MessageSquareDot />
+            <span>Notificaciones</span>
+          </span>
+          <Badge>
+            {notifications.length}
+          </Badge>
+        </AccordionTrigger>
+      </AccordionItem>
+      <AccordionItem value="user-settings">
+        <AccordionContent>
+          <Button variant="ghost" className="flex justify-start w-full" onClick={handleProfile}>
+            <CircleUser />
+            <span>Perfil</span>
+          </Button>
+          <Button variant="ghost" className="flex justify-start w-full" onClick={handleLogout}>
+            <DoorOpen />
+            <span>Salir</span>
+          </Button>
+        </AccordionContent>
 
-                      </DropdownMenuGroup>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
-              Cerrar sesión
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  );
+        <AccordionTrigger>{userName}</AccordionTrigger>
+      </AccordionItem>
+
+    </Accordion>
+  )
+
+  // return (
+  //   <SidebarMenu>
+  //     <SidebarMenuItem>
+  //         {
+  //           isOpenSettings && 
+  //             (
+  //               <>
+  //                 <SidebarMenuButton disabled={!notifications.length}>
+  //                     <MessageSquareDot />
+  //                     <span>Notificaciones</span>
+  //                     <Badge>
+  //                       {notifications.length}
+  //                     </Badge>
+  //                   </SidebarMenuButton>
+  //                 <SidebarMenuButton>
+  //                     <CircleUser/>
+  //                     <span>Perfil</span>
+  //                   </SidebarMenuButton>
+  //               </>
+  //             )  
+  //         }
+  //         <SidebarMenuButton
+  //           size="lg"
+  //           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+  //           onClick={() => {setIsOpenSettings(!isOpenSettings)}}
+  //         >
+  //           <div className="grid flex-1 text-left text-sm leading-tight">
+  //             <span className="truncate text-muted-foreground text-xs">{userName}</span>
+  //           </div>
+  //           <Badge>
+  //             {notifications.length}
+  //           </Badge>
+  //           <EllipsisVertical className="ml-auto size-4" />
+  //         </SidebarMenuButton>
+  //     </SidebarMenuItem>
+  //   </SidebarMenu>
+  // );
 }
