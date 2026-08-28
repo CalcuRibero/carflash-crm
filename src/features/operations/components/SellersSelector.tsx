@@ -9,7 +9,7 @@ import { useSellers } from "@/features/users/hooks/useSellers";
 
 interface SellerSelectorProps {
   value: string;
-  onValueChange: (sellerId: string) => void;
+  onValueChange: (sellerId: string, seller?: User) => void;
 }
 
 function formatSellerLabel(seller: User) {
@@ -44,7 +44,13 @@ export function SellerSelector({ value, onValueChange }: SellerSelectorProps) {
           {errorMessage}
         </div>
       ) : (
-        <Select value={value} onValueChange={onValueChange}>
+        <Select 
+          value={value} 
+          onValueChange={(sellerId) => {
+            const seller = users?.find(u => String(u.id) === sellerId);
+            onValueChange(sellerId, seller || undefined);
+          }}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecciona un vendedor" />
           </SelectTrigger>

@@ -9,10 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
-import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
+import type { OperationFormState, PaymentMethod, PaymentMethodEntry, Car } from "@/features/operations/types";
 import { printInvoice } from "@/lib/printer/printer";
+import { transformFormToPrint } from "@/lib/printer/invoice-pdf.template";
 import { SellerSelector } from "./SellersSelector";
 import { useCreateInvoices } from "@/features/invoice/hooks/useCreateInvoice";
+import { useCars } from "@/features/operations/hooks/useCars";
+import type { User } from "@/lib/api/types";
 
 const initialPayment: PaymentMethodEntry = {
   method: "sena",
@@ -145,6 +148,9 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
 
 export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [selectedSeller, setSelectedSeller] = useState<User | null>(null);
+  const { cars } = useCars();
 
   const {createInvoice, isLoading } = useCreateInvoices()
 
@@ -165,9 +171,23 @@ export function InvoiceRegistrationForm() {
   };
 
   const handlePrintInvoice = () => {
-    // Aquí podrías llamar a la función de impresión con los datos del formulario.
-    printInvoice(form);
-    console.log("Imprimiendo factura con los siguientes datos:", form);
+    if (!selectedCar) {
+      alert("Por favor seleccione un vehículo antes de imprimir la factura");
+      return;
+    }
+    if (!selectedSeller) {
+      alert("Por favor seleccione un vendedor antes de imprimir la factura");
+      return;
+    }
+
+    try {
+      const printData = transformFormToPrint(form, selectedCar, selectedSeller);
+      printInvoice(printData);
+      console.log("Imprimiendo factura con los siguientes datos:", printData);
+    } catch (error) {
+      console.error("Error al generar factura:", error);
+      alert("Error al generar la factura. Por favor verifique que todos los datos requeridos estén completos.");
+    }
   }
 
   const handleCreateInvoice = () => {
@@ -222,11 +242,23 @@ export function InvoiceRegistrationForm() {
               <div className="gap-6 flex flex-col">
                 <label className="text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
-                  <VehicleSelector value={form.carId ?? ""} onValueChange={(vehicleId) => setForm((current) => ({ ...current, car: vehicleId  }))} />
+                  <VehicleSelector 
+                    value={form.carId ?? ""} 
+                    onValueChange={(vehicleId, vehicle) => {
+                      setSelectedCar(vehicle || null);
+                      setForm((current) => ({ ...current, carId: vehicleId }));
+                    }} 
+                  />
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
-                  <SellerSelector value={form.sellerId} onValueChange={(sellerId) => setForm((current) => ({ ...current, sellerId: sellerId }))} />
+                  <SellerSelector 
+                    value={form.sellerId} 
+                    onValueChange={(sellerId, seller) => {
+                      setSelectedSeller(seller || null);
+                      setForm((current) => ({ ...current, sellerId: sellerId }));
+                    }} 
+                  />
                 </label>
               </div>
               <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">

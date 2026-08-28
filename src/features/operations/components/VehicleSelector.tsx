@@ -10,7 +10,7 @@ import type { Car } from "@/features/operations/types";
 
 interface VehicleSelectorProps {
   value: string;
-  onValueChange: (vehicleId: string) => void;
+  onValueChange: (vehicleId: string, vehicle?: Car) => void;
 }
 
 function formatCarLabel(car: Car) {
@@ -55,7 +55,13 @@ export function VehicleSelector({ value, onValueChange }: VehicleSelectorProps) 
           {error}
         </div>
       ) : (
-        <Select value={value} onValueChange={onValueChange}>
+        <Select 
+          value={value} 
+          onValueChange={(vehicleId) => {
+            const vehicle = cars?.find(c => c.id === vehicleId);
+            onValueChange(vehicleId, vehicle || undefined);
+          }}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecciona un vehículo" />
           </SelectTrigger>
