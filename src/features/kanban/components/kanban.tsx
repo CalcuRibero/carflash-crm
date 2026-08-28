@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Plus } from "lucide-react";
 
@@ -25,8 +25,8 @@ export function Kanban() {
   const [columnOrder, setColumnOrder] = useState<ColumnId[]>(columnIds);
   const [activeTask, setActiveTask] = useState<Ticket | null>(null);
   const [activeColumnId, setActiveColumnId] = useState<ColumnId | null>(null);
-  
-  const {user} = useAuth()
+
+  const { user } = useAuth()
   const getTickets = useTickets()
   const createTicketModal = useCreateTicketModal();
   const editTicketModal = useEditTicketModal();
@@ -38,11 +38,11 @@ export function Kanban() {
     if (!user) return;
     if (!createdTicket) return;
     if (!createdTicket.assignedTo) return;
-    if (createdTicket.assignedTo.id === user.id ) return;
+    if (createdTicket.assignedTo.id === user.id) return;
     setBoard((currentBoard) => ({
-        ...currentBoard,
-        [createdTicket.status]: [createdTicket, ...currentBoard[createdTicket.status]],
-      })
+      ...currentBoard,
+      [createdTicket.status]: [createdTicket, ...currentBoard[createdTicket.status]],
+    })
     );
 
   }, [createTicketModal.createdTicket]);
@@ -65,7 +65,7 @@ export function Kanban() {
   useEffect(() => {
     const tickets = getTickets.tickets
 
-    if (!tickets) { 
+    if (!tickets) {
       return
     };
 
@@ -81,53 +81,55 @@ export function Kanban() {
 
 
   return (
-    <div className="flex h-[calc(100dvh-var(--dashboard-header-height))] min-h-0 min-w-0 flex-col overflow-hidden">
+    <div className="m-4 flex w-full max-w-7xl flex-col gap-6">
+      <div className="flex flex-col gap-4 border-b border-border/80 pb-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/80">Tickets Variables</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Registro y relevamiento de tickets <span className="text-primary">CarFlash</span></h1>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">Registra y completa tus tareas con estos tickets tus tareas </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Button className="flex-1 sm:flex-none" onClick={() => createTicketModal.openModal()}>
+            <Plus data-icon="inline-start" />
+            Agregar Tarea
+          </Button>
 
-      <div className="flex shrink-0 flex-col gap-3 border-b px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:px-6">
-        <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
-          <ButtonGroup className="w-full sm:w-fit">
-            <Button className="flex-1 sm:flex-none" onClick={() => createTicketModal.openModal()}>
-              <Plus data-icon="inline-start" />
-              Agregar Tarea
-            </Button>
-          </ButtonGroup>
         </div>
       </div>
-       <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 px-4 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-5 lg:pt-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
-          <DragDropProvider
-            onDragOver={
-              (event) => {
-                setBoard((board) => move(board, event))
-              }
+      <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 px-4 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-5 lg:pt-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
+        <DragDropProvider
+          onDragOver={
+            (event) => {
+              setBoard((board) => move(board, event))
             }
-            onDragEnd={(event) => {
-              const {source, target} = event.operation;
-              if (!source || !target) return;
-              if (isSortable(source)) 
-                {
-                  if (source.type !== "task" && target.type !== "task") return;
-                  const currentTask = findTask(board, String(source.id));
-                  const status = findColumnId(board, String(source.group));
-                  if(!currentTask) return;
-                  void updateTicketStatus.updateTicketStatus(target.id, status);
-                }
-            }}
-          >
-            <div className="h-full min-w-full grid-cols-4 gap-4 hidden md:inline-grid">
-                {orderedColumns.map((column) => (
-                  <KanbanColumn key={column.id} column={column} tasks={board[column.id]} />
-                ))}
-            </div>
-          </DragDropProvider>
-        </div>
-        <div className="flex md:hidden flex-col">
-          {orderedColumns.map((column) => (
-            <MobileKanbanColumn key={column.id} column={column} tasks={board[column.id]}/>
-            ))
           }
-        </div>
-          {/* {activeTask ? <TaskCard task={activeTask} columnId={activeColumnId ?? undefined} isOverlay /> : null} */}
-          <TicketsModal {...createTicketModal.modalProps}/>
+          onDragEnd={(event) => {
+            const { source, target } = event.operation;
+            if (!source || !target) return;
+            if (isSortable(source)) {
+              if (source.type !== "task" && target.type !== "task") return;
+              const currentTask = findTask(board, String(source.id));
+              const status = findColumnId(board, String(source.group));
+              if (!currentTask) return;
+              void updateTicketStatus.updateTicketStatus(target.id, status);
+            }
+          }}
+        >
+          <div className="h-full min-w-full grid-cols-4 gap-4 hidden md:inline-grid">
+            {orderedColumns.map((column) => (
+              <KanbanColumn key={column.id} column={column} tasks={board[column.id]} />
+            ))}
+          </div>
+        </DragDropProvider>
+      </div>
+      <div className="flex md:hidden flex-col">
+        {orderedColumns.map((column) => (
+          <MobileKanbanColumn key={column.id} column={column} tasks={board[column.id]} />
+        ))
+        }
+      </div>
+      {/* {activeTask ? <TaskCard task={activeTask} columnId={activeColumnId ?? undefined} isOverlay /> : null} */}
+      <TicketsModal {...createTicketModal.modalProps} />
     </div>
   );
 }
