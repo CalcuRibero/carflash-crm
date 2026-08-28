@@ -14,18 +14,28 @@ import { useState } from "react";
 import { MetricsTableProps, StatusVariant } from "../type";
 import { formatDate } from "../utils";
 import { STATUS_LABELS } from "@/features/kanban/types";
+import { useRouter } from "next/navigation";
+import { Ticket } from "@/lib/api/types";
 
-
-export function MetricsTable({tickets}: MetricsTableProps) {
+export function MetricsTable({ tickets }: MetricsTableProps) {
 
     const [currentPage, setCurrentPage] = useState(0);
+
+    const router = useRouter()
+
     const itemsPerPage = 5;
-    const totalTickets = tickets.length ;
+    const totalTickets = tickets.length;
     const totalPages = Math.ceil(tickets.length / itemsPerPage);
     const currentTickets = tickets.slice(
         currentPage * itemsPerPage,
         (currentPage + 1) * itemsPerPage
     );
+
+
+    const handleClickDetail = (ticket: Ticket) => {
+        router.push(`/dashboard/kanban/${ticket.id}`);
+    };
+
 
     const formatDate = (date: Date) => new Date(date).toLocaleDateString('es-AR')
 
@@ -34,20 +44,17 @@ export function MetricsTable({tickets}: MetricsTableProps) {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <CardTitle>Tickets de Empleado</CardTitle>
-                    <Button variant="outline" size="sm" className="gap-2">
-                        <Filter className="size-4" />
-                        FILTRAR POR
-                    </Button>
                 </div>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>TÍTULO</TableHead>
-                            <TableHead>ESTADO</TableHead>
-                            <TableHead>FECHA DE INICIO</TableHead>
-                            <TableHead>FECHA DE VENCIMIENTO</TableHead>
+                            <TableHead>Título</TableHead>
+                            <TableHead>Estado</TableHead>
+                            <TableHead>Fecha de INICIO</TableHead>
+                            <TableHead>Fecha de VENCIMIENTO</TableHead>
+                            <TableHead>Ver Ticket</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -68,6 +75,11 @@ export function MetricsTable({tickets}: MetricsTableProps) {
                                     </TableCell>
                                     <TableCell>{formatDate(ticket.createdAt)}</TableCell>
                                     <TableCell>{formatDate(ticket.dueDate || new Date())}</TableCell>
+                                    <TableCell>
+                                        <Button variant={"link"} className="hover:cursor-pointer hover:opacity-80" onClick={() => handleClickDetail(ticket)}>
+                                            <ChevronRight/>
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))
                         )}
