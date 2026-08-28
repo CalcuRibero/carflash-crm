@@ -1,3 +1,5 @@
+import { User } from "@/lib/api/types";
+
 export type CarStatus = "AVAILABLE" | "SOLD" | "IN_REPAIR" | "PENDING" | string;
 
 export interface Car {
@@ -50,6 +52,30 @@ export interface OperationFormState {
   carId: string;
   carSwapped?: Car;
   sellerId: string;
+  salePrice: string | number;
+  transferCost: string | number;
+  folderCost: string | number;
+  observations: string;
+  swapModel: string;
+  swapYear: string | number;
+  swapDomain: string;
+  swapObservations: string;
+  payments: PaymentMethodEntry[];
+  administrationNotes?: string;
+  paidAt?: string | Date;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+
+export interface OperationToPrint {
+  subtotal: string | number;
+  taxAmount: string | number;
+  totalAmount: string | number;
+  status: PaymentStatus;
+  customer: Customer;
+  car: Car;
+  carSwapped?: Car;
+  seller: User;
   salePrice: string | number;
   transferCost: string | number;
   folderCost: string | number;

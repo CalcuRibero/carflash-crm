@@ -4,7 +4,7 @@
 // es una función pura string -> string, fácil de testear (podés hacer snapshot
 // testing del HTML sin levantar un browser).
 
-import type { OperationFormState, PaymentMethodEntry } from "@/features/operations/types";
+import type { OperationFormState, OperationToPrint, PaymentMethodEntry } from "@/features/operations/types";
 
 const formatMoney = (value?: string | number | null): string => {
   const parsed = typeof value === "number" ? value : Number.parseFloat(String(value ?? ""));
@@ -29,7 +29,7 @@ const cell = (value?: string | number): string => {
   return String(value);
 };
 
-function getPaymentBreakdown(data: OperationFormState) {
+function getPaymentBreakdown(data: OperationToPrint) {
   const payments = data.payments ?? [];
   const getAmount = (method: PaymentMethodEntry["method"]): number => {
     const entry = payments.find((payment) => payment.method === method);
@@ -66,9 +66,10 @@ function getPaymentBreakdown(data: OperationFormState) {
   };
 }
 
-export function buildInvoiceHtml(data: OperationFormState): string {
-  const invoiceNumber = data.invoiceNumber ?? data.id ?? "";
-  const sellerName = data.seller ?? "";
+export function buildInvoiceHtml(data: OperationToPrint): string {
+  
+  const invoiceNumber = Date.now();
+  const sellerName = data.seller.fullName ?? "";
   const vehicleDescription = [data.car?.brand ?? "", data.car?.model ?? ""].filter(Boolean).join(" ").trim();
   const licensePlate = data.car?.domain ?? data.car?.domain ?? "";
   const salePrice = Number.parseFloat(String(data.salePrice)) || 0;
