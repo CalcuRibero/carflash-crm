@@ -11,6 +11,7 @@ import { getPreference } from "@/server/server-actions";
 import { SearchDialog } from "./_components/sidebar/search-dialog";
 import { ThemeSwitcher } from "./_components/sidebar/theme-switcher";
 import { AuthProvider } from "@/stores/auth/auth-provider";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
   const cookieStore = await cookies();
@@ -77,6 +78,9 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
           </header>
           {/* Pages can set data-content-padding="false" to render full-bleed app layouts. */}
           <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden p-4 has-data-[content-padding=false]:p-0 md:p-6 md:has-data-[content-padding=false]:p-0">
+            <div className="has-data-[hide-header=true]:hidden">
+              <PageHeader />
+            </div>
             {children}
           </div>
         </SidebarInset>

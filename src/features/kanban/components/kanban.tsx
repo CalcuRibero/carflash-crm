@@ -82,21 +82,13 @@ export function Kanban() {
 
   return (
     <div className="m-4 flex w-full max-w-7xl flex-col gap-6">
-      <div className="flex flex-col gap-4 border-b border-border/80 pb-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/80">Tickets Variables</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Registro y relevamiento de tickets <span className="text-primary">CarFlash</span></h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">Registra y completa tus tareas con estos tickets tus tareas </p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Button className="flex-1 sm:flex-none" onClick={() => createTicketModal.openModal()}>
-            <Plus data-icon="inline-start" />
-            Agregar Tarea
-          </Button>
-
-        </div>
+      <div className="flex justify-end">
+        <Button className="flex-1 sm:flex-none" onClick={() => createTicketModal.openModal()}>
+          <Plus data-icon="inline-start" />
+          Agregar Tarea
+        </Button>
       </div>
-      <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 px-4 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-5 lg:pt-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
+      <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-5 lg:pt-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
         <DragDropProvider
           onDragOver={
             (event) => {
