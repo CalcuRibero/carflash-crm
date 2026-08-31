@@ -13,6 +13,8 @@ import { useEditRecurrentTicketModal } from "@/features/recurrent-tickets/hooks/
 import type { RecurrentTicket } from "@/features/recurrent-tickets/types";
 import { INITIAL_UPDATE_RECURRENT_TICKET_DATA, TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
 import { UpdateRecurrentTicketModal } from "@/features/recurrent-tickets/components/UpdateRecurrentTicketModal";
+import { PageHeader } from "@/components/ui/page-header";
+import { Repeat } from "lucide-react";
 
 export default function RecurrentTicketsPage() {
   const { tickets, isLoading, error, refetch } = useRecurrentTickets();
@@ -98,47 +100,39 @@ export default function RecurrentTicketsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Administración de Tickets Fijos
-        </h1>
-        <p className="text-muted-foreground">
-          Gestiona y monitorea tus Tickets Fijos
-        </p>
+    <main className="p-6 flex flex-col gap-4">
+      <PageHeader 
+        icon={Repeat}
+        category="Tickets fijos"
+        title="Gestión de Tickets"
+      />
+      <div className="flex flex-col gap-4">
+        <SearchBar
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          onAddTicket={handleAddTicket}
+        />
+
+        <RecurrentTicketsTable
+          tickets={filteredTickets}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+
+        <CreateRecurrentTicketModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleCreateTicket}
+        />
+
+        <UpdateRecurrentTicketModal
+          currentTicket={currentTicket}
+          isOpen={isOpen}
+          onClose={closeModal}
+          onSubmit={handleEditTicket}
+        />
       </div>
 
-      <InfoCards
-        totalActive={tickets.length.toString()}
-        next24h="0"
-        highPriority={tickets.filter((t) => t.priority === TicketPriority.HIGH).length.toString()}
-        complianceRate={tickets.length > 0 ? ((tickets.filter((t) => t.status === TicketStatus.RESOLVED).length / tickets.length) * 100).toFixed(2) : "0"}
-      />
-
-      <SearchBar
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
-        onAddTicket={handleAddTicket}
-      />
-
-      <RecurrentTicketsTable
-        tickets={filteredTickets}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-
-      <CreateRecurrentTicketModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleCreateTicket}
-      />
-
-      <UpdateRecurrentTicketModal
-        currentTicket={currentTicket}
-        isOpen={isOpen}
-        onClose={closeModal}
-        onSubmit={handleEditTicket}
-      />
-    </div>
+    </main>
   );
 }

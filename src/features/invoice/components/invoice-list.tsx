@@ -46,6 +46,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PageHeader } from "@/components/ui/page-header";
 
 import { useInvoices } from "../hooks/useInvoices";
 import type { Invoice, InvoiceStatus, PaymentMethod } from "../types";
@@ -138,27 +139,17 @@ export function InvoiceList() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-primary">
-            <Receipt className="h-5 w-5" />
-            <p className="text-sm font-semibold uppercase tracking-[0.32em]">Finanzas</p>
-          </div>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">Gestión de Facturación</h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Administra y controla todas las facturas emitidas en el sistema.
-          </p>
-        </div>
-
-        <Button className="gap-2" asChild>
-          <a href="/dashboard/invoice/create">
-            <FileText className="h-4 w-4" />
-            Iniciar Nueva Factura
-          </a>
-        </Button>
-      </div>
+    <div className="space-y-6" data-hide-header="true">
+      <PageHeader 
+        icon={Receipt}
+        category="Finanzas"
+        title="Gestión de Facturación"
+        action={{
+          label: "Iniciar Nueva Factura",
+          href: "/dashboard/invoice/create",
+          icon: FileText
+        }}
+      />
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">

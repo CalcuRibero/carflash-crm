@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PageHeader } from "@/components/ui/page-header";
 
 import { CreateVehicleModal } from "./create-vehicle-modal";
 import { EditVehicleModal } from "./edit-vehicle-modal";
@@ -84,21 +85,17 @@ export function VehiclesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">CarFlash</p>
-          <h1 className="text-3xl font-semibold tracking-tight">Administración de Vehículos</h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Gestiona el catálogo de vehículos con marca, modelo, dominio, VIN y precio.
-          </p>
-        </div>
-
-        <Button className="gap-2" onClick={() => setIsCreateOpen(true)} disabled={isCreating || isUpdating || isDeleting}>
-          <Plus className="size-4" />
-          Nuevo vehículo
-        </Button>
-      </div>
+    <div className="space-y-6" data-hide-header="true">
+      <PageHeader 
+        icon={CarFront}
+        category="CarFlash"
+        title="Administración de Vehículos"
+        action={{
+          label: "Nuevo vehículo",
+          onClick: () => setIsCreateOpen(true),
+          icon: Plus
+        }}
+      />
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
