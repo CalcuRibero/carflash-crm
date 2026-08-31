@@ -9,48 +9,39 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
-import type { OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
+import type { OperationFormState, PaymentMethod, PaymentMethodEntry, Car } from "@/features/operations/types";
 import { printInvoice } from "@/lib/printer/printer";
+import { transformFormToPrint } from "@/lib/printer/invoice-pdf.template";
+import { SellerSelector } from "./SellersSelector";
+import { useCreateInvoices } from "@/features/invoice/hooks/useCreateInvoice";
+import { useCars } from "@/features/operations/hooks/useCars";
+import type { User } from "@/lib/api/types";
 
 const initialPayment: PaymentMethodEntry = {
-  id: crypto.randomUUID(),
   method: "sena",
-  amount: "",
+  amount: 0,
   observations: "",
   financingMedium: "",
-  quotas: "",
+  quotas: 1,
   system: "UVA",
-  promissoryCount: "",
-  promissoryAmount: "",
+  promissoryCount: 0,
+  promissoryAmount: 0,
 };
 
 const initialFormState: OperationFormState = {
-  id: "",
-  invoiceNumber: "",
   subtotal: "",
   taxAmount: "",
   totalAmount: "",
   status: "PENDING",
-  paymentMethod: "contado",
   customer: {
-    id: "",
     fullName: "",
     document: "",
     address: "",
     phone: "",
     email: "",
   },
-  car: {
-    id: "",
-    domain: "",
-    brand: "",
-    model: "",
-    year: 0,
-    vin: "",
-    price: 0,
-    status: "AVAILABLE",
-  },
-  seller: "",
+  carId: "",
+  sellerId: "",
   salePrice: "",
   transferCost: "",
   folderCost: "",
@@ -97,7 +88,7 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
           <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Monto</span>
           <div className="relative">
             <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-            <Input value={entry.amount} onChange={(event) => onChange({ ...entry, amount: event.target.value })} placeholder="0.00" className="pl-8" type="number" />
+            <Input value={entry.amount} onChange={(event) => onChange({ ...entry, amount: Number(event.target.value) })} placeholder="0.00" className="pl-8" type="number" />
           </div>
         </label>
         <label className="space-y-2 text-sm md:col-span-1">
@@ -116,7 +107,7 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Cuotas</span>
-                <Input value={entry.quotas} onChange={(event) => onChange({ ...entry, quotas: event.target.value })} placeholder="12, 24, 36" type="number" />
+                <Input value={entry.quotas} onChange={(event) => onChange({ ...entry, quotas: Number(event.target.value) })} placeholder="12, 24, 36" type="number" />
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Sistema</span>
@@ -138,13 +129,13 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
             <>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Cantidad de pagarés</span>
-                <Input value={entry.promissoryCount} onChange={(event) => onChange({ ...entry, promissoryCount: event.target.value })} placeholder="1, 2, 3" type="number" />
+                <Input value={entry.promissoryCount} onChange={(event) => onChange({ ...entry, promissoryCount: Number(event.target.value) })} placeholder="1, 2, 3" type="number" />
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Monto por pagaré</span>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                  <Input value={entry.promissoryAmount} onChange={(event) => onChange({ ...entry, promissoryAmount: event.target.value })} placeholder="0.00" className="pl-8" type="number" />
+                  <Input value={entry.promissoryAmount} onChange={(event) => onChange({ ...entry, promissoryAmount: Number(event.target.value) })} placeholder="0.00" className="pl-8" type="number" />
                 </div>
               </label>
             </>
@@ -157,6 +148,11 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
 
 export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [selectedSeller, setSelectedSeller] = useState<User | null>(null);
+  const { cars } = useCars();
+
+  const {createInvoice, isLoading } = useCreateInvoices()
 
   const totals = useMemo(() => {
     const price = Number.parseFloat(String(form.salePrice)) || 0;
@@ -175,15 +171,33 @@ export function InvoiceRegistrationForm() {
   };
 
   const handlePrintInvoice = () => {
-    // Aquí podrías llamar a la función de impresión con los datos del formulario.
-    printInvoice(form);
-    console.log("Imprimiendo factura con los siguientes datos:", form);
+    if (!selectedCar) {
+      alert("Por favor seleccione un vehículo antes de imprimir la factura");
+      return;
+    }
+    if (!selectedSeller) {
+      alert("Por favor seleccione un vendedor antes de imprimir la factura");
+      return;
+    }
+
+    try {
+      const printData = transformFormToPrint(form, selectedCar, selectedSeller);
+      printInvoice(printData);
+      console.log("Imprimiendo factura con los siguientes datos:", printData);
+    } catch (error) {
+      console.error("Error al generar factura:", error);
+      alert("Error al generar la factura. Por favor verifique que todos los datos requeridos estén completos.");
+    }
+  }
+
+  const handleCreateInvoice = () => {
+    createInvoice(form)
   }
 
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
     setForm((current) => ({
       ...current,
-      payments: current.payments.map((entry) => (entry.id === updatedEntry.id ? updatedEntry : entry)),
+      payments: current.payments.map((entry) => (entry.method === updatedEntry.method ? updatedEntry : entry)),
     }));
   };
 
@@ -200,7 +214,7 @@ export function InvoiceRegistrationForm() {
             <Printer className="size-4" />
             Imprimir
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={handleCreateInvoice}>
             <Save className="size-4" />
             Guardar registro
           </Button>
@@ -225,20 +239,28 @@ export function InvoiceRegistrationForm() {
               </div>
             </CardHeader>
             <CardContent className="space-y-6 p-6">
-              <div className="grid gap-6 md:grid-cols-[1.4fr_0.6fr]">
-                <label className="space-y-2 text-sm">
+              <div className="gap-6 flex flex-col">
+                <label className="text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
-                  <VehicleSelector value={form.car.id ?? ""} onValueChange={(vehicleId) => setForm((current) => ({ ...current, car: { ...current.car, id: vehicleId } }))} />
+                  <VehicleSelector 
+                    value={form.carId ?? ""} 
+                    onValueChange={(vehicleId, vehicle) => {
+                      setSelectedCar(vehicle || null);
+                      setForm((current) => ({ ...current, carId: vehicleId }));
+                    }} 
+                  />
                 </label>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
-                  <Input value={form.car.domain} onChange={(event) => setForm((current) => ({ ...current, car: { ...current.car, domain: event.target.value } }))} placeholder="ABC-123" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
+                  <SellerSelector 
+                    value={form.sellerId} 
+                    onValueChange={(sellerId, seller) => {
+                      setSelectedSeller(seller || null);
+                      setForm((current) => ({ ...current, sellerId: sellerId }));
+                    }} 
+                  />
                 </label>
               </div>
-              <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
-                <Input value={form.seller} onChange={(event) => setForm((current) => ({ ...current, seller: event.target.value }))} placeholder="Seleccione un asesor comercial" />
-              </label>
               <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Precio de venta</span>
@@ -364,8 +386,8 @@ export function InvoiceRegistrationForm() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4 p-6">
-              {form.payments.map((entry) => (
-                <PaymentFields key={entry.id} entry={entry} onChange={updatePayment} />
+              {form.payments.map((entry, idx) => (
+                <PaymentFields key={`${idx}-${entry.method}`} entry={entry} onChange={updatePayment} />
               ))}
             </CardContent>
           </Card>

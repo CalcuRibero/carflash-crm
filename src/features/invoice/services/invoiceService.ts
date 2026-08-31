@@ -1,5 +1,6 @@
 import { apiRequest } from "@/shared/utils/apiClient";
 import type { Invoice, InvoiceFilters } from "../types";
+import { OperationFormState } from "@/features/operations/types";
 
 export interface InvoiceListResponse {
   data: Invoice[];
@@ -10,7 +11,7 @@ export interface InvoiceListResponse {
 
 export async function getInvoices(filters?: InvoiceFilters): Promise<Invoice[]> {
   const params = new URLSearchParams();
-  
+
   if (filters?.search) params.append("search", filters.search);
   if (filters?.status) params.append("status", filters.status);
   if (filters?.paymentMethod) params.append("paymentMethod", filters.paymentMethod);
@@ -27,6 +28,10 @@ export async function getInvoices(filters?: InvoiceFilters): Promise<Invoice[]> 
     console.error("Error fetching invoices:", error);
     throw error;
   }
+}
+
+export async function createInvoiceService(invoice: OperationFormState) {
+  return apiRequest<OperationFormState>(`/invoices/`, { method: "POST", body: invoice })
 }
 
 export async function getInvoiceById(id: string): Promise<Invoice> {

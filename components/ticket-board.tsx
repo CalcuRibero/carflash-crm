@@ -13,11 +13,12 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { ListFilter, Plus } from "lucide-react";
+import { ListFilter, Plus, Kanban } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/page-header";
 
 import { TicketCard, type TicketCardItem } from "./ticket-card";
 
@@ -117,17 +118,16 @@ export function TicketBoard() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Tickets board</h2>
-          <p className="text-sm text-muted-foreground">Drag cards between lanes to update the board.</p>
-        </div>
-        <Button variant="outline" size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Nuevo ticket
-        </Button>
-      </div>
+    <div className="space-y-4" data-hide-header="true">
+      <PageHeader 
+        icon={Kanban}
+        category="Operaciones"
+        title="Tablero de Tickets"
+        action={{
+          label: "Nuevo ticket",
+          icon: Plus
+        }}
+      />
 
       <DndContext
         sensors={sensors}

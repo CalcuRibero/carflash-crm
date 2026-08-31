@@ -1,7 +1,7 @@
 import { buildInvoiceHtml } from './invoice-pdf.template';
-import { OperationFormState } from '@/features/operations/types';
+import { OperationToPrint } from '@/features/operations/types';
  
-export function printInvoice(data: OperationFormState): void {
+export function printInvoice(data: OperationToPrint): void {
   const html = buildInvoiceHtml(data);
  
   const iframe = document.createElement('iframe');

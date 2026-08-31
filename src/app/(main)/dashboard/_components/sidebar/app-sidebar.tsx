@@ -47,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton asChild>
               <Link prefetch={false} href="/dashboard/kanban">
                 <Image 
-                  src="/logo.png" 
+                  src="/logo.PNG" 
                   alt="Carflash" 
                   width={32} 
                   height={32} 

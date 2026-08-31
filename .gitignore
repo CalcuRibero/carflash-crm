@@ -10,6 +10,12 @@
 #cursor
 /.cursor
 
+# SPECS
+/.spec/*
+
+# RULES
+FRONTEND_RULES.md
+
 # VS Code
 /.vscode/*
 
