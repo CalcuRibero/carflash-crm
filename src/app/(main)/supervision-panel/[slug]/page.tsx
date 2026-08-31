@@ -1,0 +1,26 @@
+import { PageHeader } from "@/components/ui/page-header"
+import { TicketCategoryLabel } from "@/features/recurrent-tickets/types"
+import { parseCategorySlug, TicketCategoryIcons } from "../utils";
+import Layout from "../../dashboard/layout";
+
+export default async function Page(props: { params: Promise<{ slug: string }> }) {
+    const params = await props.params;
+    const { slug } = params;
+
+    const categoryParsed = parseCategorySlug(slug)
+    const categoryLabel = TicketCategoryLabel[categoryParsed]
+    const categoryIcons = TicketCategoryIcons[categoryParsed]
+    return (
+        <Layout>
+            <main className="p-6">
+                <PageHeader
+                    title="Supervisión"
+                    icon={categoryIcons}
+                    category={categoryLabel}
+                />
+                <></>
+            </main>
+
+        </Layout>
+    )
+}
