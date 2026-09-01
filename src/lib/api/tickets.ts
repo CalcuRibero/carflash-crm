@@ -1,5 +1,5 @@
 import { apiRequest } from "./http-client";
-import type { CreateTicketRequest, Ticket, TicketStatus, UpdateTicketRequest } from "./types";
+import type { CreateTicketRequest, Ticket, TicketStatus, UpdateTicketRequest, UserRole } from "./types";
 
 type TicketRequestOptions = {
   signal?: AbortSignal;
@@ -8,6 +8,13 @@ type TicketRequestOptions = {
 
 export async function getTickets(options: TicketRequestOptions = {}): Promise<Ticket[]> {
   return apiRequest<Ticket[]>("/tickets", {
+    signal: options.signal,
+    token: options.token,
+  });
+}
+
+export async function getTicketsByRole(options: TicketRequestOptions = {}, category: UserRole): Promise<Ticket[]> {
+  return apiRequest<Ticket[]>(`/tickets/roles/${category}`, {
     signal: options.signal,
     token: options.token,
   });

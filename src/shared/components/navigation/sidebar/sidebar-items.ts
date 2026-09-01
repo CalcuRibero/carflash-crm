@@ -1,10 +1,17 @@
 import { UserRole } from "@/lib/api";
 import {
+  BriefcaseBusiness,
   CarFront,
+  ClipboardCheck,
+  Eye,
   FilePlus2,
+  FileText,
+  Folders,
   Kanban,
   type LucideIcon,
+  PencilRuler,
   Repeat,
+  Target,
   Users,
 } from "lucide-react";
 
@@ -37,6 +44,54 @@ export interface NavGroup {
 export const sidebarItems: NavGroup[] = [
   {
     id: 1,
+    label: "Puestos de Trabajo",
+    items: [
+      {
+        title: "Gerencia",
+        url: "/supervision-panel/super-admin",
+        icon: Eye,
+        roles: ["SuperAdmin"]
+      },
+      {
+        title: "Supervisión de ventas",
+        url: "/supervision-panel/car-seller",
+        icon: BriefcaseBusiness,
+        roles: ["SuperAdmin"]
+      },
+      {
+        title: "Gestión de Gestoría",
+        url: "/supervision-panel/gestor",
+        icon: Folders,
+        roles: ["SuperAdmin"]
+      },
+      {
+        title: "Gestión de Peritajes",
+        url: "/supervision-panel/car-expert",
+        icon: ClipboardCheck ,
+        roles: ["SuperAdmin"]
+      },
+      {
+        title: "Coordinación Comercial",
+        url: "/supervision-panel/comercial-cordinator",
+        icon: Target,
+        roles: ["SuperAdmin"]
+      },
+      {
+        title: "Administración",
+        url: "/supervision-panel/administration-accountant",
+        icon: FileText,
+        roles: ["SuperAdmin"]
+      },
+      {
+        title: "Marketing",
+        url: "/supervision-panel/marketing",
+        icon: PencilRuler,
+        roles: ["SuperAdmin"]
+      },
+    ]
+  },
+  {
+    id: 2,
     label: "Panel de control",
     items: [
       {
