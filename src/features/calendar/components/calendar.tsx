@@ -7,11 +7,11 @@ import { daysOfWeek } from "../utils";
 import { CalendarColumn } from "./calendar-column";
 
 export function Calendar() {
-    
+
     const { user } = useAuth()
-    if(!user) return <p>Usuario no autenticado</p>
+    if (!user) return <p>Usuario no autenticado</p>
     const { tickets } = useTicketsByUserId(user.id)
-    
+
     const ticketsByDate = calendarWeeklySorter(tickets || [])
 
     return (

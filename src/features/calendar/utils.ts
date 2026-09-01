@@ -13,8 +13,15 @@ const getDayNumber = (date: Date): number => {
     const daysSinceMonday = (currentDay + 6) % 7;
     currentWeekStart.setDate(currentWeekStart.getDate() - daysSinceMonday);
 
+    const currentWeekEnd = new Date(currentWeekStart);
+    currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
+
     if (normalizedDate < currentWeekStart) {
         return 0;
+    }
+
+    if (normalizedDate > currentWeekEnd) {
+        return -1;
     }
 
     const dayNumber = (normalizedDate.getDay() + 6) % 7;
@@ -24,6 +31,11 @@ const getDayNumber = (date: Date): number => {
 export function calendarWeeklySorter(tickets: Ticket[]): DaysOfWeekOrder {
     const scheduledTickets: DaysOfWeekOrder = tickets.reduce<DaysOfWeekOrder>((acc, ticket) => {
         const dayNumber = getDayNumber(new Date(ticket.createdAt));
+
+        if (dayNumber < 0) {
+            return acc;
+        }
+
         acc[dayNumber] = [...(acc[dayNumber] ?? []), ticket];
         return acc;
     }, {
