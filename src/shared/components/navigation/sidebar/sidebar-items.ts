@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   CarFront,
   ClipboardCheck,
+  Eye,
   FilePlus2,
   FileText,
   Folders,
@@ -45,6 +46,12 @@ export const sidebarItems: NavGroup[] = [
     id: 1,
     label: "Puestos de Trabajo",
     items: [
+      {
+        title: "Gerencia",
+        url: "/supervision-panel/super-admin",
+        icon: Eye,
+        roles: ["SuperAdmin"]
+      },
       {
         title: "Supervisión de ventas",
         url: "/supervision-panel/car-seller",

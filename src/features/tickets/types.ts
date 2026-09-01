@@ -86,6 +86,12 @@ export interface TicketsController {
   tickets: Ticket[];
 }
 
+export interface TicketsSupervisionController {
+  errorMessage: string | null;
+  isLoading: boolean;
+  tickets: Record<string, Ticket[]>;
+}
+
 export interface UpdateTicketController {
   errorMessage: string | null;
   isUpdating: boolean;
