@@ -1,6 +1,7 @@
 import { UserRole } from "@/lib/api";
 import {
   BriefcaseBusiness,
+  Calendar,
   CarFront,
   ClipboardCheck,
   Eye,
@@ -102,11 +103,16 @@ export const sidebarItems: NavGroup[] = [
         icon: Repeat,
         roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
       },
-
       {
         title: "Tickets Variables",
         url: "/dashboard/kanban",
         icon: Kanban,
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
+      },
+      {
+        title: "Calendario",
+        url: "/dashboard/calendar",
+        icon: Calendar,
         roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
       },
       {

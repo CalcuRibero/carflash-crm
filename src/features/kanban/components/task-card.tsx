@@ -61,11 +61,13 @@ export function TaskCard({
   task,
   columnId,
   isOverlay = false,
+  onlyRead = false,
   onClick,
 }: {
   task: Ticket;
   columnId?: ColumnId;
   isOverlay?: boolean;
+  onlyRead?: boolean;
   onClick?: () => void;
 }) {
   const router = useRouter()
@@ -79,6 +81,45 @@ export function TaskCard({
   const handleClickDetail = (ticket: Ticket) => {
     router.push(`/dashboard/kanban/${ticket.id}`);
   };
+
+  if (onlyRead) {
+    return (
+      <article 
+        className={cn(
+          "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-colors",
+          isOverlay && "w-68 rotate-1 shadow-lg cursor-grabbing", 
+        )}
+      >
+        <div className="min-w-0 space-y-1.5">
+          <div className="flex flex-col justify-between gap-3">
+            <div className="flex items-center">
+              <h3 className="min-w-0 truncate font-medium text-sm leading-none items-center">{task.title}</h3>
+            </div>
+            <Separator />
+            <div className="flex items-right gap-2">
+              <Badge
+                variant={task.isRecurrent ? "default" : "secondary"}
+                className="shrink-0 rounded-md border-transparent px-2 font-medium"
+              >
+                {task.isRecurrent ? "Fijo" : "Variable"}
+              </Badge>
+              <Badge
+                variant={priorityBadgeConfig[task.priority as TicketPriority].variant}
+                className={cn(
+                  "shrink-0 rounded-md border-transparent px-2 font-medium",
+                  priorityBadgeConfig[task.priority as TicketPriority].className,
+                )}
+              >
+                <PriorityIcon data-icon="inline-start" />
+                {PRIORITY_LABELS[task.priority]}
+              </Badge>
+            </div>
+          </div>
+          <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>
+        </div>
+        </article>
+    )
+  }
 
   return (
     <article
