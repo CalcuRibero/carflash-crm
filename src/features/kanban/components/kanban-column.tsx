@@ -29,7 +29,7 @@ export function KanbanColumn({ column, tasks, onTaskClick }: KanbanColumnProps) 
     <section
       ref={ref}
       className={cn(
-        "flex min-h-0 flex-col rounded-t-xl border bg-muted/50 transition-colors",
+        "flex flex-col rounded-xl border bg-muted/50 transition-colors",
         isDropTarget && "bg-muted/70",
       )}
     >
@@ -44,7 +44,7 @@ export function KanbanColumn({ column, tasks, onTaskClick }: KanbanColumnProps) 
         </div>
       </div>
 
-        <div className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-3 pb-3 [scrollbar-color:var(--border)_transparent] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1">
+        <div className="scrollbar-thin flex max-h-96 flex-1 flex-col gap-3 overflow-y-auto px-3 pb-3 [scrollbar-color:var(--border)_transparent] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1">
           {tasks.map((task, index) => (
             <SortableTaskCard key={task.id} task={task} columnId={column.id} index={index} />
           ))}
