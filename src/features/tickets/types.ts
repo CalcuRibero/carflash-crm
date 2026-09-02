@@ -89,6 +89,7 @@ export interface TicketsController {
 export interface TicketsSupervisionController {
   errorMessage: string | null;
   isLoading: boolean;
+  refetch: () => Promise<Ticket[]>;
   tickets: Record<string, Ticket[]>;
 }
 
