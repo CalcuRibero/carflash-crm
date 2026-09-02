@@ -4,6 +4,7 @@ import {
   ArrowUpRight,
   BadgeCheck,
   CalendarDays,
+  ChevronRight,
   FileText,
   Flame,
   type LucideIcon,
@@ -24,6 +25,7 @@ import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types
 import { PRIORITY_LABELS } from "@/features/tickets/types";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const taskInsightIcons: Record<TicketInsightLabel, LucideIcon> = {
   Attachments: Paperclip,
@@ -57,6 +59,12 @@ const priorityBadgeConfig: Record<
   },
 };
 
+const getDueDate = (dueDate: Date | null) => {
+  if (!dueDate) return new Date().toLocaleDateString('es-AR');
+  const dueDateObj = new Date(dueDate);
+  return dueDateObj.toLocaleDateString('es-AR');
+};
+
 export function TaskCard({
   task,
   columnId,
@@ -71,12 +79,13 @@ export function TaskCard({
   onClick?: () => void;
 }) {
   const router = useRouter()
-  
-  
+
+  const [isReadingMode, setIsReadingMode] = useState(onlyRead);
   const showBuildingDetails = columnId === "in_progress";
   const owner = task.createdBy;
   const PriorityIcon = priorityBadgeConfig[task.priority as TicketPriority].icon;
   const creationDate = new Date(task.createdAt).toLocaleDateString('es-AR')
+  const dueDate = getDueDate(task.dueDate);
 
   const handleClickDetail = (ticket: Ticket) => {
     router.push(`/dashboard/kanban/${ticket.id}`);
@@ -84,10 +93,10 @@ export function TaskCard({
 
   if (onlyRead) {
     return (
-      <article 
+      <article
         className={cn(
           "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-colors",
-          isOverlay && "w-68 rotate-1 shadow-lg cursor-grabbing", 
+          isOverlay && "w-68 rotate-1 shadow-lg cursor-grabbing",
         )}
       >
         <div className="min-w-0 space-y-1.5">
@@ -116,8 +125,22 @@ export function TaskCard({
             </div>
           </div>
           <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>
+          <Separator />
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-muted-foreground text-sm">Vence:</span>
+            <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
+              <span className="truncate text-sm">{dueDate}</span>
+              <CalendarDays className="size-3" />
+            </div>
+          </div>
+          <div className="flex items-end w-full">
+            <Button variant={"link"} className="hover:cursor-pointer" onClick={() => handleClickDetail(task)}>
+              <span>Ver Detalle</span>
+              <span> <ChevronRight /> </span>
+            </Button>
+          </div>
         </div>
-        </article>
+      </article>
     )
   }
 
@@ -157,7 +180,7 @@ export function TaskCard({
         <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>
       </div>
 
-      { owner ? (
+      {owner ? (
         <div className="flex items-center gap-1.5">
           <Avatar className="size-5 after:rounded-sm">
             <AvatarFallback className="rounded-sm text-[10px]">{getInitials(owner.fullName)}</AvatarFallback>
@@ -188,7 +211,7 @@ export function TaskCard({
       {task.dueDate ? (
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
-            { owner &&(
+            {owner && (
               <div className="flex items-center justify-between gap-3">
                 <span className="text-muted-foreground text-sm">Creador</span>
                 <div className="flex items-center gap-1.5">
