@@ -2,6 +2,9 @@
 
 import { fetchUnread } from "@/lib/api/notifications";
 import { Notification } from "@/lib/api/types";
+import { isTicketAvailableService } from "@/features/tickets/services/ticketsService";
+import { markNotificationAsRead } from "@/lib/api/notifications";
+import { filterNotificationsByExistingTickets } from "@/shared/utils/filterNotifications";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 
@@ -17,7 +20,13 @@ export function NotificationsProvider ({children}: {children: ReactNode}) {
   
   const getNotifications = async() => {
     const unreads = await fetchUnread()
-    setNotifications(unreads)
+    const { existing, missing } = await filterNotificationsByExistingTickets(
+      unreads,
+      (ticketId) => isTicketAvailableService(ticketId),
+    );
+    setNotifications(existing)
+
+    await Promise.allSettled(missing.map((notification) => markNotificationAsRead(notification.id)));
   }
 
   const removeNotification = (id: string) => {

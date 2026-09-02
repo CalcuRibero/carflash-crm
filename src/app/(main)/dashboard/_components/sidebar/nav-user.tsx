@@ -11,6 +11,7 @@ import { Notification, NotificationType, User } from "@/lib/api/types";
 import { Badge } from "@/components/ui/badge";
 import { useNotifications } from "@/shared/hooks/useNotifications";
 import { markNotificationAsRead } from "@/lib/api/notifications";
+import { isTicketAvailableService } from "@/features/tickets/services/ticketsService";
 import { useState } from "react";
 import {
   Accordion,
@@ -35,6 +36,7 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const { notifications, removeNotification } = useNotifications();
   const [isOpenSettings, setIsOpenSettings] = useState(true)
+  const [openingNotificationId, setOpeningNotificationId] = useState<string | null>(null);
 
   const markAsRead = async (id: string) => {
     try {
@@ -44,14 +46,30 @@ export function NavUser({
     }
   }
 
-  const handleNotificationClick = (notification: Notification) => {
-    markAsRead(notification.id)
-    removeNotification(notification.id)
-    if (!notification.meta?.ticketId) {
-      router.replace('/dashboard/kanban')
-      return
+  const handleNotificationClick = async (notification: Notification) => {
+    if (openingNotificationId) return;
+    setOpeningNotificationId(notification.id);
+
+    try {
+      if(!notification.meta) {
+        router.replace('/dashboard/kanban')
+        return
+      }
+      const ticketId = notification.meta.id;
+      const ticketExists = ticketId ? await isTicketAvailableService(ticketId) : true;
+      await markAsRead(notification.id);
+      removeNotification(notification.id);
+
+      if (!ticketId) {
+        router.replace('/dashboard/kanban')
+      } else if (ticketExists) {
+        router.replace(`/dashboard/kanban/${ticketId}`)
+      }
+    } catch (error) {
+      console.error("Error opening notification ticket:", error);
+    } finally {
+      setOpeningNotificationId(null);
     }
-    router.replace(`/dashboard/kanban/${notification.meta?.ticketId}`)
   }
 
   const handleLogout = async () => {
@@ -79,12 +97,12 @@ export function NavUser({
     >
       <AccordionItem value="notification">
         <AccordionContent className="flex flex-col bg-background text-foreground rounded-md">
-          {notifications.map((notification, idx) =>
+          {notifications.map((notification) =>
             // notification.type === NotificationType.NEW_TICKET ?
-            <Button variant={'ghost'} onClick={() => { handleNotificationClick(notification) }} className="flex justify-between hover:bg-primary hover:text-background">
-              <span key={idx} >{getNotificationTitle(notification.message)}</span>
+            <Button key={notification.id} variant={'ghost'} disabled={openingNotificationId !== null} onClick={() => { void handleNotificationClick(notification) }} className="flex justify-between hover:bg-primary hover:text-background">
+              <span>{getNotificationTitle(notification.message)}</span>
               <span>
-                <ChevronRight/>
+                <ChevronRight />
               </span>
             </Button>
           )}

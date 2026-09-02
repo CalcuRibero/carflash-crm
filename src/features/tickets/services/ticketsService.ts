@@ -122,6 +122,22 @@ export async function getTicketsByTicketIdService(ticketId: string, options: { s
   }
 }
 
+export async function isTicketAvailableService(
+  ticketId: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<boolean> {
+  try {
+    await getTicket(ticketId, { signal: options.signal });
+    return true;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
 export async function deleteTicketService(id: string | number, options: { signal?: AbortSignal } = {}): Promise<void> {
   try {
     await deleteTicket(id, { signal: options.signal });

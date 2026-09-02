@@ -92,7 +92,7 @@ export enum NotificationType {
 }
 
 export interface NotificationMeta {
-  ticketId?: string;
+  id?: string;
   url?: string;
   [key: string]: unknown; // por si agregas más campos a futuro sin romper el tipo
 }

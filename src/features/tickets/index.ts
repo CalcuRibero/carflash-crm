@@ -6,7 +6,13 @@ export { useEditTicketModal } from "./hooks/useEditTicketModal";
 export { useTickets } from "./hooks/useTickets";
 export { useTicketsByTicketId } from "./hooks/useTicketById";
 export { useUpdateTicket } from "./hooks/useUpdateTicket";
-export { createTicketService, deleteTicketService, getTicketsService, updateTicketService } from "./services/ticketsService";
+export {
+  createTicketService,
+  deleteTicketService,
+  getTicketsService,
+  isTicketAvailableService,
+  updateTicketService,
+} from "./services/ticketsService";
 export type {
   CreateTicketModalController,
   CreateTicketModalState,
