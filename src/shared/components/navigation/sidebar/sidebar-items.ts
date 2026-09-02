@@ -38,6 +38,7 @@ export interface NavMainItem {
 export interface NavGroup {
   id: number;
   label?: string;
+  roles?: UserRole[];
   items: NavMainItem[];
 }
 
@@ -45,6 +46,7 @@ export const sidebarItems: NavGroup[] = [
   {
     id: 1,
     label: "Puestos de Trabajo",
+    roles: ["SuperAdmin"],
     items: [
       {
         title: "Gerencia",
