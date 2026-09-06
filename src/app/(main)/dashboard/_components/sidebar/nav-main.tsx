@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { ChevronRight, MailIcon, PlusCircleIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   DropdownMenu,
@@ -16,7 +16,6 @@ import {
 import {
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -25,8 +24,8 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import type { UserRole } from "@/lib/api/types";
 import type { NavGroup, NavMainItem } from "@/shared/components/navigation/sidebar/sidebar-items";
-import { UserRole } from "@/lib/api/types";
 
 interface NavMainProps {
   readonly items: readonly NavGroup[];
@@ -81,8 +80,18 @@ const NavItemExpanded = ({
             <SidebarMenuSub>
               {item.subItems.map((subItem) => (
                 <SidebarMenuSubItem key={subItem.title}>
-                  <SidebarMenuSubButton aria-disabled={subItem.comingSoon} isActive={isActive(subItem.url)} asChild>
-                    <Link prefetch={false} href={subItem.url} target={subItem.newTab ? "_blank" : undefined}>
+                  <SidebarMenuSubButton
+                    aria-disabled={subItem.comingSoon}
+                    isActive={isActive(subItem.url)}
+                    className="no-underline"
+                    asChild
+                  >
+                    <Link
+                      prefetch={false}
+                      href={subItem.url}
+                      target={subItem.newTab ? "_blank" : undefined}
+                      className="no-underline"
+                    >
                       {subItem.icon && <subItem.icon />}
                       <span>{subItem.title}</span>
                       {subItem.comingSoon && <IsComingSoon />}
@@ -125,11 +134,16 @@ const NavItemCollapsed = ({
               <SidebarMenuSubButton
                 key={subItem.title}
                 asChild
-                className="focus-visible:ring-0"
+                className="no-underline focus-visible:ring-0"
                 aria-disabled={subItem.comingSoon}
                 isActive={isActive(subItem.url)}
               >
-                <Link prefetch={false} href={subItem.url} target={subItem.newTab ? "_blank" : undefined}>
+                <Link
+                  prefetch={false}
+                  href={subItem.url}
+                  target={subItem.newTab ? "_blank" : undefined}
+                  className="no-underline"
+                >
                   {subItem.icon && <subItem.icon className="[&>svg]:text-sidebar-foreground" />}
                   <span>{subItem.title}</span>
                   {subItem.comingSoon && <IsComingSoon />}
@@ -158,70 +172,83 @@ export function NavMain({ items, currentRole }: NavMainProps) {
     return subItems?.some((sub) => path.startsWith(sub.url)) ?? false;
   };
 
+  const visibleGroups = items
+    .filter((group) => !group.roles || group.roles.includes(currentRole))
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.roles || item.roles.includes(currentRole)),
+    }))
+    .filter((group) => group.items.length > 0);
+
+  const defaultOpenGroups = visibleGroups
+    .filter((group) => group.items.some((item) => isItemActive(item.url, item.subItems)))
+    .map((group) => String(group.id));
+  const firstGroupId = visibleGroups[0] ? String(visibleGroups[0].id) : null;
+  const initialOpenGroups = Array.from(
+    new Set([firstGroupId, ...defaultOpenGroups].filter((id): id is string => id !== null)),
+  );
+
+  const renderItem = (item: NavMainItem) => {
+    if (state === "collapsed" && !isMobile) {
+      if (!item.subItems) {
+        return (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton
+              asChild
+              aria-disabled={item.comingSoon}
+              tooltip={item.title}
+              isActive={isItemActive(item.url)}
+            >
+              <Link
+                className="underline-none"
+                prefetch={false}
+                href={item.url}
+                target={item.newTab ? "_blank" : undefined}
+              >
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        );
+      }
+
+      return <NavItemCollapsed key={item.title} item={item} isActive={isItemActive} />;
+    }
+
+    return <NavItemExpanded key={item.title} item={item} isActive={isItemActive} isSubmenuOpen={isSubmenuOpen} />;
+  };
+
   return (
     <>
-      <SidebarGroup>
-        <SidebarGroupContent className="flex flex-col gap-2">
-          <SidebarMenu>
-            <SidebarMenuItem className="flex items-center gap-2">
-              {/* <Button
-                size="icon"
-                className="h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0"
-                variant="default"
-              >
-                <MailIcon />
-                <span className="sr-only">Inbox</span>
-              </Button> */}
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-      {items.map((group) => {
-        if (group.roles && !group.roles.includes(currentRole)) {
-          return null;
-        }
-
-        return (
-        <SidebarGroup key={group.id}>
-          {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
-          <SidebarGroupContent className="flex flex-col gap-2">
-            <SidebarMenu>
-              {group.items.map((item) => {
-                if (item.roles && !item.roles.includes(currentRole)) {
-                  return null; // Skip rendering this item if the current role is not allowed
-                }
-                if (state === "collapsed" && !isMobile) {
-                  // If no subItems, just render the button as a link
-                  if (!item.subItems) {
-                    return (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton
-                          asChild
-                          aria-disabled={item.comingSoon}
-                          tooltip={item.title}
-                          isActive={isItemActive(item.url)}
-                        >
-                          <Link prefetch={false} href={item.url} target={item.newTab ? "_blank" : undefined}>
-                            {item.icon && <item.icon />}
-                            <span>{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  }
-                  // Otherwise, render the dropdown as before
-                  return <NavItemCollapsed key={item.title} item={item} isActive={isItemActive} />;
-                }
-                // Expanded view
-                return (
-                  <NavItemExpanded key={item.title} item={item} isActive={isItemActive} isSubmenuOpen={isSubmenuOpen} />
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
+      {state === "collapsed" && !isMobile ? (
+        visibleGroups.map((group) => (
+          <SidebarGroup key={group.id}>
+            <SidebarGroupContent>
+              <SidebarMenu>{group.items.map(renderItem)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))
+      ) : (
+        <SidebarGroup className="p-0">
+          <Accordion type="multiple" defaultValue={initialOpenGroups} className="w-full">
+            {visibleGroups.map((group) => (
+              <AccordionItem key={group.id} value={String(group.id)} className="underline-none border-none px-2 py-2">
+                {group.label && (
+                  <AccordionTrigger className="h-8 rounded-md px-2 py-0 text-sidebar-foreground/70 text-xs no-underline hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                    {group.label}
+                  </AccordionTrigger>
+                )}
+                <AccordionContent className="pb-0">
+                  <SidebarGroupContent className="flex flex-col gap-2">
+                    <SidebarMenu>{group.items.map(renderItem)}</SidebarMenu>
+                  </SidebarGroupContent>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </SidebarGroup>
-        );
-      })}
+      )}
     </>
   );
 }
