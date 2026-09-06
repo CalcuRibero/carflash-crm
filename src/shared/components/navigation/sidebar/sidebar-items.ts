@@ -133,11 +133,12 @@ export const sidebarItems: NavGroup[] = [
         icon: Users,
         roles: ["SuperAdmin"],
       },
-      // {
-      //   title: "Roles",
-      //   url: "/dashboard/roles",
-      //   icon: Lock,
-      // },
+      {
+        title: "Roles",
+        url: "/dashboard/roles",
+        icon: BriefcaseBusiness,
+        roles: ["SuperAdmin"],
+      },
     ],
   },
 ];
