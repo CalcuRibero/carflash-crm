@@ -20,7 +20,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter();
-  const { login, isLoading, error } = useAuth();
+  const { login, fetchProfile, isLoading, error } = useAuth();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,8 +37,12 @@ export function LoginForm() {
         email: data.email,
         password: data.password,
       });
+      const profile = await fetchProfile();
       toast.success("Login successful");
-      router.push("/dashboard");
+      if (data.remember) {
+        localStorage.setItem("rememberMe", "true");
+      }
+      router.push(profile.role === "SuperAdmin" ? "/supervision-panel/super-admin" : "/dashboard");
     } catch (err) {
       toast.error("Login failed", {
         description: error instanceof Error ? error.message : "An error occurred",

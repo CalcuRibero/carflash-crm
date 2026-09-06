@@ -23,7 +23,7 @@ export function SortableTaskCard({ task, columnId, index, onClick }: { task: Tic
       data-dragging={isDragging}
       className={cn("touch-none", isDragging && "opacity-30")}
     >
-      <TaskCard task={task} columnId={columnId} onClick={onClick} />
+      <TaskCard task={task} columnId={columnId} onClick={onClick} onlyRead={true} />
     </div>
   );
 }

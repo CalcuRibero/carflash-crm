@@ -1,8 +1,7 @@
 "use client";
 
 import { Ticket, UserRole } from "@/lib/api";
-import { getTicketsService } from "../services/ticketsService";
-import type { TicketsController, TicketsSupervisionController } from "../types";
+import type { TicketsSupervisionController } from "../types";
 import { getTicketsByRoleService } from "@/features/supervision-panel/services/supervision-panel";
 import { useCallback, useEffect, useState } from "react";
 
@@ -51,7 +50,7 @@ export function useTicketsByCategory(category: UserRole): TicketsSupervisionCont
                 setIsLoading(false);
             }
         }
-    }, []);
+    }, [category]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -65,12 +64,12 @@ export function useTicketsByCategory(category: UserRole): TicketsSupervisionCont
         };
     }, [loadTickets]);
 
-    // const refetch = useCallback(() => loadTickets(), [loadTickets]);
+    const refetch = useCallback(() => loadTickets(), [loadTickets]);
 
     return {
         errorMessage,
         isLoading,
-        // refetch,
+        refetch,
         tickets,
     };
 }

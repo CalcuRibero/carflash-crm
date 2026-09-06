@@ -81,14 +81,14 @@ export function Kanban() {
 
 
   return (
-    <div className="m-4 flex w-full max-w-7xl flex-col gap-6">
+    <div className="flex w-full max-w-7xl flex-col gap-6">
       <div className="flex justify-end">
         <Button className="flex-1 sm:flex-none" onClick={() => createTicketModal.openModal()}>
           <Plus data-icon="inline-start" />
           Agregar Tarea
         </Button>
       </div>
-      <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-5 lg:pt-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
+      <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-2 lg:pt-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
         <DragDropProvider
           onDragOver={
             (event) => {
@@ -107,7 +107,7 @@ export function Kanban() {
             }
           }}
         >
-          <div className="h-full min-w-full grid-cols-4 gap-4 hidden md:inline-grid">
+          <div className="p-0 min-w-full grid-cols-4 gap-4 hidden md:inline-grid">
             {orderedColumns.map((column) => (
               <KanbanColumn key={column.id} column={column} tasks={board[column.id]} />
             ))}

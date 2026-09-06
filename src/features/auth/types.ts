@@ -1,3 +1,5 @@
+import type { UserRole } from "@/lib/api";
+
 export type LoginRequest = {
   email: string;
   password: string;
@@ -10,6 +12,7 @@ export type LoginResponse = {
 export type AuthProfile = {
   sub: number;
   email: string;
+  role: UserRole;
   iat?: number;
   exp?: number;
 };

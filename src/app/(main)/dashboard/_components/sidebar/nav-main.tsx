@@ -176,7 +176,12 @@ export function NavMain({ items, currentRole }: NavMainProps) {
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
-      {items.map((group) => (
+      {items.map((group) => {
+        if (group.roles && !group.roles.includes(currentRole)) {
+          return null;
+        }
+
+        return (
         <SidebarGroup key={group.id}>
           {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
           <SidebarGroupContent className="flex flex-col gap-2">
@@ -215,7 +220,8 @@ export function NavMain({ items, currentRole }: NavMainProps) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-      ))}
+        );
+      })}
     </>
   );
 }
