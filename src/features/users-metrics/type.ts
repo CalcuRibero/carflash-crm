@@ -68,5 +68,6 @@ export const UserCategoryLabel: Record<string, string> = {
   'CarExpert': 'Perito',
   'Gestor': 'Gestor',
   'CarSeller': 'Vendedor de Autos',
+  'CarSellingSupervisor': 'Supervisor de Venta de Autos',
   'Marketing': 'Marketing'
 }

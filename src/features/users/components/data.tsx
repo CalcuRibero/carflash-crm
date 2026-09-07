@@ -24,6 +24,7 @@ const roleValues = [
   "CarExpert",
   "Gestor",
   "CarSeller",
+  "CarSellingSupervisor",
 ] as const satisfies readonly UserRole[];
 
 export type UserTeam = (typeof teamValues)[number];
@@ -61,6 +62,7 @@ export const roleMeta: Record<UserRole, { className: string; icon: LucideIcon }>
   CarExpert: { className: "text-orange-300", icon: ShieldCheck },
   Gestor: { className: "text-fuchsia-300", icon: UserRound },
   CarSeller: { className: "text-rose-300", icon: UserRound },
+  CarSellingSupervisor: { className: "text-blue-300", icon: UserRound },
   Marketing: { className: "text-orange-300", icon: UserRound },
 };
 

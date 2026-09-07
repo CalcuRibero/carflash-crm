@@ -49,6 +49,7 @@ const userRoles = [
   "CarExpert",
   "Gestor",
   "CarSeller",
+  "CarSellingSupervisor",
   "Marketing"
 ] as const;
 

@@ -101,19 +101,19 @@ export const sidebarItems: NavGroup[] = [
         title: "Tickets Fijos",
         url: "/dashboard/recurrent-tickets",
         icon: Repeat,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
       },
       {
         title: "Tickets Variables",
         url: "/dashboard/kanban",
         icon: Kanban,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
       },
       {
         title: "Calendario",
         url: "/dashboard/calendar",
         icon: Calendar,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "Marketing"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
       },
       {
         title: "Facturación",
@@ -125,7 +125,7 @@ export const sidebarItems: NavGroup[] = [
         title: "Vehículos",
         url: "/dashboard/vehiculos",
         icon: CarFront,
-        roles: ["SuperAdmin", "AdministrationAccountant", "CarExpert", "Gestor", "CarSeller"],
+        roles: ["SuperAdmin", "AdministrationAccountant", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
       },
       {
         title: "Usuarios",

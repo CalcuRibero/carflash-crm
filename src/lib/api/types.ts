@@ -11,7 +11,10 @@ export type UserRole =
   | "CarExpert"
   | "Gestor"
   | "CarSeller"
-  | "Marketing";
+  | "CarSellingSupervisor"
+  | "Marketing"
+  ;
+
 
 export type User = {
   id: number;

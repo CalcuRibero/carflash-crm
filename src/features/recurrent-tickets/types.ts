@@ -25,6 +25,7 @@ export enum TicketCategory {
   CAR_EXPERT = 'CarExpert', //Perito
   GESTOR = 'Gestor',
   CAR_SELLER = 'CarSelling',
+  CAR_SELLING_SUPERVISOR = 'CarSellingSupervisor',
   MARKETING = 'Marketing'
 }
 
@@ -35,6 +36,7 @@ export const TicketCategoryLabel: Record<string, string> = {
   'CarExpert': 'Perito',
   'Gestor': 'Gestor',
   'CarSeller': 'Vendedor de Autos',
+  'CarSellingSupervisor': 'Supervisor de Venta de Autos',
   'Marketing': 'Marketing'
 }
 

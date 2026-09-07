@@ -26,6 +26,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { UserRole } from "@/lib/api/types";
 import type { UserRow } from "./data";
+import { UserCategoryLabel } from "@/features/users-metrics/type";
 
 interface EditUserModalProps {
   open: boolean;
@@ -50,6 +51,7 @@ const userRoles = [
   "CarExpert",
   "Gestor",
   "CarSeller",
+  "CarSellingSupervisor",
 ] as const;
 
 const updateUserSchema = z.object({
@@ -176,7 +178,7 @@ export function EditUserModal({
                 <SelectGroup>
                   {userRoles.map((userRole) => (
                     <SelectItem key={userRole} value={userRole}>
-                      {userRole}
+                      {UserCategoryLabel[userRole]}
                     </SelectItem>
                   ))}
                 </SelectGroup>

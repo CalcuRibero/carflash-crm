@@ -8,6 +8,7 @@ export const TicketCategoryIcons: Record<UserRole, LucideIcon> = {
     'CarExpert': ClipboardCheck,
     'Gestor': Folders,
     'CarSeller': BriefcaseBusiness,
+    'CarSellingSupervisor': BriefcaseBusiness,
     'Marketing': Target,
 }
 
