@@ -41,12 +41,22 @@ export interface CreateRecurrentTicketData {
   first_run_at: Date;
 }
 
+function withTime(date: Date | undefined, time: string): Date | undefined {
+  if (!date) return undefined;
+
+  const [hours = "00", minutes = "00"] = time.split(":");
+  const result = new Date(date);
+  result.setHours(Number(hours), Number(minutes), 0, 0);
+  return result;
+}
+
 export function CreateRecurrentTicketModal({
   isOpen,
   onClose,
   onSubmit,
 }: CreateRecurrentTicketModalProps) {
   const { users } = useUsers();
+  const [dueTime, setDueTime] = useState("00:00");
   
   const [formData, setFormData] = useState<CreateRecurrentTicketData>({
     title: "",
@@ -69,7 +79,7 @@ export function CreateRecurrentTicketModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({ ...formData, dueDate: withTime(formData.dueDate, dueTime) });
     handleClose();
   };
 
@@ -85,6 +95,7 @@ export function CreateRecurrentTicketModal({
       interval: RecurrenceInterval.MONTHLY,
       first_run_at: new Date(),
     });
+    setDueTime("00:00");
     onClose();
   };
 
@@ -224,10 +235,24 @@ export function CreateRecurrentTicketModal({
               type="date"
               value={formData.dueDate ? formData.dueDate.toISOString().split('T')[0] : ''}
               onChange={(e) =>
-                setFormData({ ...formData, dueDate: e.target.value ? new Date(e.target.value) : undefined })
+                setFormData({ ...formData, dueDate: e.target.value ? withTime(new Date(e.target.value), dueTime) : undefined })
               }
               min={formData.first_run_at ? formData.first_run_at.toISOString().split('T')[0] : undefined}
               disabled={!formData.first_run_at}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="dueTime">Horario de Vencimiento</Label>
+            <Input
+              id="dueTime"
+              type="time"
+              value={dueTime}
+              onChange={(e) => {
+                setDueTime(e.target.value);
+                setFormData({ ...formData, dueDate: withTime(formData.dueDate, e.target.value) });
+              }}
+              disabled={!formData.dueDate}
             />
           </div>
 

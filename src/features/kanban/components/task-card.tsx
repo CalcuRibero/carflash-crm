@@ -62,7 +62,24 @@ const priorityBadgeConfig: Record<
 const getDueDate = (dueDate: Date | null) => {
   if (!dueDate) return new Date().toLocaleDateString('es-AR');
   const dueDateObj = new Date(dueDate);
-  return dueDateObj.toLocaleDateString('es-AR');
+  const dateLabel = dueDateObj.toLocaleDateString('es-AR');
+  const timeLabel = dueDateObj.toLocaleTimeString('es-AR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  return timeLabel === '00:00' ? dateLabel : `${dateLabel} ${timeLabel}`;
+};
+
+const hasDueTime = (dueDate: Date | null) => {
+  if (!dueDate) return false;
+
+  const dueDateObj = new Date(dueDate);
+  return dueDateObj.getHours() !== 0 || dueDateObj.getMinutes() !== 0;
+};
+
+const isOverdue = (task: Ticket) => {
+  return task.status === 'open' && hasDueTime(task.dueDate) && task.dueDate !== null && new Date() > new Date(task.dueDate);
 };
 
 export function TaskCard({
@@ -86,6 +103,7 @@ export function TaskCard({
   const PriorityIcon = priorityBadgeConfig[task.priority as TicketPriority].icon;
   const creationDate = new Date(task.createdAt).toLocaleDateString('es-AR')
   const dueDate = getDueDate(task.dueDate);
+  const overdue = isOverdue(task);
 
   const handleClickDetail = (ticket: Ticket) => {
     router.push(`/dashboard/kanban/${ticket.id}`);
@@ -95,7 +113,8 @@ export function TaskCard({
     return (
       <article
         className={cn(
-          "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-colors",
+          "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-colors relative",
+          overdue && "border-red-500 bg-red-50 animate-pulse",
           isOverlay && "w-68 rotate-1 shadow-lg cursor-grabbing",
         )}
       >
@@ -112,6 +131,14 @@ export function TaskCard({
               >
                 {task.isRecurrent ? "Fijo" : "Variable"}
               </Badge>
+              {overdue && 
+                <Badge
+                  variant={"destructive"}
+                  className="shrink-0 rounded-md border-transparent px-2 font-medium absolute -top-1 -right-1"
+                >
+                  Urgente
+                </Badge>
+              }
               <Badge
                 variant={priorityBadgeConfig[task.priority as TicketPriority].variant}
                 className={cn(
@@ -126,11 +153,10 @@ export function TaskCard({
           </div>
           <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>
           <Separator />
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col items-center justify-between gap-3">
             <span className="text-muted-foreground text-sm">Vence:</span>
             <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
               <span className="truncate text-sm">{dueDate}</span>
-              <CalendarDays className="size-3" />
             </div>
           </div>
           <div className="flex items-end w-full">
@@ -148,6 +174,7 @@ export function TaskCard({
     <article
       className={cn(
         "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs cursor-pointer hover:bg-accent/50 transition-colors",
+        overdue && "border-red-200 bg-red-50 animate-pulse",
         isOverlay && "w-68 rotate-1 shadow-lg cursor-grabbing",
       )}
       onClick={onClick}
@@ -219,11 +246,10 @@ export function TaskCard({
                 </div>
               </div>)
             }
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col items-center justify-between gap-3">
               <span className="text-muted-foreground text-sm">Fecha de Vencimiento</span>
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <span className="truncate text-sm">{new Date(task.dueDate).toLocaleDateString('es-AR')}</span>
-                <CalendarDays className="size-3" />
               </span>
             </div>
 

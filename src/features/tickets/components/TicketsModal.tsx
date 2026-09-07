@@ -33,8 +33,31 @@ export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
   title: "",
 };
 
+function getDateValue(date: Date | string): string {
+  const dateValue = typeof date === "string" ? new Date(date) : date;
+  return dateValue.toISOString().split("T")[0];
+}
+
+function getTimeValue(date: Date | string | null): string {
+  if (!date) return "";
+
+  const dateValue = typeof date === "string" ? new Date(date) : date;
+
+  const hours = String(dateValue.getHours()).padStart(2, "0");
+  const minutes = String(dateValue.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+function withTime(dateValue: string, timeValue: string): string | null {
+  if (!dateValue) return null;
+
+  const [hours = "00", minutes = "00"] = timeValue.split(":");
+  return `${dateValue}T${hours}:${minutes}`;
+}
+
 export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting = false, onClose, onSubmit }: TicketsModalProps) {
   const [formValues, setFormValues] = useState<TicketsModalFormValues>(INITIAL_TICKETS_MODAL_FORM);
+  const [dueTime, setDueTime] = useState("00:00");
 
   const {users} = useUsers();
   // const triggerNotification = useNotificationsTickets
@@ -49,13 +72,15 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
         assignedTo: currentTicket.assignedTo?.id.toString() || "",
         category: currentTicket.category || "support",
         description: currentTicket.description,
-        dueDate: currentTicket.dueDate?.toLocaleString("es-AR", { timeZone: "UTC" }) || new Date().toLocaleDateString("es-AR", { timeZone: "UTC" }),
+        dueDate: currentTicket.dueDate ? getDateValue(currentTicket.dueDate) : "",
         priority: currentTicket.priority,
         status: currentTicket.status,
         title: currentTicket.title,
       });
+      setDueTime(getTimeValue(currentTicket.dueDate));
     } else {
       setFormValues(INITIAL_TICKETS_MODAL_FORM);
+      setDueTime("00:00");
     }
   }, [currentTicket]);
 
@@ -70,6 +95,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
 
   function resetAndClose() {
     setFormValues(INITIAL_TICKETS_MODAL_FORM);
+    setDueTime("00:00");
     onClose();
   }
 
@@ -81,7 +107,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
         assignedTo: formValues.assignedTo || null,
         category: formValues.category,
         description: formValues.description.trim(),
-        dueDate: formValues.dueDate || null,
+        dueDate: withTime(formValues.dueDate, dueTime),
         priority: formValues.priority,
         status: formValues.status,
         title: formValues.title.trim(),
@@ -230,6 +256,16 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
             onChange={(event) => updateForm("dueDate", event.target.value)}
             type="date"
             value={formValues.dueDate}
+          />
+        </div>
+
+        <div className="grid gap-1.5">
+          <Label htmlFor="ticket-due-time">Horario de vencimiento</Label>
+          <Input
+            id="ticket-due-time"
+            onChange={(event) => setDueTime(event.target.value)}
+            type="time"
+            value={dueTime}
           />
         </div>
 

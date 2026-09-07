@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { PRIORITY_LABELS } from "@/features/tickets/types";
 import { Ticket, TicketPriority } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, Flame, LucideIcon, Minus } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Flame, LucideIcon, Minus } from "lucide-react";
 
 const priorityBadgeConfig: Record<
     TicketPriority,
@@ -31,11 +31,41 @@ const priorityBadgeConfig: Record<
     },
 };
 
+const hasDueTime = (dueDate: Date | null) => {
+    if (!dueDate) return false;
+
+    const dueDateObj = new Date(dueDate);
+    return dueDateObj.getHours() !== 0 || dueDateObj.getMinutes() !== 0;
+};
+
+const getDueDateLabel = (dueDate: Date | null) => {
+    if (!dueDate) return null;
+
+    const dueDateObj = new Date(dueDate);
+    const dateLabel = dueDateObj.toLocaleDateString('es-AR');
+    const timeLabel = dueDateObj.toLocaleTimeString('es-AR', {
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+
+    return hasDueTime(dueDate) ? `${dateLabel} ${timeLabel}` : dateLabel;
+};
+
+const isOverdue = (ticket: Ticket) => {
+    return ticket.status === 'open' && hasDueTime(ticket.dueDate) && ticket.dueDate !== null && new Date() > new Date(ticket.dueDate);
+};
+
 
 export function CalendarCard({ ticket }: { ticket: Ticket }) {
+    const dueDateLabel = getDueDateLabel(ticket.dueDate);
+    const overdue = isOverdue(ticket);
+
     return (
         <article
-            className="flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-colors"
+            className={cn(
+                "flex flex-col gap-3 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-colors relative",
+                overdue && "border-red-500 bg-red-50 animate-pulse",
+            )}
         >
             <div className="min-w-0 space-y-1.5">
                 <div className="flex flex-col justify-between gap-3">
@@ -50,6 +80,14 @@ export function CalendarCard({ ticket }: { ticket: Ticket }) {
                         >
                             {ticket.isRecurrent ? "Fijo" : "Variable"}
                         </Badge>
+                        {overdue && 
+                            <Badge
+                            variant={"destructive"}
+                            className="shrink-0 rounded-md border-transparent px-2 font-medium absolute -top-1 -right-1"
+                            >
+                            Urgente
+                            </Badge>
+                        }
                         <Badge
                             variant={priorityBadgeConfig[ticket.priority as TicketPriority].variant}
                             className={cn(
@@ -67,6 +105,14 @@ export function CalendarCard({ ticket }: { ticket: Ticket }) {
                             {new Date(ticket.createdAt).toLocaleDateString('es-AR')}
                         </p>
                     </div>
+                    {dueDateLabel ? (
+                        <div className="flex flex-col items-center justify-between gap-2">
+                            <span className="text-xs text-muted-foreground">Vencimiento</span>
+                            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                {dueDateLabel}
+                            </span>
+                        </div>
+                    ) : null}
                 </div>
             </div>
         </article>
