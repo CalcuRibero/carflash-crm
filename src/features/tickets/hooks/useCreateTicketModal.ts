@@ -6,8 +6,6 @@ import type { CreateTicketRequest, Ticket } from "@/lib/api/types";
 
 import { createTicketService } from "../services/ticketsService";
 import type { CreateTicketModalController } from "../types";
-import { createNotification } from "@/lib/api/notifications";
-import { Notification, NotificationType } from "@/lib/api/types";
 
 
 export function useCreateTicketModal(): CreateTicketModalController {
@@ -35,21 +33,6 @@ export function useCreateTicketModal(): CreateTicketModalController {
     try {
       const ticket = await createTicketService(values);
       setCreatedTicket(ticket);
-      
-      if(values.assignedTo) {
-        const notificationData: Omit<Notification, 'id' | 'createdAt'> = {
-          userId: values.assignedTo,
-          type: NotificationType.NEW_TICKET,
-          message: `Nuevo ticket creado: ${values.title}`,
-          meta: { ticketId: ticket.id },
-          read: false,
-        }
-        try {
-          await createNotification(notificationData)
-        } catch (notificationError) {
-          console.error("Ticket created but notification could not be sent:", notificationError)
-        }
-      }
       setIsOpen(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : "We could not create the ticket.";

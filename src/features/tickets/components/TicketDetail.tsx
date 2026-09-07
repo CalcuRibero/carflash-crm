@@ -78,7 +78,7 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
     new Date(ticket.resolvedAt).toLocaleDateString('es-AR') : 
     new Date().toLocaleDateString('es-AR')
 
-  if(ticketId) {
+  if(!ticketId) {
     router.push('/dashboard/kanban')
   }
 
