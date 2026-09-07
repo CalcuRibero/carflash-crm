@@ -24,8 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { UserRole } from "@/lib/api/types";
-import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
+import type { UserRole } from "@/lib/api/types";
+import { RolesSelector } from "@/features/work-roles/components/RolesSelector";
 
 interface CreateUsersModalProps {
   open: boolean;
@@ -36,26 +36,17 @@ interface CreateUsersModalProps {
 export interface CreateUserData {
   fullName: string;
   username: string;
-  role: UserRole;
+  workRoleId: string;
+  role?: UserRole;
   email: string;
   password: string;
   isActive: boolean;
 }
 
-const userRoles = [
-  "SuperAdmin",
-  "AdministrationAccountant",
-  "ComercialCordinator",
-  "CarExpert",
-  "Gestor",
-  "CarSeller",
-  "Marketing"
-] as const;
-
 const createUserSchema = z.object({
   fullName: z.string().min(1, { message: "Nombre completo es requerido." }),
   username: z.string().min(1, { message: "Nombre de usuario es requerido." }),
-  role: z.string().min(1, { message: "Seleccione un rol válido." }),
+  workRoleId: z.string().min(1, { message: "Seleccione un rol válido." }),
   email: z.email({ message: "Ingrese un correo electrónico válido." }),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }),
   isActive: z.boolean(),
@@ -68,7 +59,7 @@ export function CreateUsersModal({
 }: CreateUsersModalProps) {
   const [fullName, setFullName] = React.useState("");
   const [username, setUsername] = React.useState("");
-  const [role, setRole] = React.useState<UserRole | undefined>(undefined);
+  const [workRoleId, setWorkRoleId] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isActive, setIsActive] = React.useState(true);
@@ -80,7 +71,7 @@ export function CreateUsersModal({
     const result = createUserSchema.safeParse({
       fullName,
       username,
-      role,
+      workRoleId,
       email,
       password,
       isActive,
@@ -104,7 +95,7 @@ export function CreateUsersModal({
     // Reset form
     setFullName("");
     setUsername("");
-    setRole(undefined);
+    setWorkRoleId("");
     setEmail("");
     setPassword("");
     setIsActive(true);
@@ -114,7 +105,7 @@ export function CreateUsersModal({
   const handleCancel = () => {
     setFullName("");
     setUsername("");
-    setRole(undefined);
+    setWorkRoleId("");
     setEmail("");
     setPassword("");
     setIsActive(true);
@@ -161,22 +152,9 @@ export function CreateUsersModal({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="role">Rol del Sistema</Label>
-            <Select value={role} onValueChange={(value) => setRole(value as UserRole)} required>
-              <SelectTrigger id="role">
-                <SelectValue placeholder="Seleccione un rol" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {userRoles.map((userRole) => (
-                    <SelectItem key={userRole} value={userRole}>
-                      {TicketCategoryLabel[userRole]}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            {formErrors.role && <p className="text-sm text-destructive">{formErrors.role}</p>}
+            <Label htmlFor="workRoleId">Rol de trabajo</Label>
+            <RolesSelector value={workRoleId} onValueChange={setWorkRoleId} />
+            {formErrors.workRoleId && <p className="text-sm text-destructive">{formErrors.workRoleId}</p>}
           </div>
 
           <div className="flex flex-col gap-2">

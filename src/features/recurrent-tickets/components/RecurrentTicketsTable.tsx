@@ -10,7 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { RecurrenceInterval, TicketStatus, TicketPriority, TicketCategory, type RecurrentTicket, TicketCategoryLabel } from "../types";
+import { RecurrenceInterval, TicketStatus, TicketPriority, type RecurrentTicket } from "../types";
+import { useWorkRoles } from "@/features/work-roles/hooks/useWorkRoles";
 import { useAuth } from "@/stores/auth/auth-provider";
 
 interface RecurrentTicketsTableProps {
@@ -72,12 +73,6 @@ function getStatusLabel(status?: TicketStatus): string {
   }
 }
 
-function getCategoryLabel(category?: TicketCategory): string {
-  if (!category) return "-";
-  const categoryLabel = TicketCategoryLabel[category];
-  return categoryLabel || category;
-}
-
 export function RecurrentTicketsTable({
   tickets,
   onEdit,
@@ -92,6 +87,7 @@ export function RecurrentTicketsTable({
   }
 
   const user = useAuth().user
+  const { workRoles } = useWorkRoles();
   const isSuperAdmin = user?.role === "SuperAdmin"
 
   return (
@@ -119,7 +115,7 @@ export function RecurrentTicketsTable({
                   {ticket.priority?.toUpperCase() || "-"}
                 </Badge>
               </TableCell>
-              <TableCell>{getCategoryLabel(ticket.category)}</TableCell>
+              <TableCell>{workRoles.find((workRole) => workRole.id === ticket.workRoleId)?.name ?? "Sin rol asignado"}</TableCell>
               <TableCell>{getIntervalLabel(ticket.interval)}</TableCell>
               <TableCell>{ticket.dueDate ? formatDate(ticket.dueDate) : "-"}</TableCell>
               <TableCell>{formatDate(ticket.first_run_at)}</TableCell>

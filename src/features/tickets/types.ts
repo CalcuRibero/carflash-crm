@@ -1,4 +1,4 @@
-import type { CreateTicketRequest, Ticket, TicketCategory, TicketPriority, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
+import type { CreateTicketRequest, Ticket, TicketPriority, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
 
 export const INITIAL_TICKET: Ticket = {
   id: '',
@@ -6,7 +6,6 @@ export const INITIAL_TICKET: Ticket = {
   description: '',
   status: 'open',
   priority: 'low',
-  category: "support",
   isRecurrent: false,
   createdBy: {
     id: 0,
@@ -28,7 +27,7 @@ export const INITIAL_TICKET: Ticket = {
 
 export interface TicketsModalFormValues {
   assignedTo: string;
-  category: TicketCategory;
+  workRoleId: string;
   description: string;
   dueDate: string;
   priority: TicketPriority;

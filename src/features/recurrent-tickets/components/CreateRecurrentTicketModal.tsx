@@ -20,8 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { RolesSelector } from "@/features/work-roles/components/RolesSelector";
 import { useUsers } from "@/features/users/hooks/useUsers";
-import { RecurrenceInterval, TicketPriority, TicketStatus, type TicketCategory, TicketCategoryLabel } from "../types";
+import { RecurrenceInterval, TicketPriority, TicketStatus } from "../types";
 
 interface CreateRecurrentTicketModalProps {
   isOpen: boolean;
@@ -34,7 +35,7 @@ export interface CreateRecurrentTicketData {
   description: string;
   status?: TicketStatus;
   priority?: TicketPriority;
-  category?: TicketCategory;
+  workRoleId?: string | null;
   assignedTo?: string | null;
   dueDate?: Date;
   interval: RecurrenceInterval;
@@ -53,7 +54,7 @@ export function CreateRecurrentTicketModal({
     description: "",
     status: undefined,
     priority: undefined,
-    category: undefined,
+    workRoleId: null,
     assignedTo: undefined,
     dueDate: undefined,
     interval: RecurrenceInterval.MONTHLY,
@@ -79,7 +80,7 @@ export function CreateRecurrentTicketModal({
       description: "",
       status: TicketStatus.OPEN,
       priority: undefined,
-      category: undefined,
+      workRoleId: null,
       assignedTo: undefined,
       dueDate: undefined,
       interval: RecurrenceInterval.MONTHLY,
@@ -140,24 +141,8 @@ export function CreateRecurrentTicketModal({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Categoría</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, category: value as TicketCategory })
-                }
-              >
-                <SelectTrigger id="category">
-                  <SelectValue placeholder="Seleccionar categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(TicketCategoryLabel).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="workRoleId">Rol de trabajo</Label>
+              <RolesSelector value={formData.workRoleId ?? ""} onValueChange={(workRoleId) => setFormData({ ...formData, workRoleId })} />
             </div>
 
             <div className="space-y-2">

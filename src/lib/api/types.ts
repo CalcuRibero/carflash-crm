@@ -2,8 +2,6 @@ export type TicketStatus = "open" | "in_progress" | "resolved" | "closed";
 
 export type TicketPriority = "low" | "medium" | "high" | "critical";
 
-export type TicketCategory = "bug" | "feature" | "support" | "incident";
-
 export type UserRole =
   | "SuperAdmin"
   | "AdministrationAccountant"
@@ -19,6 +17,7 @@ export type User = {
   email: string;
   password?: string;
   role: UserRole;
+  workRoleId?: string | null;
   fullName: string;
   isActive: boolean;
   createdAt: string;
@@ -43,7 +42,7 @@ export type Ticket = {
   description: string;
   status: TicketStatus;
   priority: TicketPriority;
-  category: TicketCategory;
+  workRoleId?: string | null;
   isRecurrent: boolean;
   createdBy: User;
   assignedTo: User | null;
@@ -75,7 +74,7 @@ export type CreateTicketRequest = {
   date?: string | Date;
   status?: TicketStatus;
   priority?: TicketPriority;
-  category?: TicketCategory;
+  workRoleId?: string | null;
   createdBy?: string;
   assignedTo?: string | null;
   dueDate?: string | Date | null;

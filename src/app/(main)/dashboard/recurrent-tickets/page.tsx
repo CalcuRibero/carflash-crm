@@ -66,7 +66,7 @@ export default function RecurrentTicketsPage() {
       description: data.description,
       status: data.status,
       priority: data.priority,
-      category: data.category,
+      workRoleId: data.workRoleId,
       assignedTo: data.assignedTo ?? null,
       dueDate: data.dueDate || new Date(),
       interval: data.interval,

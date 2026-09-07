@@ -4,7 +4,8 @@ import type { User, UserRole } from "@/lib/api/types";
 export type CreateUserRequest = {
   fullName: string;
   username: string;
-  role: UserRole;
+  workRoleId: string;
+  role?: UserRole;
   email: string;
   password: string;
   isActive: boolean;
@@ -41,6 +42,7 @@ export async function createUserService(payload: CreateUserRequest): Promise<Use
 export type UpdateUserRequest = {
   fullName?: string;
   username?: string;
+  workRoleId?: string | null;
   role?: UserRole;
   email?: string;
   password?: string;

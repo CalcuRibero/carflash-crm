@@ -20,8 +20,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { RolesSelector } from "@/features/work-roles/components/RolesSelector";
 import { useUsers } from "@/features/users/hooks/useUsers";
-import { RecurrenceInterval, TicketPriority, TicketStatus, type TicketCategory, TicketCategoryLabel, RecurrentTicket, INITIAL_UPDATE_RECURRENT_TICKET_DATA } from "../types";
+import { RecurrenceInterval, TicketPriority, TicketStatus, RecurrentTicket } from "../types";
 
 interface UpdateRecurrentTicketModalProps {
     isOpen: boolean;
@@ -35,7 +36,7 @@ export interface UpdateRecurrentTicketData {
     description: string;
     status?: TicketStatus;
     priority?: TicketPriority;
-    category?: TicketCategory;
+    workRoleId?: string | null;
     assignedTo?: string | null;
     dueDate?: Date;
     interval: RecurrenceInterval;
@@ -130,24 +131,8 @@ export function UpdateRecurrentTicketModal({
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="category">Categoría</Label>
-                            <Select
-                                defaultValue={formData.category}
-                                onValueChange={(value) =>
-                                    setFormData({ ...formData, category: value as TicketCategory })
-                                }
-                            >
-                                <SelectTrigger id="category">
-                                    <SelectValue placeholder="Seleccionar categoría" />
-                                </SelectTrigger>
-                                <SelectContent defaultValue={formData.category}>
-                                    {Object.entries(TicketCategoryLabel).map(([key, label]) => (
-                                        <SelectItem key={key} value={key}>
-                                            {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Label htmlFor="workRoleId">Rol de trabajo</Label>
+                            <RolesSelector value={formData.workRoleId ?? ""} allowInactiveValue onValueChange={(workRoleId) => setFormData({ ...formData, workRoleId })} />
                         </div>
 
                         <div className="space-y-2">

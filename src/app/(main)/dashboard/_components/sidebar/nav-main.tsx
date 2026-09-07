@@ -183,9 +183,8 @@ export function NavMain({ items, currentRole }: NavMainProps) {
   const defaultOpenGroups = visibleGroups
     .filter((group) => group.items.some((item) => isItemActive(item.url, item.subItems)))
     .map((group) => String(group.id));
-  const firstGroupId = visibleGroups[0] ? String(visibleGroups[0].id) : null;
   const initialOpenGroups = Array.from(
-    new Set([firstGroupId, ...defaultOpenGroups].filter((id): id is string => id !== null)),
+    new Set([...visibleGroups.map((group) => String(group.id)), ...defaultOpenGroups]),
   );
 
   const renderItem = (item: NavMainItem) => {

@@ -15,7 +15,6 @@ export type {
   LoginRequest,
   LoginResponse,
   Ticket,
-  TicketCategory,
   TicketPriority,
   TicketStatus,
   UpdateTicketRequest,

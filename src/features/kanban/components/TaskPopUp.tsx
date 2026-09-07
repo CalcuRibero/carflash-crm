@@ -13,13 +13,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { withPopup } from "@/components/popup/popup";
-import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
+import type { TicketPriority, TicketStatus } from "@/lib/api/types";
 import { useCreateTicket } from "@/UseCases/TicketsUseCases";
 import { useUsers } from "@/features/users/hooks/useUsers";
+import { RolesSelector } from "@/features/work-roles/components/RolesSelector";
 
 const ticketStatuses: TicketStatus[] = ["open", "in_progress", "resolved", "closed"];
 const ticketPriorities: TicketPriority[] = ["low", "medium", "high", "critical"];
-const ticketCategories: TicketCategory[] = ["bug", "feature", "support", "incident"];
 
 
 export type TaskPopUpFormValues = {
@@ -27,7 +27,7 @@ export type TaskPopUpFormValues = {
   description: string;
   status: TicketStatus;
   priority: TicketPriority;
-  category: TicketCategory;
+  workRoleId: string;
   assignedTo: string;
   dueDate: string;
 };
@@ -37,7 +37,7 @@ export const INITIAL_VALUES_FORM: TaskPopUpFormValues = {
   description: "",
   status: "open",
   priority: "medium",
-  category: "support",
+  workRoleId: "",
   assignedTo: "",
   dueDate: "",
 };
@@ -138,22 +138,8 @@ function TaskForm({ formValues, onFormChange, onSubmit }: TaskFormProps) {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="grid gap-1.5">
-          <Label>Categoría</Label>
-          <Select
-            value={formValues.category}
-            onValueChange={(value) => updateForm("category", value as TicketCategory)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {ticketCategories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {formatOptionLabel(category)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label>Rol de trabajo</Label>
+          <RolesSelector value={formValues.workRoleId} onValueChange={(workRoleId) => updateForm("workRoleId", workRoleId)} />
         </div>
 
         <div className="grid gap-1.5">

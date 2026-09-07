@@ -14,18 +14,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Modal } from "@/shared/components/Modal";
 
-import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
+import type { TicketPriority, TicketStatus } from "@/lib/api/types";
 
 import { PRIORITY_OPTIONS, STATUS_OPTIONS, type SelectOption, type TicketsModalFormValues, type TicketsModalProps } from "../types";
 import { useUsers } from "@/features/users/hooks/useUsers";
-import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
+import { RolesSelector } from "@/features/work-roles/components/RolesSelector";
 import { useEffect, useState } from "react";
 // import { useNotificationsTickets } from "@/shared/hooks/useNotifications";
 
 
 export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
   assignedTo: "",
-  category: "support",
+  workRoleId: "",
   description: "",
   dueDate: "",
   priority: "medium",
@@ -47,7 +47,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
     if (currentTicket) {
       setFormValues({
         assignedTo: currentTicket.assignedTo?.id.toString() || "",
-        category: currentTicket.category || "support",
+        workRoleId: currentTicket.workRoleId ?? "",
         description: currentTicket.description,
         dueDate: currentTicket.dueDate?.toLocaleString("es-AR", { timeZone: "UTC" }) || new Date().toLocaleDateString("es-AR", { timeZone: "UTC" }),
         priority: currentTicket.priority,
@@ -79,7 +79,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
     try {
       await onSubmit({
         assignedTo: formValues.assignedTo || null,
-        category: formValues.category,
+        workRoleId: formValues.workRoleId || null,
         description: formValues.description.trim(),
         dueDate: formValues.dueDate || null,
         priority: formValues.priority,
@@ -188,22 +188,8 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="grid gap-1.5">
-            <Label>Categoria</Label>
-            <Select
-              value={formValues.category}
-              onValueChange={(value) => updateForm("category", value as TicketCategory)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(TicketCategoryLabel).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label>Rol de trabajo</Label>
+            <RolesSelector value={formValues.workRoleId} onValueChange={(workRoleId) => updateForm("workRoleId", workRoleId)} />
           </div>
 
           <div className="grid gap-1.5">

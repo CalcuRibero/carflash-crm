@@ -22,13 +22,13 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { Kbd } from "@/components/ui/kbd";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useWorkRoles } from "@/features/work-roles/hooks/useWorkRoles";
 
 import { filters, type UserRow } from "./data";
 import { usersColumns } from "./users-columns";
 import { UsersTable } from "./users-table";
 import { CreateUsersModal, type CreateUserData } from "./createUsersModal";
 import { useCreateUser } from "../hooks/useCreateUser";
-import { UserCategoryLabel } from "@/features/users-metrics/type";
 
 interface UsersProps {
   users: UserRow[];
@@ -49,6 +49,7 @@ export function Users({ users, refreshUsers }: UsersProps) {
   });
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const { createUser } = useCreateUser();
+  const { workRoles } = useWorkRoles();
 
   const table = useReactTable({
     data: users,
@@ -75,7 +76,7 @@ export function Users({ users, refreshUsers }: UsersProps) {
   });
 
   const searchQuery = (table.getColumn("search")?.getFilterValue() as string) ?? "";
-  const roleFilter = (table.getColumn("role")?.getFilterValue() as string) ?? filters.role[0];
+  const roleFilter = (table.getColumn("workRoleId")?.getFilterValue() as string) ?? "All";
   const statusFilter = (table.getColumn("status")?.getFilterValue() as string) ?? filters.status[0];
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
 
@@ -137,16 +138,16 @@ export function Users({ users, refreshUsers }: UsersProps) {
       <CardContent className="flex flex-col gap-4 px-0">
         <div className="flex flex-wrap items-center justify-between gap-3 px-4">
           <div className="flex flex-wrap justify-center md:justify-end items-center gap-3">
-            <Select value={roleFilter} onValueChange={(value) => setColumnSelectFilter("role", value)}>
+            <Select value={roleFilter} onValueChange={(value) => setColumnSelectFilter("workRoleId", value)}>
               <SelectTrigger size="sm">
                 <span className="text-muted-foreground">Rol:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper" align="start">
                 <SelectGroup>
-                  {filters.role.map((option) => (
+                  {["All", ...workRoles.map((workRole) => workRole.id)].map((option) => (
                     <SelectItem key={option} value={option}>
-                      {UserCategoryLabel[option] || 'Todos'}
+                      {option === "All" ? "Todos" : workRoles.find((workRole) => workRole.id === option)?.name}
                     </SelectItem>
                   ))}
                 </SelectGroup>

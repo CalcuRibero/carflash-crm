@@ -18,12 +18,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials } from "@/lib/utils";
+import { useWorkRoles } from "@/features/work-roles/hooks/useWorkRoles";
 
 import { useDeleteUser } from "../hooks/useDeleteUser";
 import { useUpdateUser } from "../hooks/useUpdateUser";
 import { EditUserModal, type UpdateUserData } from "./editUserModal";
 import { statusMeta, type UserRow } from "./data";
-import { UserCategoryLabel } from "@/features/users-metrics/type";
 
 
 
@@ -40,10 +40,13 @@ function formatDate(value: string) {
   });
 }
 
-function RoleCell({ role, detail }: { role: string; detail: string }) {
+function RoleCell({ workRoleId, detail }: { workRoleId?: string | null; detail: string }) {
+  const { workRoles } = useWorkRoles();
+  const workRoleName = workRoles.find((workRole) => workRole.id === workRoleId)?.name ?? "Sin rol asignado";
+
   return (
     <div className="grid gap-0.5">
-      <span className="whitespace-nowrap">{role}</span>
+      <span className="whitespace-nowrap">{workRoleName}</span>
       <span className="text-muted-foreground text-xs">{detail}</span>
     </div>
   );
@@ -145,7 +148,7 @@ export const usersColumns: ColumnDef<UserRow>[] = [
   },
   {
     id: "search",
-    accessorFn: (row) => `${row.fullName ?? ""} ${row.username} ${row.email ?? ""} ${row.role}`,
+    accessorFn: (row) => `${row.fullName ?? ""} ${row.username} ${row.email ?? ""} ${row.workRoleId ?? ""}`,
     filterFn: "includesString",
     enableHiding: true,
   },
@@ -175,10 +178,10 @@ export const usersColumns: ColumnDef<UserRow>[] = [
     ),
   },
   {
-    accessorKey: "role",
+    accessorKey: "workRoleId",
     header: "Rol",
     filterFn: "equalsString",
-    cell: ({ row }) => <RoleCell role={UserCategoryLabel[row.original.role]} detail={row.original.username} />,
+    cell: ({ row }) => <RoleCell workRoleId={row.original.workRoleId} detail={row.original.username} />,
   },
   {
     accessorKey: "status",

@@ -257,16 +257,6 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
             </CardContent>
           </Card>
 
-          {ticket.category && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Categoría</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Badge variant="outline">{ticket.category}</Badge>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
 

@@ -1,8 +1,5 @@
 import { format } from "date-fns";
-import type { LucideIcon } from "lucide-react";
-import { BriefcaseBusiness, ShieldCheck, SquareUserRound, UserCog, UserRound } from "lucide-react";
-
-import type { User, UserRole } from "@/lib/api/types";
+import type { User } from "@/lib/api/types";
 
 export type UserStatus = "Active" | "Pending invite" | "Deactivated" | "Locked" | "Suspended";
 
@@ -17,15 +14,6 @@ const teamValues = [
   "Finance",
 ] as const;
 
-const roleValues = [
-  "SuperAdmin",
-  "AdministrationAccountant",
-  "ComercialCordinator",
-  "CarExpert",
-  "Gestor",
-  "CarSeller",
-] as const satisfies readonly UserRole[];
-
 export type UserTeam = (typeof teamValues)[number];
 
 export type UserRow = User & {
@@ -33,7 +21,6 @@ export type UserRow = User & {
   joinedDate: string;
   lastActive: number;
   name: string;
-  role: UserRole;
   status: UserStatus;
 };
 
@@ -44,24 +31,12 @@ export function mapUserToRow(user: User): UserRow {
     joinedDate: format(new Date(user.createdAt), "dd MMM yyyy, h:mm a"),
     lastActive: 0,
     name: user.fullName,
-    role: user.role,
     status: user.isActive ? "Active" : "Deactivated",
   };
 }
 
 export const filters = {
-  role: ["All", ...roleValues],
   status: ["All", "Active", "Pending invite", "Deactivated", "Locked", "Suspended"],
-};
-
-export const roleMeta: Record<UserRole, { className: string; icon: LucideIcon }> = {
-  SuperAdmin: { className: "text-emerald-300", icon: SquareUserRound },
-  AdministrationAccountant: { className: "text-amber-300", icon: UserCog },
-  ComercialCordinator: { className: "text-violet-300", icon: BriefcaseBusiness },
-  CarExpert: { className: "text-orange-300", icon: ShieldCheck },
-  Gestor: { className: "text-fuchsia-300", icon: UserRound },
-  CarSeller: { className: "text-rose-300", icon: UserRound },
-  Marketing: { className: "text-orange-300", icon: UserRound },
 };
 
 export const statusMeta: Record<UserStatus, { badgeClass: string; dotClass: string }> = {

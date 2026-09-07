@@ -24,7 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { UserRole } from "@/lib/api/types";
+import type { UserRole } from "@/lib/api/types";
+import { RolesSelector } from "@/features/work-roles/components/RolesSelector";
 import type { UserRow } from "./data";
 
 interface EditUserModalProps {
@@ -37,25 +38,17 @@ interface EditUserModalProps {
 export interface UpdateUserData {
   fullName?: string;
   username?: string;
+  workRoleId?: string | null;
   role?: UserRole;
   email?: string;
   password?: string;
   isActive?: boolean;
 }
 
-const userRoles = [
-  "SuperAdmin",
-  "AdministrationAccountant",
-  "ComercialCordinator",
-  "CarExpert",
-  "Gestor",
-  "CarSeller",
-] as const;
-
 const updateUserSchema = z.object({
   fullName: z.string().min(1, { message: "Nombre completo es requerido." }).optional(),
   username: z.string().min(1, { message: "Nombre de usuario es requerido." }).optional(),
-  role: z.string().min(1, { message: "Seleccione un rol válido." }).optional(),
+  workRoleId: z.string().min(1, { message: "Seleccione un rol válido." }).optional().or(z.literal("")),
   email: z.email({ message: "Ingrese un correo electrónico válido." }).optional().or(z.literal("")),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }).optional().or(z.literal("")),
   isActive: z.boolean().optional(),
@@ -69,7 +62,7 @@ export function EditUserModal({
 }: EditUserModalProps) {
   const [fullName, setFullName] = React.useState(user.fullName ?? "");
   const [username, setUsername] = React.useState(user.username);
-  const [role, setRole] = React.useState<UserRole | undefined>(user.role);
+  const [workRoleId, setWorkRoleId] = React.useState(user.workRoleId ?? "");
   const [email, setEmail] = React.useState(user.email ?? "");
   const [password, setPassword] = React.useState("");
   const [isActive, setIsActive] = React.useState(user.isActive);
@@ -79,7 +72,7 @@ export function EditUserModal({
     if (open) {
       setFullName(user.fullName ?? "");
       setUsername(user.username);
-      setRole(user.role);
+      setWorkRoleId(user.workRoleId ?? "");
       setEmail(user.email ?? "");
       setPassword("");
       setIsActive(user.isActive);
@@ -93,7 +86,7 @@ export function EditUserModal({
     const payload: Record<string, string | boolean | undefined> = {
       fullName: fullName || undefined,
       username: username || undefined,
-      role: role || undefined,
+      workRoleId: workRoleId || undefined,
       email: email || undefined,
       password: password || undefined,
       isActive,
@@ -122,7 +115,7 @@ export function EditUserModal({
   const handleCancel = () => {
     setFullName(user.fullName ?? "");
     setUsername(user.username);
-    setRole(user.role);
+    setWorkRoleId(user.workRoleId ?? "");
     setEmail(user.email ?? "");
     setPassword("");
     setIsActive(user.isActive);
@@ -167,22 +160,9 @@ export function EditUserModal({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="role">Rol del Sistema</Label>
-            <Select value={role} onValueChange={(value) => setRole(value as UserRole)}>
-              <SelectTrigger id="role">
-                <SelectValue placeholder="Seleccione un rol" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {userRoles.map((userRole) => (
-                    <SelectItem key={userRole} value={userRole}>
-                      {userRole}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            {formErrors.role && <p className="text-sm text-destructive">{formErrors.role}</p>}
+            <Label htmlFor="workRoleId">Rol de trabajo</Label>
+            <RolesSelector value={workRoleId} allowInactiveValue onValueChange={setWorkRoleId} />
+            {formErrors.workRoleId && <p className="text-sm text-destructive">{formErrors.workRoleId}</p>}
           </div>
 
           <div className="flex flex-col gap-2">
