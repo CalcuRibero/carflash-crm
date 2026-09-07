@@ -45,7 +45,6 @@ export async function markNotificationAsRead(id: string): Promise<void> {
   const token = getApiToken() || ""
   const res = await apiRequest(`${API_URL}/notifications/${id}/read`, {
     method: "PATCH",
-    credentials: "include",
     token: token
   });
 
