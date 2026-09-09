@@ -18,7 +18,7 @@ import { useCars } from "@/features/operations/hooks/useCars";
 import type { User } from "@/lib/api/types";
 
 const initialPayment: PaymentMethodEntry = {
-  method: "sena",
+  method: "seña",
   amount: 0,
   observations: "",
   financingMedium: "",
@@ -29,9 +29,9 @@ const initialPayment: PaymentMethodEntry = {
 };
 
 const initialFormState: OperationFormState = {
-  subtotal: "",
-  taxAmount: "",
-  totalAmount: "",
+  subtotal: 0,
+  taxAmount: 0,
+  totalAmount: 0,
   status: "PENDING",
   customer: {
     fullName: "",
@@ -42,12 +42,12 @@ const initialFormState: OperationFormState = {
   },
   carId: "",
   sellerId: "",
-  salePrice: "",
-  transferCost: "",
-  folderCost: "",
+  salePrice: 0,
+  transferCost: 0,
+  folderCost: 0,
   observations: "",
   swapModel: "",
-  swapYear: "",
+  swapYear: new Date().getFullYear(),
   swapDomain: "",
   swapObservations: "",
   payments: [initialPayment],
@@ -60,8 +60,16 @@ function formatCurrency(value: string | number) {
 }
 
 function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChange: (entry: PaymentMethodEntry) => void }) {
-  const showFinancing = entry.method === "financiacion";
-  const showPromissory = entry.method === "pagares";
+  const showFinancing = entry.method === "financing";
+  const showPromissory = entry.method === "payment_note";
+  const paymentMethodOptions: { value: PaymentMethod; label: string }[] = [
+    { value: "seña", label: "Seña" },
+    { value: "car_swap", label: "Permuta" },
+    { value: "cash", label: "Al contado" },
+    { value: "card", label: "Tarjeta" },
+    { value: "financing", label: "Financiación" },
+    { value: "payment_note", label: "Pagarés" },
+  ];
 
   return (
     <div className="rounded-2xl border border-border/70 bg-slate-50/70 p-4 shadow-sm">
@@ -74,12 +82,11 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="sena">Seña</SelectItem>
-                <SelectItem value="permuta">Permuta</SelectItem>
-                <SelectItem value="contado">Al contado</SelectItem>
-                <SelectItem value="tarjeta">Tarjeta</SelectItem>
-                <SelectItem value="financiacion">Financiación</SelectItem>
-                <SelectItem value="pagares">Pagarés</SelectItem>
+                {paymentMethodOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -191,6 +198,7 @@ export function InvoiceRegistrationForm() {
   }
 
   const handleCreateInvoice = () => {
+    console.log("Creando factura con los siguientes datos:", form);
     createInvoice(form)
   }
 
@@ -266,21 +274,21 @@ export function InvoiceRegistrationForm() {
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Precio de venta</span>
                   <div className="relative">
                     <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input value={form.salePrice} onChange={(event) => setForm((current) => ({ ...current, salePrice: event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                    <Input value={form.salePrice} onChange={(event) => setForm((current) => ({ ...current, salePrice: +event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
                   </div>
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Gasto transferencia</span>
                   <div className="relative">
                     <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input value={form.transferCost} onChange={(event) => setForm((current) => ({ ...current, transferCost: event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                    <Input value={form.transferCost} onChange={(event) => setForm((current) => ({ ...current, transferCost: +event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
                   </div>
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Armado carpeta</span>
                   <div className="relative">
                     <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input value={form.folderCost} onChange={(event) => setForm((current) => ({ ...current, folderCost: event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                    <Input value={form.folderCost} onChange={(event) => setForm((current) => ({ ...current, folderCost: +event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
                   </div>
                 </label>
               </div>
@@ -353,7 +361,7 @@ export function InvoiceRegistrationForm() {
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Año</span>
-                  <Input value={form.swapYear} onChange={(event) => setForm((current) => ({ ...current, swapYear: event.target.value }))} placeholder="2024" />
+                  <Input value={form.swapYear} onChange={(event) => setForm((current) => ({ ...current, swapYear: +event.target.value }))} placeholder="2024" />
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
@@ -410,15 +418,15 @@ export function InvoiceRegistrationForm() {
               <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between text-sm text-slate-300">
                   <span>Precio vehículo</span>
-                  <span className="font-mono">{formatCurrency(form.salePrice || "0")}</span>
+                  <span className="font-mono">{formatCurrency(form.salePrice || 0)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm text-slate-300">
                   <span>Transferencia</span>
-                  <span className="font-mono">{formatCurrency(form.transferCost || "0")}</span>
+                  <span className="font-mono">{formatCurrency(form.transferCost || 0)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm text-slate-300">
                   <span>Carpeta</span>
-                  <span className="font-mono">{formatCurrency(form.folderCost || "0")}</span>
+                  <span className="font-mono">{formatCurrency(form.folderCost || 0)}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-white/10 pt-3 text-base font-semibold text-emerald-300">
                   <span>Total</span>

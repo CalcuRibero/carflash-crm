@@ -21,7 +21,7 @@ export interface Car {
 
 export type PaymentStatus = "PENDING" | "PAID" | "PARTIALLY_PAID" | "CANCELLED" | "REFUNDED" | string;
 
-export type PaymentMethod = "sena" | "permuta" | "contado" | "tarjeta" | "financiacion" | "pagares";
+export type PaymentMethod = 'cash' | 'bank_transfer' | 'financing' | 'car_swap' | 'seña' | 'card' | 'payment_note';
 
 export interface Customer {
   id?: string;
@@ -44,49 +44,49 @@ export interface PaymentMethodEntry {
 }
 
 export interface OperationFormState {
-  subtotal: string | number;
-  taxAmount: string | number;
-  totalAmount: string | number;
+  subtotal: number;
+  taxAmount: number;
+  totalAmount: number;
   status: PaymentStatus;
   customer: Customer;
   carId: string;
   carSwapped?: Car;
   sellerId: string;
-  salePrice: string | number;
-  transferCost: string | number;
-  folderCost: string | number;
+  salePrice: number;
+  transferCost: number;
+  folderCost: number;
   observations: string;
   swapModel: string;
-  swapYear: string | number;
+  swapYear: number;
   swapDomain: string;
   swapObservations: string;
   payments: PaymentMethodEntry[];
   administrationNotes?: string;
-  paidAt?: string | Date;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
+  paidAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface OperationToPrint {
-  subtotal: string | number;
-  taxAmount: string | number;
-  totalAmount: string | number;
+  subtotal: number;
+  taxAmount: number;
+  totalAmount: number;
   status: PaymentStatus;
   customer: Customer;
   car: Car;
   carSwapped?: Car;
   seller: User;
-  salePrice: string | number;
-  transferCost: string | number;
-  folderCost: string | number;
+  salePrice: number;
+  transferCost: number;
+  folderCost: number;
   observations: string;
   swapModel: string;
-  swapYear: string | number;
+  swapYear: number;
   swapDomain: string;
   swapObservations: string;
   payments: PaymentMethodEntry[];
   administrationNotes?: string;
-  paidAt?: string | Date;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
+  paidAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
