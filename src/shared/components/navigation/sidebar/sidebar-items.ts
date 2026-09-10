@@ -57,7 +57,7 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         title: "Supervisión de ventas",
-        url: "/supervision-panel/car-seller",
+        url: "/supervision-panel/car-selling-supervisor",
         icon: BriefcaseBusiness,
         roles: ["SuperAdmin"]
       },

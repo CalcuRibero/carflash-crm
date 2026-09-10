@@ -41,30 +41,30 @@ function getPaymentBreakdown(data: OperationToPrint) {
     console.warn("No payment methods provided for invoice");
   }
 
-  const financingEntry = payments.find((payment) => payment.method === "financiacion");
-  const promissoryEntry = payments.find((payment) => payment.method === "pagares");
+  const financingEntry = payments.find((payment) => payment.method === "financing");
+  const promissoryEntry = payments.find((payment) => payment.method === "payment_note");
 
   return {
-    downPayment: getAmount("sena"),
-    tradeInValue: getAmount("permuta"),
-    cash: getAmount("contado"),
-    card: getAmount("tarjeta"),
-    financingAmount: getAmount("financiacion"),
+    downPayment: getAmount("seña"),
+    tradeInValue: getAmount("car_swap"),
+    cash: getAmount("cash"),
+    card: getAmount("card"),
+    financingAmount: getAmount("financing"),
     financing: {
       method: financingEntry?.financingMedium ?? "",
       installments: financingEntry?.quotas ?? "",
       rateType: financingEntry?.system ?? "",
     },
-    promissoryNotesAmount: getAmount("pagares"),
+    promissoryNotesAmount: getAmount("payment_note"),
     promissoryNotes: {
       quantity: promissoryEntry?.promissoryCount ?? "",
       amountEach: promissoryEntry?.promissoryAmount ?? "",
     },
     observations: {
-      downPayment: payments.find((payment) => payment.method === "sena")?.observations ?? "",
-      tradeInValue: payments.find((payment) => payment.method === "permuta")?.observations ?? "",
-      cash: payments.find((payment) => payment.method === "contado")?.observations ?? "",
-      card: payments.find((payment) => payment.method === "tarjeta")?.observations ?? "",
+      downPayment: payments.find((payment) => payment.method === "seña")?.observations ?? "",
+      tradeInValue: payments.find((payment) => payment.method === "car_swap")?.observations ?? "",
+      cash: payments.find((payment) => payment.method === "cash")?.observations ?? "",
+      card: payments.find((payment) => payment.method === "card")?.observations ?? "",
       financing: financingEntry?.observations ?? "",
       promissoryNotes: promissoryEntry?.observations ?? "",
     },
