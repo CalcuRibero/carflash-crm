@@ -2,11 +2,11 @@
 
 import * as React from "react";
 
+import { updateTicket } from "@/lib/api/tickets";
 import type { CreateTicketRequest, Ticket, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
 
 import { updateTicketService, updateTicketStatusService } from "../services/ticketsService";
-import type {  UpdateTicketStatusController } from "../types";
-import { updateTicket } from "@/lib/api/tickets";
+import type { UpdateTicketStatusController } from "../types";
 
 export function useUpdateTicketStatus(): UpdateTicketStatusController {
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -18,7 +18,7 @@ export function useUpdateTicketStatus(): UpdateTicketStatusController {
     setErrorMessage(null);
 
     try {
-      const ticket = await updateTicketStatusService(id, status );
+      const ticket = await updateTicketStatusService(id, status);
       setUpdatedTicket(ticket);
       return ticket;
     } catch (error) {

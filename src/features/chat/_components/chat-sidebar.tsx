@@ -1,7 +1,8 @@
 "use client";
 
-import { EllipsisVertical, LogOut, Settings, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+import { EllipsisVertical, LogOut, Settings, UserRound } from "lucide-react";
 import { siFacebook, siInstagram, siWhatsapp } from "simple-icons";
 
 import { SimpleIcon } from "@/components/simple-icon";
@@ -15,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { clearAuthToken } from "@/features/auth/actions/auth-actions";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { clearAuthToken } from "@/features/auth/actions/auth-actions";
 import { getInitials } from "@/lib/utils";
 
 // import { channelItems, currentUser, navItems, viewItems } from "./data";

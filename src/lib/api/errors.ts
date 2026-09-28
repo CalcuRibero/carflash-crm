@@ -9,4 +9,3 @@ export class ApiError extends Error {
     this.payload = payload;
   }
 }
-

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import type { RecurrentTicket } from "../types";
 import { RecurrentTicketsService } from "../services/recurrentTicketsService";
+import type { RecurrentTicket } from "../types";
 
 export function useRecurrentTickets() {
   const [tickets, setTickets] = useState<RecurrentTicket[]>([]);

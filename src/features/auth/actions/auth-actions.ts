@@ -14,7 +14,7 @@ export async function setAuthToken(token: string) {
     maxAge: 60 * 60 * 24 * 30, // 30 days
     path: "/",
   });
-  
+
   // Set token creation timestamp for expiration checking
   cookieStore.set(TOKEN_TIMESTAMP_COOKIE, Date.now().toString(), {
     httpOnly: true,
@@ -34,7 +34,7 @@ export async function clearAuthToken() {
     maxAge: 0,
     path: "/",
   });
-  
+
   // Also delete the timestamp cookie
   cookieStore.set(TOKEN_TIMESTAMP_COOKIE, "", {
     httpOnly: true,

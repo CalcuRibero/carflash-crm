@@ -1,4 +1,3 @@
-
 export function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return "-";
   return new Date(dateString).toLocaleDateString("es-ES", {
@@ -9,10 +8,10 @@ export function formatDate(dateString: string | null | undefined): string {
 }
 
 export function isDateInThisWeek(targetDate: Date | null) {
-  if(!targetDate) return false
-  
+  if (!targetDate) return false;
+
   const today = new Date();
-  
+
   // 1. Calculate Sunday (start of the week) at 00:00:00
   const startOfWeek = new Date(today);
   startOfWeek.setDate(today.getDate() - today.getDay());

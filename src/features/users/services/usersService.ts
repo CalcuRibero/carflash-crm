@@ -1,5 +1,5 @@
-import { apiRequest, getApiToken } from "@/shared/utils/apiClient";
 import type { User, UserRole } from "@/lib/api/types";
+import { apiRequest, getApiToken } from "@/shared/utils/apiClient";
 
 export type CreateUserRequest = {
   fullName: string;

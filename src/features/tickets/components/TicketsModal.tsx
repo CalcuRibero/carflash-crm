@@ -1,27 +1,25 @@
 "use client";
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
+import { useUsers } from "@/features/users/hooks/useUsers";
+import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
 import { Modal } from "@/shared/components/Modal";
 
-import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
-
-import { PRIORITY_OPTIONS, STATUS_OPTIONS, type SelectOption, type TicketsModalFormValues, type TicketsModalProps } from "../types";
-import { useUsers } from "@/features/users/hooks/useUsers";
-import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
-import { useEffect, useState } from "react";
+import {
+  PRIORITY_OPTIONS,
+  type SelectOption,
+  STATUS_OPTIONS,
+  type TicketsModalFormValues,
+  type TicketsModalProps,
+} from "../types";
 // import { useNotificationsTickets } from "@/shared/hooks/useNotifications";
-
 
 export const INITIAL_TICKETS_MODAL_FORM: TicketsModalFormValues = {
   assignedTo: "",
@@ -55,17 +53,24 @@ function withTime(dateValue: string, timeValue: string): string | null {
   return `${dateValue}T${hours}:${minutes}`;
 }
 
-export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting = false, onClose, onSubmit }: TicketsModalProps) {
+export function TicketsModal({
+  currentTicket,
+  errorMessage,
+  isOpen,
+  isSubmitting = false,
+  onClose,
+  onSubmit,
+}: TicketsModalProps) {
   const [formValues, setFormValues] = useState<TicketsModalFormValues>(INITIAL_TICKETS_MODAL_FORM);
   const [dueTime, setDueTime] = useState("00:00");
 
-  const {users} = useUsers();
+  const { users } = useUsers();
   // const triggerNotification = useNotificationsTickets
 
   const isEditMode = !!currentTicket;
 
-  console.log(currentTicket)
-  
+  console.log(currentTicket);
+
   useEffect(() => {
     if (currentTicket) {
       setFormValues({
@@ -114,9 +119,9 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
       });
       // triggerNotification(
       //   {
-      //     assignedTo: formValues.assignedTo, 
-      //     type: 'ticket', 
-      //     title: formValues.title 
+      //     assignedTo: formValues.assignedTo,
+      //     type: 'ticket',
+      //     title: formValues.title
       //   }
       // )
     } catch {
@@ -135,7 +140,13 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
       }}
       primaryAction={{
         disabled: !canSubmit || isSubmitting,
-        label: isSubmitting ? (isEditMode ? "Actualizando..." : "Creando...") : (isEditMode ? "Actualizar ticket" : "Crear ticket"),
+        label: isSubmitting
+          ? isEditMode
+            ? "Actualizando..."
+            : "Creando..."
+          : isEditMode
+            ? "Actualizar ticket"
+            : "Crear ticket",
         onClick: handleSubmit,
       }}
       secondaryAction={{
@@ -175,10 +186,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="grid gap-1.5">
             <Label>Estado</Label>
-            <Select
-              value={formValues.status}
-              onValueChange={(value) => updateForm("status", value as TicketStatus)}
-            >
+            <Select value={formValues.status} onValueChange={(value) => updateForm("status", value as TicketStatus)}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
@@ -241,7 +249,7 @@ export function TicketsModal({ currentTicket, errorMessage, isOpen, isSubmitting
               <SelectContent>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id.toString()}>
-                    {user.fullName ||user.username}
+                    {user.fullName || user.username}
                   </SelectItem>
                 ))}
               </SelectContent>

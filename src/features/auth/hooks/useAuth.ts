@@ -2,8 +2,8 @@
 
 import * as React from "react";
 
-import { login, getProfile, logout } from "../services/authService";
-import type { LoginRequest, LoginResponse, AuthProfile } from "../types";
+import { getProfile, login, logout } from "../services/authService";
+import type { AuthProfile, LoginRequest, LoginResponse } from "../types";
 
 export function useAuth() {
   const [profile, setProfile] = React.useState<AuthProfile | null>(null);

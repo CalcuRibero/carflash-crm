@@ -1,21 +1,31 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BadgeDollarSign, CarFront, CircleDollarSign, FileText, Plus, Printer, Repeat2, Save, UserRound } from "lucide-react";
+
+import {
+  BadgeDollarSign,
+  CarFront,
+  CircleDollarSign,
+  FileText,
+  Plus,
+  Printer,
+  Repeat2,
+  Save,
+  UserRound,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { VehicleSelector } from "@/features/operations/components/VehicleSelector";
-import type { OperationFormState, PaymentMethod, PaymentMethodEntry, Car } from "@/features/operations/types";
-import { printInvoice } from "@/lib/printer/printer";
-import { transformFormToPrint } from "@/lib/printer/invoice-pdf.template";
-import { SellerSelector } from "./SellersSelector";
 import { useCreateInvoices } from "@/features/invoice/hooks/useCreateInvoice";
-import { useCars } from "@/features/operations/hooks/useCars";
+import type { Car, OperationFormState, PaymentMethod, PaymentMethodEntry } from "@/features/operations/types";
 import type { User } from "@/lib/api/types";
+import { buildCarFromForm, transformFormToPrint } from "@/lib/printer/invoice-pdf.template";
+import { printInvoice } from "@/lib/printer/printer";
+
+import { SellerSelector } from "./SellersSelector";
 
 const initialPayment: PaymentMethodEntry = {
   method: "seña",
@@ -40,7 +50,6 @@ const initialFormState: OperationFormState = {
     phone: "",
     email: "",
   },
-  carId: "",
   sellerId: "",
   salePrice: 0,
   transferCost: 0,
@@ -51,6 +60,10 @@ const initialFormState: OperationFormState = {
   swapDomain: "",
   swapObservations: "",
   payments: [initialPayment],
+  carModel: "",
+  carBrand: "",
+  carDomain: "",
+  carYear: "",
 };
 
 function formatCurrency(value: string | number) {
@@ -59,7 +72,41 @@ function formatCurrency(value: string | number) {
   return `$${amount.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChange: (entry: PaymentMethodEntry) => void }) {
+function validateVehicleData(form: OperationFormState): boolean {
+  const basicValidation = !!(
+    form.carBrand?.trim() &&
+    form.carModel?.trim() &&
+    form.carDomain?.trim() &&
+    form.carYear?.trim()
+  );
+
+  if (!basicValidation) return false;
+
+  // Validaciones opcionales de formato
+  const domainValid = validateDomain(form.carDomain);
+  const yearValid = validateYear(form.carYear);
+
+  return domainValid && yearValid;
+}
+
+function validateDomain(domain: string): boolean {
+  const argentinePlatePattern = /^[A-Z]{2}\d{3}[A-Z]{2}$|^[A-Z]{3}\d{3}$/;
+  return argentinePlatePattern.test(domain.toUpperCase());
+}
+
+function validateYear(year: string): boolean {
+  const yearNum = parseInt(year);
+  const currentYear = new Date().getFullYear();
+  return yearNum >= 1900 && yearNum <= currentYear + 1;
+}
+
+function PaymentFields({
+  entry,
+  onChange,
+}: {
+  entry: PaymentMethodEntry;
+  onChange: (entry: PaymentMethodEntry) => void;
+}) {
   const showFinancing = entry.method === "financing";
   const showPromissory = entry.method === "payment_note";
   const paymentMethodOptions: { value: PaymentMethod; label: string }[] = [
@@ -76,7 +123,10 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
       <div className="grid gap-4 md:grid-cols-[1.1fr_0.7fr_1.2fr]">
         <label className="space-y-2 text-sm">
           <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Método</span>
-          <Select value={entry.method} onValueChange={(value) => onChange({ ...entry, method: value as PaymentMethod })}>
+          <Select
+            value={entry.method}
+            onValueChange={(value) => onChange({ ...entry, method: value as PaymentMethod })}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Seleccione" />
             </SelectTrigger>
@@ -94,13 +144,25 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
         <label className="space-y-2 text-sm">
           <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Monto</span>
           <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-            <Input value={entry.amount} onChange={(event) => onChange({ ...entry, amount: Number(event.target.value) })} placeholder="0.00" className="pl-8" type="number" />
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              $
+            </span>
+            <Input
+              value={entry.amount}
+              onChange={(event) => onChange({ ...entry, amount: Number(event.target.value) })}
+              placeholder="0.00"
+              className="pl-8"
+              type="number"
+            />
           </div>
         </label>
         <label className="space-y-2 text-sm md:col-span-1">
           <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Observaciones</span>
-          <Input value={entry.observations} onChange={(event) => onChange({ ...entry, observations: event.target.value })} placeholder="Notas adicionales" />
+          <Input
+            value={entry.observations}
+            onChange={(event) => onChange({ ...entry, observations: event.target.value })}
+            placeholder="Notas adicionales"
+          />
         </label>
       </div>
 
@@ -109,16 +171,30 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
           {showFinancing && (
             <>
               <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Medio de financiación</span>
-                <Input value={entry.financingMedium} onChange={(event) => onChange({ ...entry, financingMedium: event.target.value })} placeholder="Banco / Financiera" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Medio de financiación
+                </span>
+                <Input
+                  value={entry.financingMedium}
+                  onChange={(event) => onChange({ ...entry, financingMedium: event.target.value })}
+                  placeholder="Banco / Financiera"
+                />
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Cuotas</span>
-                <Input value={entry.quotas} onChange={(event) => onChange({ ...entry, quotas: Number(event.target.value) })} placeholder="12, 24, 36" type="number" />
+                <Input
+                  value={entry.quotas}
+                  onChange={(event) => onChange({ ...entry, quotas: Number(event.target.value) })}
+                  placeholder="12, 24, 36"
+                  type="number"
+                />
               </label>
               <label className="space-y-2 text-sm">
                 <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Sistema</span>
-                <Select value={entry.system} onValueChange={(value) => onChange({ ...entry, system: value as "UVA" | "Fija" })}>
+                <Select
+                  value={entry.system}
+                  onValueChange={(value) => onChange({ ...entry, system: value as "UVA" | "Fija" })}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
@@ -135,14 +211,31 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
           {showPromissory && (
             <>
               <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Cantidad de pagarés</span>
-                <Input value={entry.promissoryCount} onChange={(event) => onChange({ ...entry, promissoryCount: Number(event.target.value) })} placeholder="1, 2, 3" type="number" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Cantidad de pagarés
+                </span>
+                <Input
+                  value={entry.promissoryCount}
+                  onChange={(event) => onChange({ ...entry, promissoryCount: Number(event.target.value) })}
+                  placeholder="1, 2, 3"
+                  type="number"
+                />
               </label>
               <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Monto por pagaré</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Monto por pagaré
+                </span>
                 <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                  <Input value={entry.promissoryAmount} onChange={(event) => onChange({ ...entry, promissoryAmount: Number(event.target.value) })} placeholder="0.00" className="pl-8" type="number" />
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    $
+                  </span>
+                  <Input
+                    value={entry.promissoryAmount}
+                    onChange={(event) => onChange({ ...entry, promissoryAmount: Number(event.target.value) })}
+                    placeholder="0.00"
+                    className="pl-8"
+                    type="number"
+                  />
                 </div>
               </label>
             </>
@@ -155,11 +248,9 @@ function PaymentFields({ entry, onChange }: { entry: PaymentMethodEntry; onChang
 
 export function InvoiceRegistrationForm() {
   const [form, setForm] = useState<OperationFormState>(initialFormState);
-  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [selectedSeller, setSelectedSeller] = useState<User | null>(null);
-  const { cars } = useCars();
 
-  const {createInvoice, isLoading } = useCreateInvoices()
+  const { createInvoice, isLoading } = useCreateInvoices();
 
   const totals = useMemo(() => {
     const price = Number.parseFloat(String(form.salePrice)) || 0;
@@ -174,33 +265,44 @@ export function InvoiceRegistrationForm() {
   }, [form.folderCost, form.salePrice, form.transferCost]);
 
   const addPayment = () => {
-    setForm((current) => ({ ...current, payments: [...current.payments, { ...initialPayment, id: crypto.randomUUID() }] }));
+    setForm((current) => ({
+      ...current,
+      payments: [...current.payments, { ...initialPayment, id: crypto.randomUUID() }],
+    }));
   };
 
   const handlePrintInvoice = () => {
-    if (!selectedCar) {
-      alert("Por favor seleccione un vehículo antes de imprimir la factura");
-      return;
-    }
+    // Validar campos de vehículo
+    // if (!validateVehicleData(form)) {
+    //   alert("Por favor complete todos los datos del vehículo antes de imprimir la factura");
+    //   return;
+    // }
     if (!selectedSeller) {
       alert("Por favor seleccione un vendedor antes de imprimir la factura");
       return;
     }
 
     try {
-      const printData = transformFormToPrint(form, selectedCar, selectedSeller);
+      const carFromInputs = buildCarFromForm(form);
+      const printData = transformFormToPrint(form, carFromInputs, selectedSeller);
       printInvoice(printData);
       console.log("Imprimiendo factura con los siguientes datos:", printData);
     } catch (error) {
       console.error("Error al generar factura:", error);
       alert("Error al generar la factura. Por favor verifique que todos los datos requeridos estén completos.");
     }
-  }
+  };
 
   const handleCreateInvoice = () => {
+    // Validar campos de vehículo antes de crear
+    // if (!validateVehicleData(form)) {
+    //   alert("Por favor complete todos los datos del vehículo antes de guardar la factura");
+    //   return;
+    // }
+
     console.log("Creando factura con los siguientes datos:", form);
-    createInvoice(form)
-  }
+    createInvoice(form);
+  };
 
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
     setForm((current) => ({
@@ -214,8 +316,12 @@ export function InvoiceRegistrationForm() {
       <div className="flex flex-col gap-4 border-b border-border/80 pb-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/80">Facturación</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Registro de Factura <span className="text-primary">CarFlash</span></h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">Captura los datos del vehículo, cliente, permuta y los métodos de pago para consolidar la liquidación.</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Registro de Factura <span className="text-primary">CarFlash</span>
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
+            Captura los datos del vehículo, cliente, permuta y los métodos de pago para consolidar la liquidación.
+          </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Button variant="outline" size="sm" className="gap-2" onClick={handlePrintInvoice}>
@@ -240,55 +346,122 @@ export function InvoiceRegistrationForm() {
                   </div>
                   <div>
                     <CardTitle className="text-xl">Detalles del vehículo</CardTitle>
-                    <p className="text-sm text-muted-foreground">Información básica de la operación y asignación comercial.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Información básica de la operación y asignación comercial.
+                    </p>
                   </div>
                 </div>
-                <span className="rounded-full border border-border/70 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Ref: CF-2024-001</span>
+                <span className="rounded-full border border-border/70 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Ref: CF-2024-001
+                </span>
               </div>
             </CardHeader>
             <CardContent className="space-y-6 p-6">
               <div className="gap-6 flex flex-col">
-                <label className="text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vehículo</span>
-                  <VehicleSelector 
-                    value={form.carId ?? ""} 
-                    onValueChange={(vehicleId, vehicle) => {
-                      setSelectedCar(vehicle || null);
-                      setForm((current) => ({ ...current, carId: vehicleId }));
-                    }} 
-                  />
-                </label>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <label className="space-y-2 text-sm">
+                    <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                      Marca
+                    </span>
+                    <Input
+                      value={form.carBrand}
+                      onChange={(event) => setForm((current) => ({ ...current, carBrand: event.target.value }))}
+                      placeholder="Ej: Toyota, Ford, Volkswagen"
+                    />
+                  </label>
+                  <label className="space-y-2 text-sm">
+                    <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                      Modelo
+                    </span>
+                    <Input
+                      value={form.carModel}
+                      onChange={(event) => setForm((current) => ({ ...current, carModel: event.target.value }))}
+                      placeholder="Ej: Corolla, Fiesta, Gol"
+                    />
+                  </label>
+                  <label className="space-y-2 text-sm">
+                    <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                      Dominio
+                    </span>
+                    <Input
+                      value={form.carDomain}
+                      onChange={(event) => setForm((current) => ({ ...current, carDomain: event.target.value }))}
+                      placeholder="Ej: AA123BB"
+                    />
+                  </label>
+                  <label className="space-y-2 text-sm">
+                    <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Año</span>
+                    <Input
+                      value={form.carYear}
+                      onChange={(event) => setForm((current) => ({ ...current, carYear: event.target.value }))}
+                      placeholder="Ej: 2024"
+                      type="number"
+                    />
+                  </label>
+                </div>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Vendedor asignado</span>
-                  <SellerSelector 
-                    value={form.sellerId} 
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Vendedor asignado
+                  </span>
+                  <SellerSelector
+                    value={form.sellerId}
                     onValueChange={(sellerId, seller) => {
                       setSelectedSeller(seller || null);
                       setForm((current) => ({ ...current, sellerId: sellerId }));
-                    }} 
+                    }}
                   />
                 </label>
               </div>
               <div className="grid gap-4 rounded-2xl border border-border/70 bg-slate-50/70 p-4 md:grid-cols-3">
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Precio de venta</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Precio de venta
+                  </span>
                   <div className="relative">
-                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input value={form.salePrice} onChange={(event) => setForm((current) => ({ ...current, salePrice: +event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      $
+                    </span>
+                    <Input
+                      value={form.salePrice}
+                      onChange={(event) => setForm((current) => ({ ...current, salePrice: +event.target.value }))}
+                      placeholder="0.00"
+                      className="pl-8"
+                      type="number"
+                    />
                   </div>
                 </label>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Gasto transferencia</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Gasto transferencia
+                  </span>
                   <div className="relative">
-                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input value={form.transferCost} onChange={(event) => setForm((current) => ({ ...current, transferCost: +event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      $
+                    </span>
+                    <Input
+                      value={form.transferCost}
+                      onChange={(event) => setForm((current) => ({ ...current, transferCost: +event.target.value }))}
+                      placeholder="0.00"
+                      className="pl-8"
+                      type="number"
+                    />
                   </div>
                 </label>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Armado carpeta</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Armado carpeta
+                  </span>
                   <div className="relative">
-                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input value={form.folderCost} onChange={(event) => setForm((current) => ({ ...current, folderCost: +event.target.value }))} placeholder="0.00" className="pl-8" type="number" />
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      $
+                    </span>
+                    <Input
+                      value={form.folderCost}
+                      onChange={(event) => setForm((current) => ({ ...current, folderCost: +event.target.value }))}
+                      placeholder="0.00"
+                      className="pl-8"
+                      type="number"
+                    />
                   </div>
                 </label>
               </div>
@@ -310,31 +483,93 @@ export function InvoiceRegistrationForm() {
             <CardContent className="space-y-5 p-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Nombre completo</span>
-                  <Input value={form.customer.fullName} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, fullName: event.target.value } }))} placeholder="Nombre y apellido" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Nombre completo
+                  </span>
+                  <Input
+                    value={form.customer.fullName}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        customer: { ...current.customer, fullName: event.target.value },
+                      }))
+                    }
+                    placeholder="Nombre y apellido"
+                  />
                 </label>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">CUIL / DNI</span>
-                  <Input value={form.customer.document} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, document: event.target.value } }))} placeholder="20-12345678-9" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    CUIL / DNI
+                  </span>
+                  <Input
+                    value={form.customer.document}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        customer: { ...current.customer, document: event.target.value },
+                      }))
+                    }
+                    placeholder="20-12345678-9"
+                  />
                 </label>
               </div>
               <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Domicilio</span>
-                <Input value={form.customer.address} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, address: event.target.value } }))} placeholder="Calle y número" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Domicilio
+                </span>
+                <Input
+                  value={form.customer.address}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      customer: { ...current.customer, address: event.target.value },
+                    }))
+                  }
+                  placeholder="Calle y número"
+                />
               </label>
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Celular</span>
-                  <Input value={form.customer.phone} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, phone: event.target.value } }))} placeholder="11 1234 5678" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Celular
+                  </span>
+                  <Input
+                    value={form.customer.phone}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        customer: { ...current.customer, phone: event.target.value },
+                      }))
+                    }
+                    placeholder="11 1234 5678"
+                  />
                 </label>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">E-mail</span>
-                  <Input value={form.customer.email} onChange={(event) => setForm((current) => ({ ...current, customer: { ...current.customer, email: event.target.value } }))} placeholder="cliente@correo.com" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    E-mail
+                  </span>
+                  <Input
+                    value={form.customer.email}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        customer: { ...current.customer, email: event.target.value },
+                      }))
+                    }
+                    placeholder="cliente@correo.com"
+                  />
                 </label>
               </div>
               <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Observaciones</span>
-                <Textarea value={form.observations} onChange={(event) => setForm((current) => ({ ...current, observations: event.target.value }))} rows={3} placeholder="Comentarios sobre la operación o entregables" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Observaciones
+                </span>
+                <Textarea
+                  value={form.observations}
+                  onChange={(event) => setForm((current) => ({ ...current, observations: event.target.value }))}
+                  rows={3}
+                  placeholder="Comentarios sobre la operación o entregables"
+                />
               </label>
             </CardContent>
           </Card>
@@ -348,29 +583,54 @@ export function InvoiceRegistrationForm() {
                   </div>
                   <div>
                     <CardTitle className="text-xl">Datos permuta</CardTitle>
-                    <p className="text-sm text-muted-foreground">Información complementaria de la operación de intercambio.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Información complementaria de la operación de intercambio.
+                    </p>
                   </div>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-5 p-6">
               <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Modelo / versión</span>
-                <Input value={form.swapModel} onChange={(event) => setForm((current) => ({ ...current, swapModel: event.target.value }))} placeholder="Modelo de la unidad de cambio" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Modelo / versión
+                </span>
+                <Input
+                  value={form.swapModel}
+                  onChange={(event) => setForm((current) => ({ ...current, swapModel: event.target.value }))}
+                  placeholder="Modelo de la unidad de cambio"
+                />
               </label>
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm">
                   <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Año</span>
-                  <Input value={form.swapYear} onChange={(event) => setForm((current) => ({ ...current, swapYear: +event.target.value }))} placeholder="2024" />
+                  <Input
+                    value={form.swapYear}
+                    onChange={(event) => setForm((current) => ({ ...current, swapYear: +event.target.value }))}
+                    placeholder="2024"
+                  />
                 </label>
                 <label className="space-y-2 text-sm">
-                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Dominio</span>
-                  <Input value={form.swapDomain} onChange={(event) => setForm((current) => ({ ...current, swapDomain: event.target.value }))} placeholder="ABC-456" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Dominio
+                  </span>
+                  <Input
+                    value={form.swapDomain}
+                    onChange={(event) => setForm((current) => ({ ...current, swapDomain: event.target.value }))}
+                    placeholder="ABC-456"
+                  />
                 </label>
               </div>
               <label className="space-y-2 text-sm">
-                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Observaciones estado</span>
-                <Textarea value={form.swapObservations} onChange={(event) => setForm((current) => ({ ...current, swapObservations: event.target.value }))} rows={3} placeholder="Detalles del estado del vehículo de cambio" />
+                <span className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  Observaciones estado
+                </span>
+                <Textarea
+                  value={form.swapObservations}
+                  onChange={(event) => setForm((current) => ({ ...current, swapObservations: event.target.value }))}
+                  rows={3}
+                  placeholder="Detalles del estado del vehículo de cambio"
+                />
               </label>
             </CardContent>
           </Card>
@@ -384,7 +644,9 @@ export function InvoiceRegistrationForm() {
                   </div>
                   <div>
                     <CardTitle className="text-xl">Formas de pago</CardTitle>
-                    <p className="text-sm text-muted-foreground">Declara los métodos con sus observaciones y datos dinámicos.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Declara los métodos con sus observaciones y datos dinámicos.
+                    </p>
                   </div>
                 </div>
                 <Button type="button" variant="outline" size="sm" className="gap-2" onClick={addPayment}>
@@ -439,7 +701,10 @@ export function InvoiceRegistrationForm() {
                   <FileText className="size-4" />
                   Validación de fondos
                 </div>
-                <p className="mt-2 leading-6 text-emerald-50/80">El total a cobrar debe quedar cubierto por los métodos de pago declarados. Los montos de permuta quedan sujetos a peritaje técnico.</p>
+                <p className="mt-2 leading-6 text-emerald-50/80">
+                  El total a cobrar debe quedar cubierto por los métodos de pago declarados. Los montos de permuta
+                  quedan sujetos a peritaje técnico.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -452,18 +717,23 @@ export function InvoiceRegistrationForm() {
                 </div>
                 <div>
                   <CardTitle className="text-xl">Checklist operativo</CardTitle>
-                  <p className="text-sm text-muted-foreground">Registra los puntos relevantes antes de cerrar la operación.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Registra los puntos relevantes antes de cerrar la operación.
+                  </p>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-3 p-6">
               {[
                 "Documentación completa del cliente",
-                "Validación de dominio y precio", 
+                "Validación de dominio y precio",
                 "Permuta inspeccionada",
                 "Métodos de pago confirmados",
               ].map((item) => (
-                <div key={item} className="flex items-center gap-3 rounded-2xl border border-border/70 bg-slate-50/70 px-3 py-3 text-sm">
+                <div
+                  key={item}
+                  className="flex items-center gap-3 rounded-2xl border border-border/70 bg-slate-50/70 px-3 py-3 text-sm"
+                >
                   <div className="size-2.5 rounded-full bg-primary" />
                   <span>{item}</span>
                 </div>

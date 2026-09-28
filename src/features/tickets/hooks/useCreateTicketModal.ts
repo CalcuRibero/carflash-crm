@@ -7,7 +7,6 @@ import type { CreateTicketRequest, Ticket } from "@/lib/api/types";
 import { createTicketService } from "../services/ticketsService";
 import type { CreateTicketModalController } from "../types";
 
-
 export function useCreateTicketModal(): CreateTicketModalController {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);

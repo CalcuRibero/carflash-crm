@@ -2,16 +2,17 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { RecurrenceInterval, TicketStatus, TicketPriority, TicketCategory, type RecurrentTicket, TicketCategoryLabel } from "../types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAuth } from "@/stores/auth/auth-provider";
+
+import {
+  RecurrenceInterval,
+  type RecurrentTicket,
+  type TicketCategory,
+  TicketCategoryLabel,
+  TicketPriority,
+  TicketStatus,
+} from "../types";
 
 interface RecurrentTicketsTableProps {
   tickets: RecurrentTicket[];
@@ -49,9 +50,9 @@ function getIntervalLabel(interval: RecurrenceInterval): string {
 }
 
 function formatDate(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
   const year = dateObj.getFullYear();
-  const month = dateObj.toLocaleString('en-US', { month: 'short' });
+  const month = dateObj.toLocaleString("en-US", { month: "short" });
   const day = dateObj.getDate();
   return `${day} ${month} ${year}`;
 }
@@ -78,11 +79,7 @@ function getCategoryLabel(category?: TicketCategory): string {
   return categoryLabel || category;
 }
 
-export function RecurrentTicketsTable({
-  tickets,
-  onEdit,
-  onDelete,
-}: RecurrentTicketsTableProps) {
+export function RecurrentTicketsTable({ tickets, onEdit, onDelete }: RecurrentTicketsTableProps) {
   if (tickets.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center rounded-lg border border-dashed">
@@ -91,8 +88,8 @@ export function RecurrentTicketsTable({
     );
   }
 
-  const user = useAuth().user
-  const isSuperAdmin = user?.role === "SuperAdmin"
+  const user = useAuth().user;
+  const isSuperAdmin = user?.role === "SuperAdmin";
 
   return (
     <div className="rounded-lg border bg-card">
@@ -115,9 +112,7 @@ export function RecurrentTicketsTable({
               <TableCell className="font-medium">{ticket.title}</TableCell>
               <TableCell>{getStatusLabel(ticket.status)}</TableCell>
               <TableCell>
-                <Badge className={getPriorityColor(ticket.priority)}>
-                  {ticket.priority?.toUpperCase() || "-"}
-                </Badge>
+                <Badge className={getPriorityColor(ticket.priority)}>{ticket.priority?.toUpperCase() || "-"}</Badge>
               </TableCell>
               <TableCell>{getCategoryLabel(ticket.category)}</TableCell>
               <TableCell>{getIntervalLabel(ticket.interval)}</TableCell>
@@ -125,29 +120,24 @@ export function RecurrentTicketsTable({
               <TableCell>{formatDate(ticket.first_run_at)}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  { isSuperAdmin &&
-                    <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(ticket)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-pencil"
-                    >
-                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                    </svg>
-                  </Button>
-                  }
+                  {isSuperAdmin && (
+                    <Button variant="ghost" size="sm" onClick={() => onEdit(ticket)} className="h-8 w-8 p-0">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-pencil"
+                      >
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                      </svg>
+                    </Button>
+                  )}
                   <Button
                     variant="ghost"
                     size="sm"

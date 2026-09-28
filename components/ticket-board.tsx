@@ -13,12 +13,12 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { ListFilter, Plus, Kanban } from "lucide-react";
+import { Kanban, ListFilter, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/page-header";
+import { cn } from "@/lib/utils";
 
 import { TicketCard, type TicketCardItem } from "./ticket-card";
 
@@ -28,7 +28,6 @@ export interface TicketColumn {
   description: string;
   tickets: TicketCardItem[];
 }
-
 
 export function TicketBoard() {
   const [columns, setColumns] = useState([] as TicketColumn[]);
@@ -119,13 +118,13 @@ export function TicketBoard() {
 
   return (
     <div className="space-y-4" data-hide-header="true">
-      <PageHeader 
+      <PageHeader
         icon={Kanban}
         category="Operaciones"
         title="Tablero de Tickets"
         action={{
           label: "Nuevo ticket",
-          icon: Plus
+          icon: Plus,
         }}
       />
 
@@ -153,7 +152,10 @@ export function TicketBoard() {
                   <span>Backlog</span>
                   <ListFilter className="h-3.5 w-3.5" />
                 </div>
-                <SortableContext items={column.tickets.map((ticket) => ticket.id)} strategy={verticalListSortingStrategy}>
+                <SortableContext
+                  items={column.tickets.map((ticket) => ticket.id)}
+                  strategy={verticalListSortingStrategy}
+                >
                   <div className="space-y-3">
                     {column.tickets.map((ticket) => (
                       <TicketCard key={ticket.id} ticket={ticket} columnId={column.id} />

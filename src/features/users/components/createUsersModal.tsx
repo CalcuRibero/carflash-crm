@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+
 import { Lock, Mail, User } from "lucide-react";
 import { z } from "zod";
 
@@ -15,17 +16,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { UserRole } from "@/lib/api/types";
 import { TicketCategoryLabel } from "@/features/recurrent-tickets/types";
+import type { UserRole } from "@/lib/api/types";
 
 interface CreateUsersModalProps {
   open: boolean;
@@ -50,7 +44,7 @@ const userRoles = [
   "Gestor",
   "CarSeller",
   "CarSellingSupervisor",
-  "Marketing"
+  "Marketing",
 ] as const;
 
 const createUserSchema = z.object({
@@ -62,11 +56,7 @@ const createUserSchema = z.object({
   isActive: z.boolean(),
 });
 
-export function CreateUsersModal({
-  open,
-  onOpenChange,
-  onCreateUser,
-}: CreateUsersModalProps) {
+export function CreateUsersModal({ open, onOpenChange, onCreateUser }: CreateUsersModalProps) {
   const [fullName, setFullName] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [role, setRole] = React.useState<UserRole | undefined>(undefined);
@@ -214,18 +204,12 @@ export function CreateUsersModal({
           </div>
 
           <div className="flex items-center gap-3">
-            <Switch
-              id="isActive"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
+            <Switch id="isActive" checked={isActive} onCheckedChange={setIsActive} />
             <div className="flex flex-col gap-0.5">
               <Label htmlFor="isActive" className="font-medium">
                 Estado de Usuario Activo
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Permite el acceso inmediato tras la creación.
-              </p>
+              <p className="text-xs text-muted-foreground">Permite el acceso inmediato tras la creación.</p>
             </div>
           </div>
 

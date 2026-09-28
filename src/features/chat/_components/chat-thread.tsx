@@ -32,11 +32,10 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn, getInitials } from "@/lib/utils";
-import { Contact, Message } from "../types";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { cn, getInitials } from "@/lib/utils";
 
-
+import type { Contact, Message } from "../types";
 
 interface ChatThreadProps {
   contact: Contact;

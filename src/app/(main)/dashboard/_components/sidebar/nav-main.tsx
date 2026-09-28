@@ -25,8 +25,8 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import type { UserRole } from "@/lib/api/types";
 import type { NavGroup, NavMainItem } from "@/shared/components/navigation/sidebar/sidebar-items";
-import { UserRole } from "@/lib/api/types";
 
 interface NavMainProps {
   readonly items: readonly NavGroup[];
@@ -182,44 +182,49 @@ export function NavMain({ items, currentRole }: NavMainProps) {
         }
 
         return (
-        <SidebarGroup key={group.id}>
-          {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
-          <SidebarGroupContent className="flex flex-col gap-2">
-            <SidebarMenu>
-              {group.items.map((item) => {
-                if (item.roles && !item.roles.includes(currentRole)) {
-                  return null; // Skip rendering this item if the current role is not allowed
-                }
-                if (state === "collapsed" && !isMobile) {
-                  // If no subItems, just render the button as a link
-                  if (!item.subItems) {
-                    return (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton
-                          asChild
-                          aria-disabled={item.comingSoon}
-                          tooltip={item.title}
-                          isActive={isItemActive(item.url)}
-                        >
-                          <Link prefetch={false} href={item.url} target={item.newTab ? "_blank" : undefined}>
-                            {item.icon && <item.icon />}
-                            <span>{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
+          <SidebarGroup key={group.id}>
+            {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
+            <SidebarGroupContent className="flex flex-col gap-2">
+              <SidebarMenu>
+                {group.items.map((item) => {
+                  if (item.roles && !item.roles.includes(currentRole)) {
+                    return null; // Skip rendering this item if the current role is not allowed
                   }
-                  // Otherwise, render the dropdown as before
-                  return <NavItemCollapsed key={item.title} item={item} isActive={isItemActive} />;
-                }
-                // Expanded view
-                return (
-                  <NavItemExpanded key={item.title} item={item} isActive={isItemActive} isSubmenuOpen={isSubmenuOpen} />
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                  if (state === "collapsed" && !isMobile) {
+                    // If no subItems, just render the button as a link
+                    if (!item.subItems) {
+                      return (
+                        <SidebarMenuItem key={item.title}>
+                          <SidebarMenuButton
+                            asChild
+                            aria-disabled={item.comingSoon}
+                            tooltip={item.title}
+                            isActive={isItemActive(item.url)}
+                          >
+                            <Link prefetch={false} href={item.url} target={item.newTab ? "_blank" : undefined}>
+                              {item.icon && <item.icon />}
+                              <span>{item.title}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    }
+                    // Otherwise, render the dropdown as before
+                    return <NavItemCollapsed key={item.title} item={item} isActive={isItemActive} />;
+                  }
+                  // Expanded view
+                  return (
+                    <NavItemExpanded
+                      key={item.title}
+                      item={item}
+                      isActive={isItemActive}
+                      isSubmenuOpen={isSubmenuOpen}
+                    />
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         );
       })}
     </>

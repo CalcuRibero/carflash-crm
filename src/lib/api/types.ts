@@ -12,9 +12,7 @@ export type UserRole =
   | "Gestor"
   | "CarSeller"
   | "CarSellingSupervisor"
-  | "Marketing"
-  ;
-
+  | "Marketing";
 
 export type User = {
   id: number;
@@ -88,10 +86,10 @@ export type UpdateTicketRequest = Partial<CreateTicketRequest> & {
   resolvedAt?: string | Date | null;
 };
 
-// export 
+// export
 export enum NotificationType {
   NEW_TICKET = "NewTicket",
-  NEW_CHAT_MESSAGE = "NewChatMessage"
+  NEW_CHAT_MESSAGE = "NewChatMessage",
 }
 
 export interface NotificationMeta {

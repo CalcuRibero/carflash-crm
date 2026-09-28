@@ -11,19 +11,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PopupControls, PopupOptions } from "./type";
 
+import type { PopupControls, PopupOptions } from "./type";
 
-export function withPopup<TProps extends object>(
-  Component: React.ComponentType<TProps>,
-  options: PopupOptions = {},
-) {
-  const PopupComponent = ({
-    isOpen,
-    primaryButton,
-    secondaryButton,
-    ...props
-  }: TProps & PopupControls) => {
+export function withPopup<TProps extends object>(Component: React.ComponentType<TProps>, options: PopupOptions = {}) {
+  const PopupComponent = ({ isOpen, primaryButton, secondaryButton, ...props }: TProps & PopupControls) => {
     const handleOpenChange = React.useCallback(
       (nextOpen: boolean) => {
         if (!nextOpen && isOpen) {

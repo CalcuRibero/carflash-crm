@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+
 import { Lock, Mail, User as UserIcon } from "lucide-react";
 import { z } from "zod";
 
@@ -15,18 +16,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { UserRole } from "@/lib/api/types";
-import type { UserRow } from "./data";
 import { UserCategoryLabel } from "@/features/users-metrics/type";
+import type { UserRole } from "@/lib/api/types";
+
+import type { UserRow } from "./data";
 
 interface EditUserModalProps {
   open: boolean;
@@ -59,16 +54,15 @@ const updateUserSchema = z.object({
   username: z.string().min(1, { message: "Nombre de usuario es requerido." }).optional(),
   role: z.string().min(1, { message: "Seleccione un rol válido." }).optional(),
   email: z.email({ message: "Ingrese un correo electrónico válido." }).optional().or(z.literal("")),
-  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres." }).optional().or(z.literal("")),
+  password: z
+    .string()
+    .min(6, { message: "La contraseña debe tener al menos 6 caracteres." })
+    .optional()
+    .or(z.literal("")),
   isActive: z.boolean().optional(),
 });
 
-export function EditUserModal({
-  open,
-  onOpenChange,
-  onUpdateUser,
-  user,
-}: EditUserModalProps) {
+export function EditUserModal({ open, onOpenChange, onUpdateUser, user }: EditUserModalProps) {
   const [fullName, setFullName] = React.useState(user.fullName ?? "");
   const [username, setUsername] = React.useState(user.username);
   const [role, setRole] = React.useState<UserRole | undefined>(user.role);
@@ -137,9 +131,7 @@ export function EditUserModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Editar Usuario</DialogTitle>
-          <DialogDescription>
-            Actualice los detalles del usuario {user.fullName ?? user.username}.
-          </DialogDescription>
+          <DialogDescription>Actualice los detalles del usuario {user.fullName ?? user.username}.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -220,18 +212,12 @@ export function EditUserModal({
           </div>
 
           <div className="flex items-center gap-3">
-            <Switch
-              id="isActive"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
+            <Switch id="isActive" checked={isActive} onCheckedChange={setIsActive} />
             <div className="flex flex-col gap-0.5">
               <Label htmlFor="isActive" className="font-medium">
                 Estado de Usuario Activo
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Permite el acceso al sistema.
-              </p>
+              <p className="text-xs text-muted-foreground">Permite el acceso al sistema.</p>
             </div>
           </div>
 

@@ -1,49 +1,46 @@
-'use client'
+"use client";
+
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 
 import { fetchUnread } from "@/lib/api/notifications";
-import { Notification } from "@/lib/api/types";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-
+import type { Notification } from "@/lib/api/types";
 
 type NotificationContextValues = {
-  notifications: Notification[],
-  removeNotification: (id: string) => void,
-}
+  notifications: Notification[];
+  removeNotification: (id: string) => void;
+};
 
-const NotificationsContext = createContext<NotificationContextValues | null >(null)
+const NotificationsContext = createContext<NotificationContextValues | null>(null);
 
-export function NotificationsProvider ({children}: {children: ReactNode}) {
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  
-  const getNotifications = async() => {
-    const unreads = await fetchUnread()
-    setNotifications(unreads)
-  }
+export function NotificationsProvider({ children }: { children: ReactNode }) {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const getNotifications = async () => {
+    const unreads = await fetchUnread();
+    setNotifications(unreads);
+  };
 
   const removeNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id))
-  }
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+  };
 
-  useEffect(() =>
-    {
-      getNotifications()
-     
-      const intervalId = setInterval(async () => {
-        if (document.visibilityState === 'visible') {
-          getNotifications()
-        }
-      }, 60000)
+  useEffect(() => {
+    getNotifications();
 
-      return () => clearInterval(intervalId)
-    }  
-    , []
-  )
+    const intervalId = setInterval(async () => {
+      if (document.visibilityState === "visible") {
+        getNotifications();
+      }
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
-    <NotificationsContext.Provider value={{notifications, removeNotification}}>
+    <NotificationsContext.Provider value={{ notifications, removeNotification }}>
       {children}
     </NotificationsContext.Provider>
-  )
+  );
 }
 
 export function useNotifications() {

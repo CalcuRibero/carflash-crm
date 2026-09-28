@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import type { Ticket } from "@/lib/api/types";
 
 import { getTicketsByTicketIdService } from "../services/ticketsService";
-import { useCallback, useEffect, useState } from "react";
 import { INITIAL_TICKET } from "../types";
 
 export function useTicketsByTicketId(ticketId: string | null) {
@@ -13,34 +13,37 @@ export function useTicketsByTicketId(ticketId: string | null) {
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const loadTickets = useCallback(async (signal?: AbortSignal) => {
-    if (!ticketId) {
-      setTicket(INITIAL_TICKET);
-      setIsLoading(false);
-      return [];
-    }
-
-    setIsLoading(true);
-    setErrorMessage(null);
-
-    try {
-      const response = await getTicketsByTicketIdService(ticketId, { signal });
-      setTicket(response);
-      return response;
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
+  const loadTickets = useCallback(
+    async (signal?: AbortSignal) => {
+      if (!ticketId) {
+        setTicket(INITIAL_TICKET);
+        setIsLoading(false);
         return [];
       }
 
-      const message = error instanceof Error ? error.message : "We could not load the tickets.";
-      setErrorMessage(message);
-      throw error;
-    } finally {
-      if (!signal?.aborted) {
-        setIsLoading(false);
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      try {
+        const response = await getTicketsByTicketIdService(ticketId, { signal });
+        setTicket(response);
+        return response;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return [];
+        }
+
+        const message = error instanceof Error ? error.message : "We could not load the tickets.";
+        setErrorMessage(message);
+        throw error;
+      } finally {
+        if (!signal?.aborted) {
+          setIsLoading(false);
+        }
       }
-    }
-  }, [ticketId]);
+    },
+    [ticketId],
+  );
 
   useEffect(() => {
     const controller = new AbortController();

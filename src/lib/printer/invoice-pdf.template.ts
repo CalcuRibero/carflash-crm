@@ -4,8 +4,32 @@
 // es una función pura string -> string, fácil de testear (podés hacer snapshot
 // testing del HTML sin levantar un browser).
 
-import type { OperationToPrint, PaymentMethodEntry, OperationFormState, Car } from "@/features/operations/types";
+import type { Car, OperationFormState, OperationToPrint, PaymentMethodEntry } from "@/features/operations/types";
 import type { User } from "@/lib/api/types";
+
+/**
+ * Construye un objeto Car desde datos del formulario
+ * @param form - Estado del formulario de operación
+ * @returns Car - Objeto Car completo para impresión
+ */
+export function buildCarFromForm(form: OperationFormState): Car {
+  return {
+    id: form.carDomain?.trim() || `temp-${Date.now()}`,
+    brand: form.carBrand?.trim() || "",
+    model: form.carModel?.trim() || "",
+    domain: form.carDomain?.trim() || "",
+    year: form.carYear ? parseInt(form.carYear.toString()) : undefined,
+    status: "AVAILABLE",
+    vin: undefined,
+    price: undefined,
+    documentationValidated: undefined,
+    peritajeInformUrl: undefined,
+    location: undefined,
+    kilometers: undefined,
+    dateOfEntry: undefined,
+    lastUpdated: undefined,
+  };
+}
 
 const formatMoney = (value?: string | number | null): string => {
   const parsed = typeof value === "number" ? value : Number.parseFloat(String(value ?? ""));
@@ -79,21 +103,31 @@ function getPaymentBreakdown(data: OperationToPrint) {
  * @returns OperationToPrint - Data structure ready for invoice generation
  */
 export function transformFormToPrint(form: OperationFormState, car: Car, seller: User): OperationToPrint {
+  // Validaciones adicionales
+  if (!car.brand || !car.model || !car.domain) {
+    throw new Error("Datos del vehículo incompletos para generar factura");
+  }
+
+  if (!seller || !seller.fullName) {
+    throw new Error("Datos del vendedor incompletos para generar factura");
+  }
+
   return {
     ...form,
     car, // Replace carId with full car object
     seller, // Replace sellerId with full seller object
     // Ensure swap data is properly structured if present
-    carSwapped: form.swapModel || form.swapDomain || form.swapYear 
-      ? {
-          id: form.swapDomain || "swap-temp-id",
-          domain: form.swapDomain || "",
-          model: form.swapModel || "",
-          year: typeof form.swapYear === "number" ? form.swapYear : parseInt(form.swapYear as string) || undefined,
-          brand: "", // Required by Car type but not in form
-          status: "AVAILABLE", // Required by Car type
-        }
-      : undefined,
+    carSwapped:
+      form.swapModel || form.swapDomain || form.swapYear
+        ? {
+            id: form.swapDomain || "swap-temp-id",
+            domain: form.swapDomain || "",
+            model: form.swapModel || "",
+            year: typeof form.swapYear === "number" ? form.swapYear : parseInt(form.swapYear as string) || undefined,
+            brand: "", // Required by Car type but not in form
+            status: "AVAILABLE", // Required by Car type
+          }
+        : undefined,
   };
 }
 
@@ -105,19 +139,37 @@ export function buildInvoiceHtml(data: OperationToPrint): string {
   if (!data.seller) {
     throw new Error("Seller data is required for invoice generation");
   }
-  
+
+  // Logging para desarrollo (solo en modo dev)
+  if (process.env.NODE_ENV === "development") {
+    console.log("Datos para generación de PDF:", {
+      vehicle: {
+        brand: data.car.brand,
+        model: data.car.model,
+        domain: data.car.domain,
+        year: data.car.year,
+      },
+      seller: data.seller.fullName,
+      customer: data.customer.fullName,
+      totalAmount: data.totalAmount,
+    });
+  }
+
   const invoiceNumber = Date.now();
   const sellerName = data.seller?.fullName ?? "Vendedor no especificado";
-  const vehicleDescription = data.car 
-    ? [data.car.brand ?? "", data.car.model ?? ""].filter(Boolean).join(" ").trim()
-    : "Vehículo no especificado";
-  const licensePlate = data.car?.domain ?? "";
+  const vehicleDescription =
+    [data.car.brand?.trim() || "", data.car.model?.trim() || ""].filter(Boolean).join(" ").trim() ||
+    "Vehículo no especificado";
+  const licensePlate = data.car.domain?.trim() || "";
   const salePrice = Number.parseFloat(String(data.salePrice)) || 0;
   const transferCost = Number.parseFloat(String(data.transferCost)) || 0;
   const paperworkCost = Number.parseFloat(String(data.folderCost)) || 0;
   const totalToCollect = Number.parseFloat(String(data.totalAmount)) || salePrice + transferCost + paperworkCost;
   const pb = getPaymentBreakdown(data);
-  const paymentTotal = (data.payments ?? []).reduce((sum, payment) => sum + (Number.parseFloat(String(payment.amount)) || 0), 0);
+  const paymentTotal = (data.payments ?? []).reduce(
+    (sum, payment) => sum + (Number.parseFloat(String(payment.amount)) || 0),
+    0,
+  );
   const customer = {
     fullName: data.customer?.fullName ?? "",
     cuilOrDni: data.customer?.document ?? "",
@@ -133,14 +185,14 @@ export function buildInvoiceHtml(data: OperationToPrint): string {
         licensePlate: data.carSwapped.domain ?? "",
         notes: data.swapObservations ?? "",
       }
-    : (data.swapModel || data.swapDomain || data.swapYear)
-    ? {
-        model: data.swapModel ?? "",
-        year: data.swapYear ?? "",
-        licensePlate: data.swapDomain ?? "",
-        notes: data.swapObservations ?? "",
-      }
-    : undefined;
+    : data.swapModel || data.swapDomain || data.swapYear
+      ? {
+          model: data.swapModel ?? "",
+          year: data.swapYear ?? "",
+          licensePlate: data.swapDomain ?? "",
+          notes: data.swapObservations ?? "",
+        }
+      : undefined;
   const createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
 
   // Additional validation for critical numeric fields

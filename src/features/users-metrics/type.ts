@@ -1,39 +1,36 @@
-import { Ticket, TicketStatus } from "@/lib/api"
-import type { ChartConfig } from "@/components/ui/chart"
+import type { ChartConfig } from "@/components/ui/chart";
+import { type Ticket, TicketStatus } from "@/lib/api";
 
 export type MetricsCardsProps = {
-    tickets: Ticket[];
-    isLoading: boolean;
-    errorMessage: string | null;
-}
+  tickets: Ticket[];
+  isLoading: boolean;
+  errorMessage: string | null;
+};
 
 export type MetricsTableProps = {
-    tickets: Ticket[];
-    isLoading: boolean;
-    errorMessage: string | null;
-}
+  tickets: Ticket[];
+  isLoading: boolean;
+  errorMessage: string | null;
+};
 
 export type MetricsChartProps = {
-    tickets: Ticket[];
-    isLoading: boolean;
-    errorMessage: string | null;
-}
-
+  tickets: Ticket[];
+  isLoading: boolean;
+  errorMessage: string | null;
+};
 
 export type MetricsComponentProps = {
-    userId: number | null
-}
+  userId: number | null;
+};
 
-export type Variants = "default" | "secondary" | "destructive" | "outline"  |"ghost"  | "link"
-
+export type Variants = "default" | "secondary" | "destructive" | "outline" | "ghost" | "link";
 
 export const StatusVariant: Record<string, Variants | null | undefined> = {
-    "open": "outline",
-    "in_progress": "default",
-    "resolved": "secondary",
-    "closed": "outline",
-}
-
+  open: "outline",
+  in_progress: "default",
+  resolved: "secondary",
+  closed: "outline",
+};
 
 export const chartConfig = {
   abierto: {
@@ -55,19 +52,19 @@ export const chartConfig = {
 } satisfies ChartConfig;
 
 export const CHART_COLORS: Record<string, string> = {
-  "open": "var(--chart-1)",
-  "resolved": "var(--chart-2)",
-  "in_progress": "var(--chart-3)",
-  "closed": "var(--chart-4)",
-}
+  open: "var(--chart-1)",
+  resolved: "var(--chart-2)",
+  in_progress: "var(--chart-3)",
+  closed: "var(--chart-4)",
+};
 
 export const UserCategoryLabel: Record<string, string> = {
-  'SuperAdmin': 'Super Admin',
-  'AdministrationAccountant': 'Administracion y Contabilidad',
-  'ComercialCordinator': 'Coordinador Comercial',
-  'CarExpert': 'Perito',
-  'Gestor': 'Gestor',
-  'CarSeller': 'Vendedor de Autos',
-  'CarSellingSupervisor': 'Supervisor de Venta de Autos',
-  'Marketing': 'Marketing'
-}
+  SuperAdmin: "Super Admin",
+  AdministrationAccountant: "Administracion y Contabilidad",
+  ComercialCordinator: "Coordinador Comercial",
+  CarExpert: "Perito",
+  Gestor: "Gestor",
+  CarSeller: "Vendedor de Autos",
+  CarSellingSupervisor: "Supervisor de Venta de Autos",
+  Marketing: "Marketing",
+};

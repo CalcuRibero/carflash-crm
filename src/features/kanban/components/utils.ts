@@ -1,5 +1,5 @@
-import { columnIds } from "./data";
 import type { BoardState, ColumnId } from "../types";
+import { columnIds } from "./data";
 
 export const INITIAL_BOARD: BoardState = {
   open: [],
@@ -14,7 +14,7 @@ export function isColumnId(id: string): id is ColumnId {
 
 export function findColumnId(board: BoardState, id: string): ColumnId {
   if (isColumnId(id)) return id;
-  return columnIds[0]
+  return columnIds[0];
 }
 
 export function findTask(board: BoardState, id: string) {

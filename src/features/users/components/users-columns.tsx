@@ -1,10 +1,12 @@
 "use client";
 "use no memo";
 
+import * as React from "react";
+
 import { useRouter } from "next/navigation";
+
 import type { ColumnDef } from "@tanstack/react-table";
 import { Check, Clock, MoreHorizontal, X } from "lucide-react";
-import * as React from "react";
 
 import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -17,15 +19,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UserCategoryLabel } from "@/features/users-metrics/type";
 import { cn, getInitials } from "@/lib/utils";
 
 import { useDeleteUser } from "../hooks/useDeleteUser";
 import { useUpdateUser } from "../hooks/useUpdateUser";
-import { EditUserModal, type UpdateUserData } from "./editUserModal";
 import { statusMeta, type UserRow } from "./data";
-import { UserCategoryLabel } from "@/features/users-metrics/type";
-
-
+import { EditUserModal, type UpdateUserData } from "./editUserModal";
 
 function formatDate(value: string) {
   const date = new Date(value);
@@ -117,8 +117,6 @@ function AvatarCell({ lastActive, name }: { lastActive: number; name: string }) 
   );
 }
 
-
-
 export const usersColumns: ColumnDef<UserRow>[] = [
   {
     id: "select",
@@ -156,9 +154,13 @@ export const usersColumns: ColumnDef<UserRow>[] = [
       <div className="flex items-center gap-3">
         <AvatarCell name={row.original.fullName ?? row.original.username} lastActive={row.original.lastActive ?? 0} />
         <div className="min-w-0">
-          <div className="truncate font-medium text-foreground text-sm">{row.original.fullName ?? row.original.username}</div>
+          <div className="truncate font-medium text-foreground text-sm">
+            {row.original.fullName ?? row.original.username}
+          </div>
           <div className="truncate text-muted-foreground text-sm">{row.original.username}</div>
-          {row.original.email ? <div className="truncate text-muted-foreground text-xs">{row.original.email}</div> : null}
+          {row.original.email ? (
+            <div className="truncate text-muted-foreground text-xs">{row.original.email}</div>
+          ) : null}
         </div>
       </div>
     ),
@@ -203,7 +205,7 @@ export const usersColumns: ColumnDef<UserRow>[] = [
       const { deleteUser } = useDeleteUser();
       const { updateUser } = useUpdateUser();
       const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-      
+
       const router = useRouter();
 
       const handleEdit = async () => {
@@ -217,11 +219,9 @@ export const usersColumns: ColumnDef<UserRow>[] = [
         }
       };
 
-      
       const handleRowClick = (userId: number) => {
         router.push(`/dashboard/user-metrics/${userId}`);
       };
-
 
       const handleDelete = async () => {
         const shouldDelete = window.confirm(`¿Eliminar a ${row.original.fullName ?? row.original.username}?`);

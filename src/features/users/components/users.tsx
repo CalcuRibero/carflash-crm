@@ -22,13 +22,13 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { Kbd } from "@/components/ui/kbd";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserCategoryLabel } from "@/features/users-metrics/type";
 
+import { useCreateUser } from "../hooks/useCreateUser";
+import { type CreateUserData, CreateUsersModal } from "./createUsersModal";
 import { filters, type UserRow } from "./data";
 import { usersColumns } from "./users-columns";
 import { UsersTable } from "./users-table";
-import { CreateUsersModal, type CreateUserData } from "./createUsersModal";
-import { useCreateUser } from "../hooks/useCreateUser";
-import { UserCategoryLabel } from "@/features/users-metrics/type";
 
 interface UsersProps {
   users: UserRow[];
@@ -99,9 +99,7 @@ export function Users({ users, refreshUsers }: UsersProps) {
     <Card>
       <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
         <CardTitle className="text-xl leading-none">Usuarios</CardTitle>
-        <CardDescription className="max-w-sm leading-snug">
-          Administra los miembros de tu organización.
-        </CardDescription>
+        <CardDescription className="max-w-sm leading-snug">Administra los miembros de tu organización.</CardDescription>
         <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
           <InputGroup className="h-7 w-full md:w-64">
             <InputGroupAddon align="inline-start">
@@ -146,13 +144,12 @@ export function Users({ users, refreshUsers }: UsersProps) {
                 <SelectGroup>
                   {filters.role.map((option) => (
                     <SelectItem key={option} value={option}>
-                      {UserCategoryLabel[option] || 'Todos'}
+                      {UserCategoryLabel[option] || "Todos"}
                     </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
-
 
             {/* <Select value={statusFilter} onValueChange={(value) => setColumnSelectFilter("status", value)}>
               <SelectTrigger size="sm">
@@ -190,11 +187,7 @@ export function Users({ users, refreshUsers }: UsersProps) {
         <UsersTable table={table} />
       </CardContent>
 
-      <CreateUsersModal
-        open={isCreateModalOpen}
-        onOpenChange={setIsCreateModalOpen}
-        onCreateUser={handleCreateUser}
-      />
+      <CreateUsersModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} onCreateUser={handleCreateUser} />
     </Card>
   );
 }

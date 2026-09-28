@@ -86,4 +86,3 @@ export function useProfile(options: { enabled?: boolean } = {}) {
     refetch,
   };
 }
-

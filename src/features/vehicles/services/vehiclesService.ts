@@ -5,7 +5,9 @@ import type { VehicleFormValues, VehicleRecord } from "../types";
 export type CreateVehicleRequest = VehicleFormValues;
 export type UpdateVehicleRequest = Partial<VehicleFormValues>;
 
-function normalizeVehiclePayload(payload: CreateVehicleRequest | UpdateVehicleRequest): VehicleFormValues | UpdateVehicleRequest {
+function normalizeVehiclePayload(
+  payload: CreateVehicleRequest | UpdateVehicleRequest,
+): VehicleFormValues | UpdateVehicleRequest {
   return {
     ...payload,
     year: Number(payload.year),

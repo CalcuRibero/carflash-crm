@@ -1,15 +1,17 @@
-
 import { ApiError } from "@/lib/api";
 import { getTicketsByRole } from "@/lib/api/tickets";
-import { Ticket, UserRole } from "@/lib/api/types";
+import type { Ticket, UserRole } from "@/lib/api/types";
 
-type TicketRoleResponse = Record<string, Ticket[]>
+type TicketRoleResponse = Record<string, Ticket[]>;
 
-export async function getTicketsByRoleService(options: { signal?: AbortSignal} = {}, category?: UserRole): Promise<Ticket[]> {
+export async function getTicketsByRoleService(
+  options: { signal?: AbortSignal } = {},
+  category?: UserRole,
+): Promise<Ticket[]> {
   try {
-    if(!category) throw new Error("The category was not found")
+    if (!category) throw new Error("The category was not found");
     const tickets = await getTicketsByRole({ signal: options.signal }, category);
-    return tickets
+    return tickets;
     // return normalizeTicketsPayload(tickets);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {

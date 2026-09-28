@@ -2,8 +2,9 @@
 
 import * as React from "react";
 
-import { updateUserService, type UpdateUserRequest } from "../services/usersService";
 import type { User } from "@/lib/api/types";
+
+import { type UpdateUserRequest, updateUserService } from "../services/usersService";
 
 export function useUpdateUser() {
   const [isUpdating, setIsUpdating] = React.useState(false);

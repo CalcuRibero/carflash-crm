@@ -1,5 +1,9 @@
 "use client";
 
+import { useState } from "react";
+
+import { useRouter } from "next/navigation";
+
 import {
   ArrowUpRight,
   BadgeCheck,
@@ -15,17 +19,15 @@ import {
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { PRIORITY_LABELS } from "@/features/tickets/types";
+import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types";
 import { cn, getInitials } from "@/lib/utils";
 
+import { type ColumnId, STATUS_LABELS } from "../types";
 import { tagTones } from "./data";
-import { STATUS_LABELS, type ColumnId } from "../types";
-import type { Ticket, TicketInsightLabel, TicketPriority } from "@/lib/api/types";
-import { PRIORITY_LABELS } from "@/features/tickets/types";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 const taskInsightIcons: Record<TicketInsightLabel, LucideIcon> = {
   Attachments: Paperclip,
@@ -60,15 +62,15 @@ const priorityBadgeConfig: Record<
 };
 
 const getDueDate = (dueDate: Date | null) => {
-  if (!dueDate) return new Date().toLocaleDateString('es-AR');
+  if (!dueDate) return new Date().toLocaleDateString("es-AR");
   const dueDateObj = new Date(dueDate);
-  const dateLabel = dueDateObj.toLocaleDateString('es-AR');
-  const timeLabel = dueDateObj.toLocaleTimeString('es-AR', {
-    hour: '2-digit',
-    minute: '2-digit',
+  const dateLabel = dueDateObj.toLocaleDateString("es-AR");
+  const timeLabel = dueDateObj.toLocaleTimeString("es-AR", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
-  return timeLabel === '00:00' ? dateLabel : `${dateLabel} ${timeLabel}`;
+  return timeLabel === "00:00" ? dateLabel : `${dateLabel} ${timeLabel}`;
 };
 
 const hasDueTime = (dueDate: Date | null) => {
@@ -79,7 +81,9 @@ const hasDueTime = (dueDate: Date | null) => {
 };
 
 const isOverdue = (task: Ticket) => {
-  return task.status === 'open' && hasDueTime(task.dueDate) && task.dueDate !== null && new Date() > new Date(task.dueDate);
+  return (
+    task.status === "open" && hasDueTime(task.dueDate) && task.dueDate !== null && new Date() > new Date(task.dueDate)
+  );
 };
 
 export function TaskCard({
@@ -95,13 +99,13 @@ export function TaskCard({
   onlyRead?: boolean;
   onClick?: () => void;
 }) {
-  const router = useRouter()
+  const router = useRouter();
 
   const [isReadingMode, setIsReadingMode] = useState(onlyRead);
   const showBuildingDetails = columnId === "in_progress";
   const owner = task.createdBy;
   const PriorityIcon = priorityBadgeConfig[task.priority as TicketPriority].icon;
-  const creationDate = new Date(task.createdAt).toLocaleDateString('es-AR')
+  const creationDate = new Date(task.createdAt).toLocaleDateString("es-AR");
   const dueDate = getDueDate(task.dueDate);
   const overdue = isOverdue(task);
 
@@ -131,14 +135,14 @@ export function TaskCard({
               >
                 {task.isRecurrent ? "Fijo" : "Variable"}
               </Badge>
-              {overdue && 
+              {overdue && (
                 <Badge
                   variant={"destructive"}
                   className="shrink-0 rounded-md border-transparent px-2 font-medium absolute -top-1 -right-1"
                 >
                   Urgente
                 </Badge>
-              }
+              )}
               <Badge
                 variant={priorityBadgeConfig[task.priority as TicketPriority].variant}
                 className={cn(
@@ -162,12 +166,15 @@ export function TaskCard({
           <div className="flex items-end w-full">
             <Button variant={"link"} className="hover:cursor-pointer" onClick={() => handleClickDetail(task)}>
               <span>Ver Detalle</span>
-              <span> <ChevronRight /> </span>
+              <span>
+                {" "}
+                <ChevronRight />{" "}
+              </span>
             </Button>
           </div>
         </div>
       </article>
-    )
+    );
   }
 
   return (
@@ -244,15 +251,14 @@ export function TaskCard({
                 <div className="flex items-center gap-1.5">
                   <span className="truncate text-muted-foreground text-sm">{owner.fullName}</span>
                 </div>
-              </div>)
-            }
+              </div>
+            )}
             <div className="flex flex-col items-center justify-between gap-3">
               <span className="text-muted-foreground text-sm">Fecha de Vencimiento</span>
               <span className="flex items-center gap-1.5 text-muted-foreground">
-                <span className="truncate text-sm">{new Date(task.dueDate).toLocaleDateString('es-AR')}</span>
+                <span className="truncate text-sm">{new Date(task.dueDate).toLocaleDateString("es-AR")}</span>
               </span>
             </div>
-
           </div>
         </div>
       ) : null}

@@ -1,34 +1,22 @@
 "use client";
 
 import * as React from "react";
+
 import { CarFront, PencilLine, Plus, Search, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { PageHeader } from "@/components/ui/page-header";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import { CreateVehicleModal } from "./create-vehicle-modal";
-import { EditVehicleModal } from "./edit-vehicle-modal";
 import { useCreateVehicle } from "../hooks/useCreateVehicle";
 import { useDeleteVehicle } from "../hooks/useDeleteVehicle";
 import { useUpdateVehicle } from "../hooks/useUpdateVehicle";
 import { useVehicles } from "../hooks/useVehicles";
 import type { VehicleFormValues, VehicleRecord } from "../types";
+import { CreateVehicleModal } from "./create-vehicle-modal";
+import { EditVehicleModal } from "./edit-vehicle-modal";
 
 export function VehiclesPage() {
   const { vehicles, isLoading, errorMessage, refetch, setVehicles } = useVehicles();
@@ -70,7 +58,9 @@ export function VehiclesPage() {
     const updatedVehicle = await updateVehicle(selectedVehicle.id, values);
 
     if (updatedVehicle) {
-      setVehicles((current) => current.map((vehicle) => (vehicle.id === selectedVehicle.id ? updatedVehicle : vehicle)));
+      setVehicles((current) =>
+        current.map((vehicle) => (vehicle.id === selectedVehicle.id ? updatedVehicle : vehicle)),
+      );
       await refetch();
     }
   };
@@ -86,14 +76,14 @@ export function VehiclesPage() {
 
   return (
     <div className="space-y-6" data-hide-header="true">
-      <PageHeader 
+      <PageHeader
         icon={CarFront}
         category="CarFlash"
         title="Administración de Vehículos"
         action={{
           label: "Nuevo vehículo",
           onClick: () => setIsCreateOpen(true),
-          icon: Plus
+          icon: Plus,
         }}
       />
 
@@ -121,7 +111,9 @@ export function VehiclesPage() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold">
-              {vehicles.length > 0 ? `$${Math.round(vehicles.reduce((sum, vehicle) => sum + vehicle.price, 0) / vehicles.length).toLocaleString()}` : "$0"}
+              {vehicles.length > 0
+                ? `$${Math.round(vehicles.reduce((sum, vehicle) => sum + vehicle.price, 0) / vehicles.length).toLocaleString()}`
+                : "$0"}
             </p>
             <p className="text-sm text-muted-foreground">Promedio del catálogo</p>
           </CardContent>
@@ -183,7 +175,9 @@ export function VehiclesPage() {
                   <TableRow key={vehicle.id}>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-medium">{vehicle.brand} {vehicle.model}</span>
+                        <span className="font-medium">
+                          {vehicle.brand} {vehicle.model}
+                        </span>
                         <span className="text-sm text-muted-foreground">{vehicle.year}</span>
                       </div>
                     </TableCell>
@@ -216,7 +210,12 @@ export function VehiclesPage() {
       </Card>
 
       <CreateVehicleModal open={isCreateOpen} onOpenChange={setIsCreateOpen} onCreateVehicle={handleCreateVehicle} />
-      <EditVehicleModal open={isEditOpen} vehicle={selectedVehicle} onOpenChange={setIsEditOpen} onUpdateVehicle={handleUpdateVehicle} />
+      <EditVehicleModal
+        open={isEditOpen}
+        vehicle={selectedVehicle}
+        onOpenChange={setIsEditOpen}
+        onUpdateVehicle={handleUpdateVehicle}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { NEXT_PUBLIC_API_BASE_PATH, API_TOKEN_STORAGE_KEY } from "./config";
+import { API_TOKEN_STORAGE_KEY, NEXT_PUBLIC_API_BASE_PATH } from "./config";
 import { ApiError } from "./errors";
 
 type RequestOptions = Omit<RequestInit, "body"> & {

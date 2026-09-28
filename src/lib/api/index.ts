@@ -1,7 +1,7 @@
-export { NEXT_PUBLIC_API_BASE_PATH, API_TOKEN_STORAGE_KEY } from "./config";
+export { getProfile, login } from "./auth";
+export { API_TOKEN_STORAGE_KEY, NEXT_PUBLIC_API_BASE_PATH } from "./config";
 export { ApiError } from "./errors";
 export { apiRequest, clearApiToken, getApiToken, saveApiToken } from "./http-client";
-export { getProfile, login } from "./auth";
 export {
   createTicket,
   deleteTicket,

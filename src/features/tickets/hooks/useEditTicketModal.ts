@@ -28,25 +28,28 @@ export function useEditTicketModal(): EditTicketModalController {
     setIsOpen(false);
   }, [isSubmitting]);
 
-  const submitTicket = React.useCallback(async (values: CreateTicketRequest) => {
-    if (!currentTicket) return;
+  const submitTicket = React.useCallback(
+    async (values: CreateTicketRequest) => {
+      if (!currentTicket) return;
 
-    setIsSubmitting(true);
-    setErrorMessage(null);
+      setIsSubmitting(true);
+      setErrorMessage(null);
 
-    try {
-      const ticket = await updateTicketService(currentTicket.id, values);
-      setEditedTicket(ticket);
-      setIsOpen(false);
-      setCurrentTicket(null);
-    } catch (error) {
-      const message = "Estamos teniendo algunos inconvenientes... Intente mas tarde";
-      setErrorMessage(message);
-      throw error;
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [currentTicket]);
+      try {
+        const ticket = await updateTicketService(currentTicket.id, values);
+        setEditedTicket(ticket);
+        setIsOpen(false);
+        setCurrentTicket(null);
+      } catch (error) {
+        const message = "Estamos teniendo algunos inconvenientes... Intente mas tarde";
+        setErrorMessage(message);
+        throw error;
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [currentTicket],
+  );
 
   const modalProps = React.useMemo(
     () => ({

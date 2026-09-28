@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 const COOKIE_NAME = "accessToken";
 const TOKEN_TIMESTAMP_COOKIE = "tokenTimestamp";
@@ -48,9 +48,7 @@ export function proxy(request: NextRequest) {
 
     if (isExpired) {
       // Si expiró, limpiamos cookies y redirigimos a login (a menos que ya esté en /auth)
-      const response = isAuthPath
-        ? NextResponse.next()
-        : NextResponse.redirect(new URL("/auth/login", request.url));
+      const response = isAuthPath ? NextResponse.next() : NextResponse.redirect(new URL("/auth/login", request.url));
 
       clearAuthCookies(response);
       return response;
@@ -71,7 +69,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|public|manifest.webmanifest).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|public|manifest.webmanifest).*)"],
 };

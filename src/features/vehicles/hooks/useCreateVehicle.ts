@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { createVehicleService, type CreateVehicleRequest } from "../services/vehiclesService";
+import { type CreateVehicleRequest, createVehicleService } from "../services/vehiclesService";
 import type { VehicleRecord } from "../types";
 
 export function useCreateVehicle() {

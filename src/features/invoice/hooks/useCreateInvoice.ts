@@ -1,17 +1,15 @@
 import { useState } from "react";
 
-import type { Invoice } from "../types";
+import type { OperationFormState } from "@/features/operations/types";
+
 import { createInvoiceService } from "../services/invoiceService";
-import { OperationFormState } from "@/features/operations/types";
+import type { Invoice } from "../types";
 
 export function useCreateInvoices() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-
-  const createInvoice = async (
-    data: OperationFormState
-  ): Promise<OperationFormState | null> => {
+  const createInvoice = async (data: OperationFormState): Promise<OperationFormState | null> => {
     try {
       setIsLoading(true);
       setError(null);

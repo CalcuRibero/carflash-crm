@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { useCallback, useState } from "react";
 
 import { deleteTicketService } from "../services/ticketsService";
-import { useCallback, useState } from "react";
 
 export function useDeleteTicket() {
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);

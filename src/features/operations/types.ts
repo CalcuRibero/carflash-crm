@@ -1,4 +1,4 @@
-import { User } from "@/lib/api/types";
+import type { User } from "@/lib/api/types";
 
 export type CarStatus = "AVAILABLE" | "SOLD" | "IN_REPAIR" | "PENDING" | string;
 
@@ -21,7 +21,7 @@ export interface Car {
 
 export type PaymentStatus = "PENDING" | "PAID" | "PARTIALLY_PAID" | "CANCELLED" | "REFUNDED" | string;
 
-export type PaymentMethod = 'cash' | 'bank_transfer' | 'financing' | 'car_swap' | 'seña' | 'card' | 'payment_note';
+export type PaymentMethod = "cash" | "bank_transfer" | "financing" | "car_swap" | "seña" | "card" | "payment_note";
 
 export interface Customer {
   id?: string;
@@ -49,7 +49,6 @@ export interface OperationFormState {
   totalAmount: number;
   status: PaymentStatus;
   customer: Customer;
-  carId: string;
   carSwapped?: Car;
   sellerId: string;
   salePrice: number;
@@ -65,6 +64,10 @@ export interface OperationFormState {
   paidAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  carModel: string;
+  carBrand: string;
+  carDomain: string;
+  carYear: string;
 }
 
 export interface OperationToPrint {

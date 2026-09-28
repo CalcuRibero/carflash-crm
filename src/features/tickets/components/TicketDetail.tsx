@@ -1,21 +1,24 @@
 "use client";
 
+import { useState } from "react";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { ArrowLeft, Calendar, Clock, Pen, Trash, User } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Calendar, Clock, Pen, Trash, User } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
 import type { Ticket } from "@/lib/api/types";
-import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "../types";
-import { useTicketsByTicketId } from "../hooks/useTicketById";
+
 import { useDeleteTicket } from "../hooks/useDeleteTicket";
 import { useEditTicketModal } from "../hooks/useEditTicketModal";
-import { TicketsModal } from "./TicketsModal";
-import { useState } from "react";
+import { useTicketsByTicketId } from "../hooks/useTicketById";
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from "../types";
 import { TicketModalWarning } from "./TicketModalWarning";
+import { TicketsModal } from "./TicketsModal";
 
 interface TicketDetailProps {
   ticketId: string;
@@ -62,7 +65,6 @@ function formatDate(dateString: string | null | undefined): string {
 }
 
 export function TicketDetail({ ticketId }: TicketDetailProps) {
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const router = useRouter();
@@ -70,16 +72,16 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
   const { deleteTicket, isDeleting } = useDeleteTicket();
   const editTicketModal = useEditTicketModal();
 
-  const creationDate = new Date(ticket.createdAt).toLocaleDateString('es-AR')
-  const dueDate = ticket.dueDate ? 
-    new Date(ticket.dueDate).toLocaleDateString('es-AR') : 
-    new Date().toLocaleDateString('es-AR')
-  const resolvedAt = ticket.resolvedAt ? 
-    new Date(ticket.resolvedAt).toLocaleDateString('es-AR') : 
-    new Date().toLocaleDateString('es-AR')
+  const creationDate = new Date(ticket.createdAt).toLocaleDateString("es-AR");
+  const dueDate = ticket.dueDate
+    ? new Date(ticket.dueDate).toLocaleDateString("es-AR")
+    : new Date().toLocaleDateString("es-AR");
+  const resolvedAt = ticket.resolvedAt
+    ? new Date(ticket.resolvedAt).toLocaleDateString("es-AR")
+    : new Date().toLocaleDateString("es-AR");
 
-  if(!ticketId) {
-    router.push('/dashboard/kanban')
+  if (!ticketId) {
+    router.push("/dashboard/kanban");
   }
 
   const deleteCurrentTicket = async () => {
@@ -94,7 +96,7 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
 
   const handleDelete = async () => {
     setIsDeleteModalOpen(true);
-  }
+  };
 
   const handleEdit = () => {
     if (ticket) {
@@ -155,9 +157,9 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
             <Pen className="mr-2 h-4 w-4" />
             Editar
           </Button>
-          <Button 
-            onClick={handleDelete} 
-            variant="destructive" 
+          <Button
+            onClick={handleDelete}
+            variant="destructive"
             size="sm"
             disabled={isDeleting}
             className="bg-red-600 hover:bg-red-700 text-white"
@@ -271,11 +273,11 @@ export function TicketDetail({ ticketId }: TicketDetailProps) {
       </div>
 
       <TicketsModal {...editTicketModal.modalProps} />
-      <TicketModalWarning 
-        onClick={deleteCurrentTicket} 
-        isOpen={isDeleteModalOpen} 
-        onClose={() => setIsDeleteModalOpen(false)} 
-        ticketTitle={ticket.title} 
+      <TicketModalWarning
+        onClick={deleteCurrentTicket}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        ticketTitle={ticket.title}
       />
     </div>
   );

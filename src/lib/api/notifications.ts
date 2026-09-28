@@ -17,13 +17,13 @@ export async function fetchNotifications(): Promise<Notification[]> {
 }
 
 export async function fetchUnread(): Promise<Notification[]> {
-  const token = getApiToken()
-  const res = await apiRequest <Notification[]>('/notifications/unread', {
+  const token = getApiToken();
+  const res = await apiRequest<Notification[]>("/notifications/unread", {
     method: "GET",
     token: token,
-  })
+  });
 
-  console.log(res)
+  console.log(res);
   // if (!res.ok) {
   //   throw new Error("No se pudo obtener el conteo de no leídas.");
   // }
@@ -31,21 +31,20 @@ export async function fetchUnread(): Promise<Notification[]> {
   return res; // ajusta según lo que devuelva tu endpoint (número plano o { count })
 }
 
-export async function createNotification(payload: Omit<Notification, 'id' | 'createdAt'>): Promise<void> {
-  const token = getApiToken()
-  await apiRequest <Notification[]>('/notifications', {
+export async function createNotification(payload: Omit<Notification, "id" | "createdAt">): Promise<void> {
+  const token = getApiToken();
+  await apiRequest<Notification[]>("/notifications", {
     method: "POST",
     token: token,
-    body: payload
-  })
-  
+    body: payload,
+  });
 }
 
 export async function markNotificationAsRead(id: string): Promise<void> {
-  const token = getApiToken() || ""
+  const token = getApiToken() || "";
   const res = await apiRequest(`${API_URL}/notifications/${id}/read`, {
     method: "PATCH",
-    token: token
+    token: token,
   });
 
   if (!res) {

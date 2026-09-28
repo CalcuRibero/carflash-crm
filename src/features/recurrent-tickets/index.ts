@@ -1,1 +1,1 @@
-export type { RecurrentTicket, RecurrenceInterval } from "./types";
+export type { RecurrenceInterval, RecurrentTicket } from "./types";

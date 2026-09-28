@@ -1,27 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useUsers } from "@/features/users/hooks/useUsers";
-import { RecurrenceInterval, TicketPriority, TicketStatus, type TicketCategory, TicketCategoryLabel } from "../types";
+
+import { RecurrenceInterval, type TicketCategory, TicketCategoryLabel, TicketPriority, TicketStatus } from "../types";
 
 interface CreateRecurrentTicketModalProps {
   isOpen: boolean;
@@ -50,14 +39,10 @@ function withTime(date: Date | undefined, time: string): Date | undefined {
   return result;
 }
 
-export function CreateRecurrentTicketModal({
-  isOpen,
-  onClose,
-  onSubmit,
-}: CreateRecurrentTicketModalProps) {
+export function CreateRecurrentTicketModal({ isOpen, onClose, onSubmit }: CreateRecurrentTicketModalProps) {
   const { users } = useUsers();
   const [dueTime, setDueTime] = useState("00:00");
-  
+
   const [formData, setFormData] = useState<CreateRecurrentTicketData>({
     title: "",
     description: "",
@@ -123,9 +108,7 @@ export function CreateRecurrentTicketModal({
               id="description"
               placeholder="Detalles del ticket..."
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
             />
           </div>
@@ -135,9 +118,7 @@ export function CreateRecurrentTicketModal({
               <Label htmlFor="priority">Prioridad</Label>
               <Select
                 value={formData.priority}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, priority: value as TicketPriority })
-                }
+                onValueChange={(value) => setFormData({ ...formData, priority: value as TicketPriority })}
               >
                 <SelectTrigger id="priority">
                   <SelectValue placeholder="Seleccionar prioridad" />
@@ -154,9 +135,7 @@ export function CreateRecurrentTicketModal({
               <Label htmlFor="category">Categoría</Label>
               <Select
                 value={formData.category}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, category: value as TicketCategory })
-                }
+                onValueChange={(value) => setFormData({ ...formData, category: value as TicketCategory })}
               >
                 <SelectTrigger id="category">
                   <SelectValue placeholder="Seleccionar categoría" />
@@ -175,9 +154,7 @@ export function CreateRecurrentTicketModal({
               <Label htmlFor="assignedTo">Asignado a</Label>
               <Select
                 value={formData.assignedTo ?? ""}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, assignedTo: value || undefined })
-                }
+                onValueChange={(value) => setFormData({ ...formData, assignedTo: value || undefined })}
               >
                 <SelectTrigger id="assignedTo">
                   <SelectValue placeholder="Seleccionar agente" />
@@ -196,9 +173,7 @@ export function CreateRecurrentTicketModal({
               <Label htmlFor="interval">Intervalo</Label>
               <Select
                 value={formData.interval}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, interval: value as RecurrenceInterval })
-                }
+                onValueChange={(value) => setFormData({ ...formData, interval: value as RecurrenceInterval })}
                 required
               >
                 <SelectTrigger id="interval">
@@ -219,25 +194,25 @@ export function CreateRecurrentTicketModal({
             <Input
               id="startDate"
               type="date"
-              value={formData.first_run_at instanceof Date ? formData.first_run_at.toISOString().split('T')[0] : ''}
-              onChange={(e) =>
-                setFormData({ ...formData, first_run_at: new Date(e.target.value) })
-              }
+              value={formData.first_run_at instanceof Date ? formData.first_run_at.toISOString().split("T")[0] : ""}
+              onChange={(e) => setFormData({ ...formData, first_run_at: new Date(e.target.value) })}
               required
             />
           </div>
-
 
           <div className="space-y-2">
             <Label htmlFor="dueDate">Fecha de Vencimiento</Label>
             <Input
               id="dueDate"
               type="date"
-              value={formData.dueDate ? formData.dueDate.toISOString().split('T')[0] : ''}
+              value={formData.dueDate ? formData.dueDate.toISOString().split("T")[0] : ""}
               onChange={(e) =>
-                setFormData({ ...formData, dueDate: e.target.value ? withTime(new Date(e.target.value), dueTime) : undefined })
+                setFormData({
+                  ...formData,
+                  dueDate: e.target.value ? withTime(new Date(e.target.value), dueTime) : undefined,
+                })
               }
-              min={formData.first_run_at ? formData.first_run_at.toISOString().split('T')[0] : undefined}
+              min={formData.first_run_at ? formData.first_run_at.toISOString().split("T")[0] : undefined}
               disabled={!formData.first_run_at}
             />
           </div>
@@ -255,7 +230,6 @@ export function CreateRecurrentTicketModal({
               disabled={!formData.dueDate}
             />
           </div>
-
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose}>

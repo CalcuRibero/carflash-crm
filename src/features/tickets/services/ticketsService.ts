@@ -1,9 +1,16 @@
 import { ApiError } from "@/lib/api/errors";
-import { createTicket, deleteTicket, getTicket, getTickets, getTicketsByUserId, updateTicket, updateTicketStatus } from "@/lib/api/tickets";
+import {
+  createTicket,
+  deleteTicket,
+  getTicket,
+  getTickets,
+  getTicketsByUserId,
+  updateTicket,
+  updateTicketStatus,
+} from "@/lib/api/tickets";
 import type { CreateTicketRequest, Ticket, TicketStatus, UpdateTicketRequest } from "@/lib/api/types";
 
 function normalizeTicketsPayload(payload: Ticket[]): Ticket[] {
-
   if (Array.isArray(payload)) {
     return payload as Ticket[];
   }
@@ -69,7 +76,7 @@ export async function updateTicketService(id: string | number, payload: CreateTi
 
 export async function updateTicketStatusService(id: string | number, status: TicketStatus): Promise<Ticket> {
   try {
-    return await updateTicketStatus(id, status );
+    return await updateTicketStatus(id, status);
   } catch (error) {
     if (error instanceof ApiError) {
       throw new Error(error.message || "We could not update the ticket.");
@@ -79,7 +86,10 @@ export async function updateTicketStatusService(id: string | number, status: Tic
   }
 }
 
-export async function getTicketsByUserIdService(userId: number, options: { signal?: AbortSignal } = {}): Promise<Ticket[]> {
+export async function getTicketsByUserIdService(
+  userId: number,
+  options: { signal?: AbortSignal } = {},
+): Promise<Ticket[]> {
   try {
     const tickets = await getTicketsByUserId(userId, { signal: options.signal });
     return tickets;
@@ -98,10 +108,12 @@ export async function getTicketsByUserIdService(userId: number, options: { signa
 
     throw new Error("We could not load the tickets.");
   }
-
 }
 
-export async function getTicketsByTicketIdService(ticketId: string, options: { signal?: AbortSignal } = {}): Promise<Ticket> {
+export async function getTicketsByTicketIdService(
+  ticketId: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<Ticket> {
   try {
     const ticket = await getTicket(ticketId, { signal: options.signal });
     return ticket;

@@ -1,24 +1,30 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { move } from "@dnd-kit/helpers";
+import { DragDropProvider } from "@dnd-kit/react";
+import { isSortable } from "@dnd-kit/react/sortable";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { TicketsModal, useCreateTicketModal, useEditTicketModal, useTickets, useUpdateTicket } from "@/features/tickets";
+import {
+  TicketsModal,
+  useCreateTicketModal,
+  useEditTicketModal,
+  useTickets,
+  useUpdateTicket,
+} from "@/features/tickets";
+import { useUpdateTicketStatus } from "@/features/tickets/hooks/useUpdateTicketStatus";
 import type { Ticket } from "@/lib/api/types";
+import { useAuth } from "@/stores/auth/auth-provider";
 
+import type { BoardState, ColumnId } from "../types";
 import { columnIds, columns } from "./data";
 import { KanbanColumn } from "./kanban-column";
-import type { BoardState, ColumnId } from "../types";
-import { findColumnId, findTask, INITIAL_BOARD } from "./utils";
 import { MobileKanbanColumn } from "./mobile-kanban-column";
-import { DragDropProvider } from "@dnd-kit/react";
-import { move } from '@dnd-kit/helpers';
-import { useUpdateTicketStatus } from "@/features/tickets/hooks/useUpdateTicketStatus";
-import { isSortable } from "@dnd-kit/react/sortable";
-import { useAuth } from "@/stores/auth/auth-provider";
+import { findColumnId, findTask, INITIAL_BOARD } from "./utils";
 
 export function Kanban() {
   const [board, setBoard] = useState<BoardState>(INITIAL_BOARD);
@@ -26,12 +32,12 @@ export function Kanban() {
   const [activeTask, setActiveTask] = useState<Ticket | null>(null);
   const [activeColumnId, setActiveColumnId] = useState<ColumnId | null>(null);
 
-  const { user } = useAuth()
-  const getTickets = useTickets()
+  const { user } = useAuth();
+  const getTickets = useTickets();
   const createTicketModal = useCreateTicketModal();
   const editTicketModal = useEditTicketModal();
   const orderedColumns = columnOrder.flatMap((columnId) => columns.find((column) => column.id === columnId) ?? []);
-  const updateTicketStatus = useUpdateTicketStatus()
+  const updateTicketStatus = useUpdateTicketStatus();
 
   useEffect(() => {
     const createdTicket = createTicketModal.createdTicket;
@@ -42,9 +48,7 @@ export function Kanban() {
     setBoard((currentBoard) => ({
       ...currentBoard,
       [createdTicket.status]: [createdTicket, ...currentBoard[createdTicket.status]],
-    })
-    );
-
+    }));
   }, [createTicketModal.createdTicket]);
 
   useEffect(() => {
@@ -55,7 +59,7 @@ export function Kanban() {
       const columnIds = Object.keys(updatedBoard) as Array<keyof typeof updatedBoard>;
       for (const columnId of columnIds) {
         updatedBoard[columnId] = updatedBoard[columnId].map((ticket: Ticket) =>
-          ticket.id === editedTicket.id ? editedTicket : ticket
+          ticket.id === editedTicket.id ? editedTicket : ticket,
         );
       }
       return updatedBoard;
@@ -63,22 +67,21 @@ export function Kanban() {
   }, [editTicketModal.editedTicket]);
 
   useEffect(() => {
-    const tickets = getTickets.tickets
+    const tickets = getTickets.tickets;
 
     if (!tickets) {
-      return
-    };
+      return;
+    }
 
     const templatedBoard: BoardState = {
       open: tickets.filter((ticket) => ticket.status === "open"),
       in_progress: tickets.filter((ticket) => ticket.status === "in_progress"),
       resolved: tickets.filter((ticket) => ticket.status === "resolved"),
       closed: tickets.filter((ticket) => ticket.status === "closed"),
-    }
+    };
 
     setBoard(templatedBoard as any as BoardState);
-  }, [getTickets.tickets])
-
+  }, [getTickets.tickets]);
 
   return (
     <div className="flex w-full max-w-7xl flex-col gap-6">
@@ -90,11 +93,9 @@ export function Kanban() {
       </div>
       <div className="scrollbar-thin min-h-0 min-w-0 flex-1 overflow-x-auto overflow-y-hidden bg-muted/25 pt-4 pb-0 [scrollbar-color:var(--border)_transparent] lg:px-2 lg:pt-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1">
         <DragDropProvider
-          onDragOver={
-            (event) => {
-              setBoard((board) => move(board, event))
-            }
-          }
+          onDragOver={(event) => {
+            setBoard((board) => move(board, event));
+          }}
           onDragEnd={(event) => {
             const { source, target } = event.operation;
             if (!source || !target) return;
@@ -117,8 +118,7 @@ export function Kanban() {
       <div className="flex md:hidden flex-col">
         {orderedColumns.map((column) => (
           <MobileKanbanColumn key={column.id} column={column} tasks={board[column.id]} />
-        ))
-        }
+        ))}
       </div>
       {/* {activeTask ? <TaskCard task={activeTask} columnId={activeColumnId ?? undefined} isOverlay /> : null} */}
       <TicketsModal {...createTicketModal.modalProps} />

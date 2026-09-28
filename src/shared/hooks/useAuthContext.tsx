@@ -1,10 +1,11 @@
 // AuthContext.tsx
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
+
+import { clearApiToken, saveApiToken } from "@/lib/api";
 import { apiRequest } from "@/shared/utils/apiClient";
 import { getClientToken } from "@/shared/utils/getClientToken";
-import { clearApiToken, saveApiToken } from "@/lib/api";
 
 type User = { id: string; email: string; role?: string };
 
@@ -32,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const profile = await apiRequest<User>("/auth/profile");
       setUser(profile);
     } catch {
-    //   clearApiToken();
+      //   clearApiToken();
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -53,11 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, isLoading, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

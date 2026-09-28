@@ -1,10 +1,10 @@
 // AuthContext.tsx
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { apiRequest, getApiToken } from "@/shared/utils/apiClient";
-import { clearApiToken, saveApiToken, User } from "@/lib/api";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 
+import { clearApiToken, saveApiToken, type User } from "@/lib/api";
+import { apiRequest, getApiToken } from "@/shared/utils/apiClient";
 
 type AuthContextValue = {
   user: User | null;
@@ -51,11 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, isLoading, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

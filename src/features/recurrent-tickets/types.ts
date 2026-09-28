@@ -6,10 +6,10 @@ export enum RecurrenceInterval {
 }
 
 export enum TicketStatus {
-  OPEN = 'open',
-  IN_PROGRESS = 'in_progress',
-  RESOLVED = 'resolved',
-  CLOSED = 'closed',
+  OPEN = "open",
+  IN_PROGRESS = "in_progress",
+  RESOLVED = "resolved",
+  CLOSED = "closed",
 }
 
 export enum TicketPriority {
@@ -19,26 +19,26 @@ export enum TicketPriority {
 }
 
 export enum TicketCategory {
-  SUPER_ADMIN = 'SuperAdmin',
-  ADMINISTRATION_ACCOUNTANT = 'AdministrationAccountancy',
-  COMERCIAL_COORDINATOR = 'ComercialCordination',
-  CAR_EXPERT = 'CarExpert', //Perito
-  GESTOR = 'Gestor',
-  CAR_SELLER = 'CarSelling',
-  CAR_SELLING_SUPERVISOR = 'CarSellingSupervisor',
-  MARKETING = 'Marketing'
+  SUPER_ADMIN = "SuperAdmin",
+  ADMINISTRATION_ACCOUNTANT = "AdministrationAccountancy",
+  COMERCIAL_COORDINATOR = "ComercialCordination",
+  CAR_EXPERT = "CarExpert", //Perito
+  GESTOR = "Gestor",
+  CAR_SELLER = "CarSelling",
+  CAR_SELLING_SUPERVISOR = "CarSellingSupervisor",
+  MARKETING = "Marketing",
 }
 
 export const TicketCategoryLabel: Record<string, string> = {
-  'SuperAdmin': 'Super Admin',
-  'AdministrationAccountant': 'Administracion y Contabilidad',
-  'ComercialCordinator': 'Cordinador Comercial',
-  'CarExpert': 'Perito',
-  'Gestor': 'Gestor',
-  'CarSeller': 'Vendedor de Autos',
-  'CarSellingSupervisor': 'Supervisor de Venta de Autos',
-  'Marketing': 'Marketing'
-}
+  SuperAdmin: "Super Admin",
+  AdministrationAccountant: "Administracion y Contabilidad",
+  ComercialCordinator: "Cordinador Comercial",
+  CarExpert: "Perito",
+  Gestor: "Gestor",
+  CarSeller: "Vendedor de Autos",
+  CarSellingSupervisor: "Supervisor de Venta de Autos",
+  Marketing: "Marketing",
+};
 
 export interface RecurrentTicket {
   id: string;
@@ -54,14 +54,14 @@ export interface RecurrentTicket {
 }
 
 export const INITIAL_UPDATE_RECURRENT_TICKET_DATA = {
-    id: "",
-    title: "",
-    description: "",
-    status: TicketStatus.OPEN,
-    priority: TicketPriority.LOW,
-    category: TicketCategory.ADMINISTRATION_ACCOUNTANT,
-    assignedTo: "" ,
-    dueDate: new Date(),
-    interval: RecurrenceInterval.DAILY,
-    first_run_at: new Date(),
-}
+  id: "",
+  title: "",
+  description: "",
+  status: TicketStatus.OPEN,
+  priority: TicketPriority.LOW,
+  category: TicketCategory.ADMINISTRATION_ACCOUNTANT,
+  assignedTo: "",
+  dueDate: new Date(),
+  interval: RecurrenceInterval.DAILY,
+  first_run_at: new Date(),
+};

@@ -2,43 +2,37 @@
 
 import { useState } from "react";
 
-import { CreateRecurrentTicketModal, type CreateRecurrentTicketData } from "@/features/recurrent-tickets/components/CreateRecurrentTicketModal";
+import { Repeat } from "lucide-react";
+
+import { PageHeader } from "@/components/ui/page-header";
+import {
+  type CreateRecurrentTicketData,
+  CreateRecurrentTicketModal,
+} from "@/features/recurrent-tickets/components/CreateRecurrentTicketModal";
 import { InfoCards } from "@/features/recurrent-tickets/components/InfoCards";
 import { RecurrentTicketsTable } from "@/features/recurrent-tickets/components/RecurrentTicketsTable";
 import { SearchBar } from "@/features/recurrent-tickets/components/SearchBar";
-import { useRecurrentTickets } from "@/features/recurrent-tickets/hooks/useRecurrentTickets";
+import { UpdateRecurrentTicketModal } from "@/features/recurrent-tickets/components/UpdateRecurrentTicketModal";
 import { useCreateRecurrentTickets } from "@/features/recurrent-tickets/hooks/useCreateRecurrentTickets";
 import { useDeleteRecurrentTicket } from "@/features/recurrent-tickets/hooks/useDeleteRecurrentTicket";
 import { useEditRecurrentTicketModal } from "@/features/recurrent-tickets/hooks/useEditRecurrentTicketModal";
+import { useRecurrentTickets } from "@/features/recurrent-tickets/hooks/useRecurrentTickets";
 import type { RecurrentTicket } from "@/features/recurrent-tickets/types";
 import { INITIAL_UPDATE_RECURRENT_TICKET_DATA, TicketPriority, TicketStatus } from "@/features/recurrent-tickets/types";
-import { UpdateRecurrentTicketModal } from "@/features/recurrent-tickets/components/UpdateRecurrentTicketModal";
-import { PageHeader } from "@/components/ui/page-header";
-import { Repeat } from "lucide-react";
 
 export default function RecurrentTicketsPage() {
   const { tickets, isLoading, error, refetch } = useRecurrentTickets();
   const { createRecurrentTicket } = useCreateRecurrentTickets();
   const { deleteRecurrentTicket } = useDeleteRecurrentTicket();
-  const {
-    closeModal,
-    editedTicket,
-    errorMessage,
-    isOpen,
-    isSubmitting,
-    modalProps,
-    openModal,
-    submitTicket,
-  } = useEditRecurrentTicketModal();
+  const { closeModal, editedTicket, errorMessage, isOpen, isSubmitting, modalProps, openModal, submitTicket } =
+    useEditRecurrentTicketModal();
   const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentTicket, setCurrentTicket] = useState<RecurrentTicket>(INITIAL_UPDATE_RECURRENT_TICKET_DATA)
-  const filteredTickets = tickets.filter((ticket) =>
-    ticket.title.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  const [currentTicket, setCurrentTicket] = useState<RecurrentTicket>(INITIAL_UPDATE_RECURRENT_TICKET_DATA);
+  const filteredTickets = tickets.filter((ticket) => ticket.title.toLowerCase().includes(searchValue.toLowerCase()));
 
   const handleEdit = (ticket: RecurrentTicket) => {
-    setCurrentTicket(ticket)
+    setCurrentTicket(ticket);
     openModal(ticket);
   };
 
@@ -68,7 +62,7 @@ export default function RecurrentTicketsPage() {
       priority: data.priority,
       category: data.category,
       assignedTo: data.assignedTo ?? null,
-      dueDate: data.dueDate || new Date(),
+      dueDate: data.dueDate ?? new Date(),
       interval: data.interval,
       first_run_at: data.first_run_at,
     });
@@ -101,23 +95,11 @@ export default function RecurrentTicketsPage() {
 
   return (
     <main className="p-6 flex flex-col gap-4">
-      <PageHeader 
-        icon={Repeat}
-        category="Tickets fijos"
-        title="Gestión de Tickets"
-      />
+      <PageHeader icon={Repeat} category="Tickets fijos" title="Gestión de Tickets" />
       <div className="flex flex-col gap-4">
-        <SearchBar
-          searchValue={searchValue}
-          onSearchChange={setSearchValue}
-          onAddTicket={handleAddTicket}
-        />
+        <SearchBar searchValue={searchValue} onSearchChange={setSearchValue} onAddTicket={handleAddTicket} />
 
-        <RecurrentTicketsTable
-          tickets={filteredTickets}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <RecurrentTicketsTable tickets={filteredTickets} onEdit={handleEdit} onDelete={handleDelete} />
 
         <CreateRecurrentTicketModal
           isOpen={isModalOpen}
@@ -132,7 +114,6 @@ export default function RecurrentTicketsPage() {
           onSubmit={handleEditTicket}
         />
       </div>
-
     </main>
   );
 }

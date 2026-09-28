@@ -1,11 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+
 import { Loader2, Search } from "lucide-react";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User } from "@/lib/api";
 import { useSellers } from "@/features/users/hooks/useSellers";
+import type { User } from "@/lib/api";
 
 interface SellerSelectorProps {
   value: string;
@@ -17,14 +18,14 @@ function formatSellerLabel(seller: User) {
 }
 
 export function SellerSelector({ value, onValueChange }: SellerSelectorProps) {
-  const { users , isLoading, errorMessage } = useSellers();
+  const { users, isLoading, errorMessage } = useSellers();
   const [search, setSearch] = useState("");
 
   const filteredSellers = useMemo(() => {
     const normalized = search.trim().toLowerCase();
     if (!normalized) return users;
 
-    if(!users || users.length === 0) return [];
+    if (!users || users.length === 0) return [];
 
     return users.filter((seller) => {
       const haystack = `${seller.fullName} ${seller.email}`.toLowerCase();
@@ -44,10 +45,10 @@ export function SellerSelector({ value, onValueChange }: SellerSelectorProps) {
           {errorMessage}
         </div>
       ) : (
-        <Select 
-          value={value} 
+        <Select
+          value={value}
           onValueChange={(sellerId) => {
-            const seller = users?.find(u => String(u.id) === sellerId);
+            const seller = users?.find((u) => String(u.id) === sellerId);
             onValueChange(sellerId, seller || undefined);
           }}
         >

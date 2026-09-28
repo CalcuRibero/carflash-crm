@@ -1,57 +1,41 @@
 "use client";
 
 import * as React from "react";
-import { 
-  CalendarDays, 
-  CheckCircle2, 
-  Clock, 
-  DollarSign, 
-  FileText, 
-  MoreVertical, 
-  Receipt, 
-  Search, 
+
+import {
+  CalendarDays,
+  CheckCircle2,
+  Clock,
+  DollarSign,
+  FileText,
+  MoreVertical,
+  Receipt,
+  Search,
   User,
-  XCircle
+  XCircle,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { useInvoices } from "../hooks/useInvoices";
 import type { Invoice, InvoiceStatus, PaymentMethod } from "../types";
 
-const statusConfig: Record<InvoiceStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+const statusConfig: Record<
+  InvoiceStatus,
+  { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
+> = {
   PENDING: { label: "Pendiente", variant: "secondary" },
   PAID: { label: "Pagado", variant: "default" },
   PARTIALLY_PAID: { label: "Parcialmente Pagado", variant: "outline" },
@@ -84,7 +68,7 @@ const getStatusIcon = (status: InvoiceStatus) => {
 };
 
 export function InvoiceList() {
-  const { invoices=[], isLoading, error, filters, updateFilters, refetch } = useInvoices();
+  const { invoices = [], isLoading, error, filters, updateFilters, refetch } = useInvoices();
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const handleSearchChange = (value: string) => {
@@ -102,10 +86,11 @@ export function InvoiceList() {
 
   const filteredInvoices = React.useMemo(() => {
     if (!searchTerm) return invoices;
-    
+
     const term = searchTerm.toLowerCase();
     return invoices.filter((invoice) => {
-      const haystack = `${invoice.invoiceNumber} ${invoice.customer.fullName} ${invoice.customer.document} ${invoice.car.domain} ${invoice.car.brand} ${invoice.car.model}`.toLowerCase();
+      const haystack =
+        `${invoice.invoiceNumber} ${invoice.customer.fullName} ${invoice.customer.document} ${invoice.car.domain} ${invoice.car.brand} ${invoice.car.model}`.toLowerCase();
       return haystack.includes(term);
     });
   }, [searchTerm, invoices]);
@@ -140,23 +125,22 @@ export function InvoiceList() {
 
   return (
     <div className="space-y-6" data-hide-header="true">
-      <PageHeader 
+      <PageHeader
         icon={Receipt}
         category="Finanzas"
         title="Gestión de Facturación"
         action={{
           label: "Iniciar Nueva Factura",
           href: "/dashboard/invoice/create",
-          icon: FileText
+          icon: FileText,
         }}
       />
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
-          <CardHeader className="pb-2">+
-            
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Facturado</CardTitle>
+          <CardHeader className="pb-2">
+            +<CardTitle className="text-sm font-medium text-muted-foreground">Total Facturado</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-3">
@@ -316,13 +300,18 @@ export function InvoiceList() {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-medium">{invoice.car.brand} {invoice.car.model}</span>
+                        <span className="font-medium">
+                          {invoice.car.brand} {invoice.car.model}
+                        </span>
                         <span className="text-sm text-muted-foreground">{invoice.car.domain}</span>
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">{formatCurrency(invoice.totalAmount)}</TableCell>
                     <TableCell>
-                      <Badge variant={statusConfig[invoice.status as InvoiceStatus]?.variant || "secondary"} className="gap-1">
+                      <Badge
+                        variant={statusConfig[invoice.status as InvoiceStatus]?.variant || "secondary"}
+                        className="gap-1"
+                      >
                         {getStatusIcon(invoice.status as InvoiceStatus)}
                         {statusConfig[invoice.status as InvoiceStatus]?.label || invoice.status}
                       </Badge>

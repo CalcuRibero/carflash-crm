@@ -7,10 +7,9 @@ interface TicketDetailPageProps {
 }
 
 export default async function Page({ params }: TicketDetailPageProps) {
+  const { id } = await params;
 
-  const { id } = await params
-
-  console.log(id)
+  console.log(id);
   return (
     <div data-content-padding="false">
       <TicketDetail ticketId={id} />

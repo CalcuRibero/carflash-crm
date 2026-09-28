@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import type { RecurrentTicket } from "../types";
 import { RecurrentTicketsService } from "../services/recurrentTicketsService";
+import type { RecurrentTicket } from "../types";
 
 export function useCreateRecurrentTickets() {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,9 +9,7 @@ export function useCreateRecurrentTickets() {
 
   const recurrentTicketsService = new RecurrentTicketsService();
 
-  const createRecurrentTicket = async (
-    data: Omit<RecurrentTicket, "id">
-  ): Promise<RecurrentTicket | null> => {
+  const createRecurrentTicket = async (data: Omit<RecurrentTicket, "id">): Promise<RecurrentTicket | null> => {
     try {
       setIsLoading(true);
       setError(null);

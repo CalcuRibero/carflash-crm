@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
 import { getInvoices } from "../services/invoiceService";
 import type { Invoice, InvoiceFilters } from "../types";
 
@@ -13,7 +14,7 @@ export function useInvoices(initialFilters?: InvoiceFilters) {
   const fetchInvoices = async (currentFilters?: InvoiceFilters) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const data = await getInvoices(currentFilters || filters);
       setInvoices(data);

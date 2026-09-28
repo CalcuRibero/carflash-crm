@@ -1,6 +1,7 @@
+import type { OperationFormState } from "@/features/operations/types";
 import { apiRequest } from "@/shared/utils/apiClient";
+
 import type { Invoice, InvoiceFilters } from "../types";
-import { OperationFormState } from "@/features/operations/types";
 
 export interface InvoiceListResponse {
   data: Invoice[];
@@ -31,7 +32,7 @@ export async function getInvoices(filters?: InvoiceFilters): Promise<Invoice[]> 
 }
 
 export async function createInvoiceService(invoice: OperationFormState) {
-  return apiRequest<OperationFormState>(`/invoices/`, { method: "POST", body: invoice })
+  return apiRequest<OperationFormState>(`/invoices/`, { method: "POST", body: invoice });
 }
 
 export async function getInvoiceById(id: string): Promise<Invoice> {

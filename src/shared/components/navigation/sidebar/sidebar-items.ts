@@ -1,4 +1,3 @@
-import { UserRole } from "@/lib/api";
 import {
   BriefcaseBusiness,
   Calendar,
@@ -15,6 +14,8 @@ import {
   Target,
   Users,
 } from "lucide-react";
+
+import type { UserRole } from "@/lib/api";
 
 export interface NavSubItem {
   title: string;
@@ -53,45 +54,45 @@ export const sidebarItems: NavGroup[] = [
         title: "Gerencia",
         url: "/supervision-panel/super-admin",
         icon: Eye,
-        roles: ["SuperAdmin"]
+        roles: ["SuperAdmin"],
       },
       {
         title: "Supervisión de ventas",
         url: "/supervision-panel/car-selling-supervisor",
         icon: BriefcaseBusiness,
-        roles: ["SuperAdmin"]
+        roles: ["SuperAdmin"],
       },
       {
         title: "Gestión de Gestoría",
         url: "/supervision-panel/gestor",
         icon: Folders,
-        roles: ["SuperAdmin"]
+        roles: ["SuperAdmin"],
       },
       {
         title: "Gestión de Peritajes",
         url: "/supervision-panel/car-expert",
-        icon: ClipboardCheck ,
-        roles: ["SuperAdmin"]
+        icon: ClipboardCheck,
+        roles: ["SuperAdmin"],
       },
       {
         title: "Coordinación Comercial",
         url: "/supervision-panel/comercial-cordinator",
         icon: Target,
-        roles: ["SuperAdmin"]
+        roles: ["SuperAdmin"],
       },
       {
         title: "Administración",
         url: "/supervision-panel/administration-accountant",
         icon: FileText,
-        roles: ["SuperAdmin"]
+        roles: ["SuperAdmin"],
       },
       {
         title: "Marketing",
         url: "/supervision-panel/marketing",
         icon: PencilRuler,
-        roles: ["SuperAdmin"]
+        roles: ["SuperAdmin"],
       },
-    ]
+    ],
   },
   {
     id: 2,
@@ -101,19 +102,46 @@ export const sidebarItems: NavGroup[] = [
         title: "Tickets Fijos",
         url: "/dashboard/recurrent-tickets",
         icon: Repeat,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
+        roles: [
+          "SuperAdmin",
+          "AdministrationAccountant",
+          "ComercialCordinator",
+          "CarExpert",
+          "Gestor",
+          "CarSeller",
+          "CarSellingSupervisor",
+          "Marketing",
+        ],
       },
       {
         title: "Tickets Variables",
         url: "/dashboard/kanban",
         icon: Kanban,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
+        roles: [
+          "SuperAdmin",
+          "AdministrationAccountant",
+          "ComercialCordinator",
+          "CarExpert",
+          "Gestor",
+          "CarSeller",
+          "CarSellingSupervisor",
+          "Marketing",
+        ],
       },
       {
         title: "Calendario",
         url: "/dashboard/calendar",
         icon: Calendar,
-        roles: ["SuperAdmin", "AdministrationAccountant", "ComercialCordinator", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
+        roles: [
+          "SuperAdmin",
+          "AdministrationAccountant",
+          "ComercialCordinator",
+          "CarExpert",
+          "Gestor",
+          "CarSeller",
+          "CarSellingSupervisor",
+          "Marketing",
+        ],
       },
       {
         title: "Facturación",
@@ -125,7 +153,15 @@ export const sidebarItems: NavGroup[] = [
         title: "Vehículos",
         url: "/dashboard/vehiculos",
         icon: CarFront,
-        roles: ["SuperAdmin", "AdministrationAccountant", "CarExpert", "Gestor", "CarSeller", "CarSellingSupervisor", "Marketing"],
+        roles: [
+          "SuperAdmin",
+          "AdministrationAccountant",
+          "CarExpert",
+          "Gestor",
+          "CarSeller",
+          "CarSellingSupervisor",
+          "Marketing",
+        ],
       },
       {
         title: "Usuarios",

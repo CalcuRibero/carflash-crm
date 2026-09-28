@@ -11,8 +11,9 @@ import { ThemeBootScript } from "@/scripts/theme-boot";
 import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
 
 import "./globals.css";
-import { AuthProvider } from "@/stores/auth/auth-provider";
+
 import { NotificationsProvider } from "@/shared/hooks/useNotifications";
+import { AuthProvider } from "@/stores/auth/auth-provider";
 
 export const metadata: Metadata = {
   title: APP_CONFIG.meta.title,

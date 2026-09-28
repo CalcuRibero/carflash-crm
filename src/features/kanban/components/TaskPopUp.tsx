@@ -2,25 +2,18 @@
 
 import * as React from "react";
 
+import { withPopup } from "@/components/popup/popup";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { withPopup } from "@/components/popup/popup";
+import { useUsers } from "@/features/users/hooks/useUsers";
 import type { TicketCategory, TicketPriority, TicketStatus } from "@/lib/api/types";
 import { useCreateTicket } from "@/UseCases/TicketsUseCases";
-import { useUsers } from "@/features/users/hooks/useUsers";
 
 const ticketStatuses: TicketStatus[] = ["open", "in_progress", "resolved", "closed"];
 const ticketPriorities: TicketPriority[] = ["low", "medium", "high", "critical"];
 const ticketCategories: TicketCategory[] = ["bug", "feature", "support", "incident"];
-
 
 export type TaskPopUpFormValues = {
   title: string;
@@ -195,7 +188,7 @@ const TaskFormPopUp = withPopup(TaskForm, {
 
 export function TaskPopUp({ isOpen, onClose, onSubmit }: TaskPopUpProps) {
   const [formValues, setFormValues] = React.useState<TaskPopUpFormValues>(INITIAL_VALUES_FORM);
-  const createTicket = useCreateTicket()
+  const createTicket = useCreateTicket();
 
   function handleSubmit() {
     if (!formValues.title.trim() || !formValues.description.trim()) return;
@@ -222,4 +215,3 @@ export function TaskPopUp({ isOpen, onClose, onSubmit }: TaskPopUpProps) {
     />
   );
 }
-

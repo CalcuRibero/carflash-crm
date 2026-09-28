@@ -36,7 +36,6 @@ function getPageNumbers(currentPage: number, pageCount: number) {
 }
 
 export function UsersTable({ table }: { table: TableType<UserRow> }) {
-
   const pageCount = Math.max(table.getPageCount(), 1);
   const currentPage = Math.min(table.getState().pagination.pageIndex + 1, pageCount);
   const pageNumbers = getPageNumbers(currentPage, pageCount);

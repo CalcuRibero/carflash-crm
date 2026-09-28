@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+
 import { CarFront, Fuel, Gauge, Palette, UserRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -14,14 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import type { VehicleFormValues, VehicleRecord } from "../types";
 
@@ -74,9 +68,7 @@ export function EditVehicleModal({ open, vehicle, onOpenChange, onUpdateVehicle 
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Editar vehículo</DialogTitle>
-          <DialogDescription>
-            Actualiza la información operativa de {vehicle.domain}.
-          </DialogDescription>
+          <DialogDescription>Actualiza la información operativa de {vehicle.domain}.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">

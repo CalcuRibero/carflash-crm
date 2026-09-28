@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 
-import type { RecurrentTicket } from "../types";
 import { RecurrentTicketsService } from "../services/recurrentTicketsService";
+import type { RecurrentTicket } from "../types";
 
 export function useEditRecurrentTicketModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,25 +26,28 @@ export function useEditRecurrentTicketModal() {
     setIsOpen(false);
   }, [isSubmitting]);
 
-  const submitTicket = useCallback(async (data: Partial<Omit<RecurrentTicket, "id">>) => {
-    if (!currentTicket) return;
+  const submitTicket = useCallback(
+    async (data: Partial<Omit<RecurrentTicket, "id">>) => {
+      if (!currentTicket) return;
 
-    setIsSubmitting(true);
-    setErrorMessage(null);
+      setIsSubmitting(true);
+      setErrorMessage(null);
 
-    try {
-      const ticket = await recurrentTicketsService.updateRecurrentTicket(currentTicket.id, data);
-      setEditedTicket(ticket);
-      setIsOpen(false);
-      setCurrentTicket(null);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "We could not update the recurrent ticket.";
-      setErrorMessage(message);
-      throw err;
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [currentTicket, recurrentTicketsService]);
+      try {
+        const ticket = await recurrentTicketsService.updateRecurrentTicket(currentTicket.id, data);
+        setEditedTicket(ticket);
+        setIsOpen(false);
+        setCurrentTicket(null);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "We could not update the recurrent ticket.";
+        setErrorMessage(message);
+        throw err;
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [currentTicket, recurrentTicketsService],
+  );
 
   const modalProps = {
     isOpen,

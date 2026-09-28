@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { createUserService, type CreateUserRequest } from "../services/usersService";
+import { type CreateUserRequest, createUserService } from "../services/usersService";
 
 export function useCreateUser() {
   const [isCreating, setIsCreating] = React.useState(false);
