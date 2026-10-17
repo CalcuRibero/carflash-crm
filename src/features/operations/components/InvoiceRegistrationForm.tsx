@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import {
   BadgeDollarSign,
   CarFront,
@@ -13,6 +15,7 @@ import {
   Save,
   UserRound,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -247,6 +250,7 @@ function PaymentFields({
 }
 
 export function InvoiceRegistrationForm() {
+  const router = useRouter();
   const [form, setForm] = useState<OperationFormState>(initialFormState);
   const [selectedSeller, setSelectedSeller] = useState<User | null>(null);
 
@@ -293,7 +297,7 @@ export function InvoiceRegistrationForm() {
     }
   };
 
-  const handleCreateInvoice = () => {
+  const handleCreateInvoice = async () => {
     // Validar campos de vehículo antes de crear
     // if (!validateVehicleData(form)) {
     //   alert("Por favor complete todos los datos del vehículo antes de guardar la factura");
@@ -301,7 +305,15 @@ export function InvoiceRegistrationForm() {
     // }
 
     console.log("Creando factura con los siguientes datos:", form);
-    createInvoice(form);
+    try {
+      await createInvoice(form);
+      toast.success("Factura creada correctamente");
+      router.push("/dashboard/invoice");
+    } catch (error) {
+      toast.error("No se pudo crear la factura", {
+        description: error instanceof Error ? error.message : "Intente nuevamente.",
+      });
+    }
   };
 
   const updatePayment = (updatedEntry: PaymentMethodEntry) => {
@@ -328,9 +340,9 @@ export function InvoiceRegistrationForm() {
             <Printer className="size-4" />
             Imprimir
           </Button>
-          <Button size="sm" className="gap-2" onClick={handleCreateInvoice}>
+          <Button size="sm" className="gap-2" onClick={handleCreateInvoice} disabled={isLoading}>
             <Save className="size-4" />
-            Guardar registro
+            {isLoading ? "Guardando..." : "Guardar registro"}
           </Button>
         </div>
       </div>

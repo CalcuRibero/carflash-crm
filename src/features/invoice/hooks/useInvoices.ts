@@ -16,9 +16,13 @@ export function useInvoices(initialFilters?: InvoiceFilters) {
     setError(null);
 
     try {
+      console.log("Fetching invoices with filters:", currentFilters || filters);
       const data = await getInvoices(currentFilters || filters);
+      console.log("Received invoices:", data);
+      console.log("Number of invoices:", data.length);
       setInvoices(data);
     } catch (err) {
+      console.error("Error in fetchInvoices:", err);
       setError(err instanceof Error ? err.message : "Error al cargar facturas");
       setInvoices([]);
     } finally {

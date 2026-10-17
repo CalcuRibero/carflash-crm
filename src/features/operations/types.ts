@@ -71,6 +71,7 @@ export interface OperationFormState {
 }
 
 export interface OperationToPrint {
+  invoiceNumber?: string;
   subtotal: number;
   taxAmount: number;
   totalAmount: number;

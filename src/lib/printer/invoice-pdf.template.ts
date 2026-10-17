@@ -155,7 +155,7 @@ export function buildInvoiceHtml(data: OperationToPrint): string {
     });
   }
 
-  const invoiceNumber = Date.now();
+  const invoiceNumber = data.invoiceNumber ?? Date.now();
   const sellerName = data.seller?.fullName ?? "Vendedor no especificado";
   const vehicleDescription =
     [data.car.brand?.trim() || "", data.car.model?.trim() || ""].filter(Boolean).join(" ").trim() ||

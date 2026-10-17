@@ -1,4 +1,4 @@
-import type { OperationFormState } from "@/features/operations/types";
+import type { OperationFormState, OperationToPrint } from "@/features/operations/types";
 import { apiRequest } from "@/shared/utils/apiClient";
 
 import type { Invoice, InvoiceFilters } from "../types";
@@ -9,6 +9,8 @@ export interface InvoiceListResponse {
   page: number;
   pageSize: number;
 }
+
+export type InvoicePrintDetails = OperationToPrint & Pick<Invoice, "id" | "invoiceNumber">;
 
 export async function getInvoices(filters?: InvoiceFilters): Promise<Invoice[]> {
   const params = new URLSearchParams();
@@ -22,9 +24,18 @@ export async function getInvoices(filters?: InvoiceFilters): Promise<Invoice[]> 
   const queryString = params.toString();
   const endpoint = queryString ? `/invoices?${queryString}` : "/invoices";
 
+  console.log("Fetching invoices from:", endpoint);
+
   try {
-    const response = await apiRequest<InvoiceListResponse>(endpoint);
-    return response.data;
+    const response = await apiRequest<InvoiceListResponse | Invoice[]>(endpoint);
+    console.log("API Response:", response);
+    const invoices = Array.isArray(response) ? response : response?.data;
+
+    if (!Array.isArray(invoices)) {
+      throw new Error("Formato de respuesta inválido al cargar facturas");
+    }
+
+    return invoices;
   } catch (error) {
     console.error("Error fetching invoices:", error);
     throw error;
@@ -35,8 +46,8 @@ export async function createInvoiceService(invoice: OperationFormState) {
   return apiRequest<OperationFormState>(`/invoices/`, { method: "POST", body: invoice });
 }
 
-export async function getInvoiceById(id: string): Promise<Invoice> {
-  return apiRequest<Invoice>(`/invoices/${id}`);
+export async function getInvoiceById(id: string): Promise<InvoicePrintDetails> {
+  return apiRequest<InvoicePrintDetails>(`/invoices/${id}`);
 }
 
 export async function deleteInvoice(id: string): Promise<void> {
