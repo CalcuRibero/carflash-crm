@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { STATUS_LABELS } from "@/features/kanban/types";
 import type { Ticket } from "@/lib/api/types";
+import { cn } from "@/lib/utils";
 
 import { type MetricsTableProps, StatusVariant } from "../type";
 import { formatDate } from "../utils";
@@ -56,25 +57,33 @@ export function MetricsTable({ tickets }: MetricsTableProps) {
                 </TableCell>
               </TableRow>
             ) : (
-              currentTickets.map((ticket) => (
-                <TableRow key={ticket.id}>
-                  <TableCell className="font-medium">{ticket.title}</TableCell>
-                  <TableCell>
-                    <Badge variant={StatusVariant[ticket.status]}>{STATUS_LABELS[ticket.status]}</Badge>
-                  </TableCell>
-                  <TableCell>{formatDate(ticket.createdAt)}</TableCell>
-                  <TableCell>{formatDate(ticket.dueDate || new Date())}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant={"link"}
-                      className="hover:cursor-pointer hover:opacity-80"
-                      onClick={() => handleClickDetail(ticket)}
-                    >
-                      <ChevronRight />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
+              currentTickets.map((ticket) => {
+                const overdue =
+                  ticket.dueDate !== null &&
+                  new Date(ticket.dueDate) < new Date() &&
+                  ticket.status !== "resolved" &&
+                  ticket.status !== "closed";
+
+                return (
+                  <TableRow key={ticket.id} className={cn(overdue && "animate-pulse border-red-200 bg-red-50")}>
+                    <TableCell className="font-medium">{ticket.title}</TableCell>
+                    <TableCell>
+                      <Badge variant={StatusVariant[ticket.status]}>{STATUS_LABELS[ticket.status]}</Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(ticket.createdAt)}</TableCell>
+                    <TableCell>{formatDate(ticket.dueDate || new Date())}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant={"link"}
+                        className="hover:cursor-pointer hover:opacity-80"
+                        onClick={() => handleClickDetail(ticket)}
+                      >
+                        <ChevronRight />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
